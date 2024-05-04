@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.rfdotech.convention.ExtensionType
+import com.rfdotech.convention.configureBuildTypes
 import com.rfdotech.convention.configureKotlinAndroid
 import com.rfdotech.convention.libs
 import org.gradle.api.Plugin
@@ -23,6 +25,7 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                 }
 
                 configureKotlinAndroid(this)
+                configureBuildTypes(this, ExtensionType.APPLICATION)
             }
         }
     }
