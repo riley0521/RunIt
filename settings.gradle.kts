@@ -20,6 +20,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "RunIt"
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include(":app")
 include(":auth:data")
 include(":auth:domain")
