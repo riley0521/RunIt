@@ -41,9 +41,9 @@ android-tools = "31.2.2"
 compose-compiler = "1.5.9"
 
 # Project versions
-projectApplicationId = "com.plcoding.runique"
+projectApplicationId = "com.rfdotech.runtracker"
 projectVersionName = "1.0"
-projectMinSdkVersion = "25"
+projectMinSdkVersion = "24"
 projectTargetSdkVersion = "34"
 projectCompileSdkVersion = "34"
 projectVersionCode = "1"
@@ -142,3 +142,6 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-jvm" }
 android-dynamic-feature = { id = "com.android.dynamic-feature", version.ref = "agp" }
 google-android-libraries-mapsplatform-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets-plugin" }
+
+# Custom Plugins
+runtracker-android-application-plugin = { id = "runtracker.android.application", version = "unspecified" }

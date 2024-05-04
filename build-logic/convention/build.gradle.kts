@@ -11,3 +11,12 @@ dependencies {
     compileOnly(libs.google.devtools.ksp.gradle.plugin)
     compileOnly(libs.androidx.room.gradle.plugin)
 }
+
+gradlePlugin {
+    plugins {
+        register("androidApplication") {
+            id = "runtracker.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+    }
+}
