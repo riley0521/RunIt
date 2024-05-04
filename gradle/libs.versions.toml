@@ -107,7 +107,6 @@ io-ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializa
 io-ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 io-ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 io-ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor-client-logging" }
-io-ktor-server-call-logging = { group = "io.ktor", name = "ktor-server-call-logging", version.ref = "ktor-server-call-logging" }
 
 # Room Database
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -151,6 +150,7 @@ runtracker-android-library-compose-plugin = { id = "runtracker.android.library.c
 runtracker-android-feature-ui-plugin = { id = "runtracker.android.feature-ui", version = "unspecified" }
 runtracker-android-room-plugin = { id = "runtracker.android.room", version = "unspecified" }
 runtracker-jvm-library-plugin = { id = "runtracker.jvm.library", version = "unspecified" }
+runtracker-jvm-ktor-plugin = { id = "runtracker.jvm.ktor", version = "unspecified" }
 
 [bundles]
 compose = [
@@ -170,3 +170,11 @@ compose-debug = [
 ]
 koin = ["io-koin-core", "io-koin-android", "io-koin-androidx-workmanager"]
 koin-compose = ["io-koin-core", "io-koin-android", "io-koin-androidx-compose", "io-koin-androidx-workmanager"]
+ktor = [
+    "io-ktor-client-core",
+    "io-ktor-client-content-negotiation",
+    "io-ktor-serialization-kotlinx-json",
+    "io-ktor-client-cio",
+    "io-ktor-client-auth",
+    "io-ktor-client-logging"
+]
