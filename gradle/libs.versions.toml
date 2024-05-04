@@ -147,3 +147,4 @@ google-android-libraries-mapsplatform-secrets = { id = "com.google.android.libra
 runtracker-android-application-plugin = { id = "runtracker.android.application", version = "unspecified" }
 runtracker-android-application-compose-plugin = { id = "runtracker.android.application.compose", version = "unspecified" }
 runtracker-android-library-plugin = { id = "runtracker.android.library", version = "unspecified" }
+runtracker-android-library-compose-plugin = { id = "runtracker.android.library.compose", version = "unspecified" }
