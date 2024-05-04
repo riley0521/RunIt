@@ -33,6 +33,9 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.domain)
+    implementation(projects.run.domain)
+
     implementation(libs.io.coil.compose)
     implementation(libs.google.maps.compose)
     implementation(libs.androidx.activity.compose)

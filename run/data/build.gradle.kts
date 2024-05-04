@@ -33,6 +33,11 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.domain)
+    implementation(projects.core.database)
+    implementation(projects.run.domain)
+    implementation(projects.run.location)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.google.play.services.location)
     implementation(libs.androidx.work.runtime.ktx)
