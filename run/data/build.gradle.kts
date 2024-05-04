@@ -33,11 +33,9 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.google.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.google.play.services.location)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.io.koin.androidx.workmanager)
+    implementation(libs.kotlinx.serialization.json)
 }

@@ -33,11 +33,8 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.google.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    implementation(libs.io.coil.compose)
+    implementation(libs.google.maps.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.com.jakewharton.timber)
 }
