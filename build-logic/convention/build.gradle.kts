@@ -30,5 +30,9 @@ gradlePlugin {
             id = "runtracker.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
+        register("androidFeatureUi") {
+            id = "runtracker.android.feature-ui"
+            implementationClass = "AndroidFeatureUiConventionPlugin"
+        }
     }
 }
