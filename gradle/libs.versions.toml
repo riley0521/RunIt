@@ -149,6 +149,7 @@ runtracker-android-application-compose-plugin = { id = "runtracker.android.appli
 runtracker-android-library-plugin = { id = "runtracker.android.library", version = "unspecified" }
 runtracker-android-library-compose-plugin = { id = "runtracker.android.library.compose", version = "unspecified" }
 runtracker-android-feature-ui-plugin = { id = "runtracker.android.feature-ui", version = "unspecified" }
+runtracker-android-room-plugin = { id = "runtracker.android.room", version = "unspecified" }
 
 [bundles]
 compose = [
