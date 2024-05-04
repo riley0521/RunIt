@@ -21,4 +21,16 @@ dependencyResolutionManagement {
 
 rootProject.name = "RunIt"
 include(":app")
- 
+include(":auth:data")
+include(":auth:domain")
+include(":auth:presentation")
+include(":core:data")
+include(":core:database")
+include(":core:domain")
+include(":core:presentation:designsystem")
+include(":core:presentation:ui")
+include(":run:data")
+include(":run:domain")
+include(":run:location")
+include(":run:network")
+include(":run:presentation")
