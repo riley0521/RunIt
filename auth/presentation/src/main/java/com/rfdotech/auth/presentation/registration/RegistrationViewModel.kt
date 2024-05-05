@@ -23,15 +23,20 @@ class RegistrationViewModel(
         private set
 
     init {
-        state.email.textAsFlow().onEach {
-            state = state.copy(
-                isEmailValid = userDataValidator.isValidEmail(it.toString())
-            )
-        }.launchIn(viewModelScope)
+        val emailFlow = state.email.textAsFlow()
+        val passwordFlow = state.password.textAsFlow()
 
-        state.password.textAsFlow().onEach {
+        combine(emailFlow, passwordFlow) { email, password ->
+            Pair(email, password)
+        }.onEach { (email, password) ->
+            val isEmailValid = userDataValidator.isValidEmail(email.toString())
+            val passwordValidationState = userDataValidator.validatePassword(password.toString())
+            val canRegister = passwordValidationState.isValidPassword && !state.isRegistering
+
             state = state.copy(
-                passwordValidationState = userDataValidator.validatePassword(it.toString())
+                isEmailValid = isEmailValid,
+                passwordValidationState = passwordValidationState,
+                canRegister = canRegister
             )
         }.launchIn(viewModelScope)
     }
