@@ -61,6 +61,9 @@ dependencies {
     // Crypto for Security
     implementation(libs.androidx.security.crypto.ktx)
 
+    // Koin
+    implementation(libs.bundles.koin)
+
     // Jetpack Compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material.icons.extended)
