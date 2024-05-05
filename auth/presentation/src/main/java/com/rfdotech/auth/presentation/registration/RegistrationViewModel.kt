@@ -33,7 +33,7 @@ class RegistrationViewModel(
         }.onEach { (email, password) ->
             val isEmailValid = userDataValidator.isValidEmail(email.toString())
             val passwordValidationState = userDataValidator.validatePassword(password.toString())
-            val canRegister = passwordValidationState.isValidPassword && !state.isRegistering
+            val canRegister = isEmailValid && passwordValidationState.isValidPassword && !state.isRegistering
 
             state = state.copy(
                 isEmailValid = isEmailValid,
