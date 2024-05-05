@@ -10,10 +10,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.auth.domain.UserDataValidator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.launch
 
 class RegistrationViewModel(
     private val userDataValidator: UserDataValidator
@@ -43,9 +45,20 @@ class RegistrationViewModel(
 
     fun onAction(action: RegistrationAction) {
         when (action) {
-            RegistrationAction.OnSignInClick -> TODO()
-            RegistrationAction.OnSignUpClick -> TODO()
-            RegistrationAction.OnTogglePasswordVisibilityClick -> TODO()
+            RegistrationAction.OnSignUpClick -> signUp()
+            RegistrationAction.OnTogglePasswordVisibilityClick -> {
+                state = state.copy(isPasswordVisible = !state.isPasswordVisible)
+            }
+            else -> Unit
         }
+    }
+
+    private fun signUp() = viewModelScope.launch {
+        state = state.copy(isRegistering = true)
+
+        delay(2000L)
+        // TODO: Network call.
+
+        state = state.copy(isRegistering = false)
     }
 }
