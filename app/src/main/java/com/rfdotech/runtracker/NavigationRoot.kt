@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.rfdotech.auth.presentation.intro.IntroScreenRoot
-import com.rfdotech.auth.presentation.registration.RegistrationScreenRoot
+import com.rfdotech.auth.presentation.sign_up.SignUpScreenRoot
 
 @Composable
 fun NavigationRoot(
@@ -34,7 +34,7 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
             )
         }
         composable(route = "sign_up") {
-            RegistrationScreenRoot(
+            SignUpScreenRoot(
                 onSignInClick = {
                     navController.navigate("sign_in") {
                         popUpTo("sign_up") {

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.rfdotech.auth.presentation.registration
+package com.rfdotech.auth.presentation.sign_up
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text2.input.textAsFlow
@@ -17,11 +17,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
-class RegistrationViewModel(
+class SignUpViewModel(
     private val userDataValidator: UserDataValidator
 ): ViewModel() {
 
-    var state by mutableStateOf(RegistrationState())
+    var state by mutableStateOf(SignUpState())
         private set
 
     init {

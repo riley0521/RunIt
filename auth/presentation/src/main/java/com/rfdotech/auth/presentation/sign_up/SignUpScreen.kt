@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.rfdotech.auth.presentation.registration
+package com.rfdotech.auth.presentation.sign_up
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -43,10 +43,10 @@ import com.rfdotech.core.presentation.designsystem.primaryFontFamily
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RegistrationScreenRoot(
+fun SignUpScreenRoot(
     onSignInClick: () -> Unit,
     onSuccessfulRegistration: () -> Unit,
-    viewModel: RegistrationViewModel = koinViewModel()
+    viewModel: SignUpViewModel = koinViewModel()
 ) {
     RegistrationScreen(
         state = viewModel.state,
@@ -62,9 +62,9 @@ fun RegistrationScreenRoot(
 }
 
 @Composable
-private fun RegistrationScreen(
-    state: RegistrationState,
-    onAction: (RegistrationAction) -> Unit
+private fun SignUpScreen(
+    state: SignUpState,
+    onAction: (SignUpAction) -> Unit
 ) {
     GradientBackground {
         Column(
@@ -77,7 +77,7 @@ private fun RegistrationScreen(
         ) {
             HeaderView(
                 onSignInClick = {
-                    onAction(RegistrationAction.OnSignInClick)
+                    onAction(SignUpAction.OnSignInClick)
                 }
             )
             Spacer(modifier = Modifier.height(48.dp))
@@ -91,7 +91,7 @@ private fun RegistrationScreen(
                 isLoading = state.isRegistering,
                 enabled = state.canRegister,
                 onClick = {
-                    onAction(RegistrationAction.OnSignUpClick)
+                    onAction(SignUpAction.OnSignUpClick)
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -146,8 +146,8 @@ private fun HeaderView(
 
 @Composable
 private fun EmailAndPasswordView(
-    state: RegistrationState,
-    onAction: (RegistrationAction) -> Unit
+    state: SignUpState,
+    onAction: (SignUpAction) -> Unit
 ) {
     val validEmailIcon = if (state.isEmailValid) {
         CheckIcon
@@ -171,7 +171,7 @@ private fun EmailAndPasswordView(
         hint = stringResource(id = R.string.password),
         title = stringResource(id = R.string.password),
         onTogglePasswordVisibility = {
-            onAction(RegistrationAction.OnTogglePasswordVisibilityClick)
+            onAction(SignUpAction.OnTogglePasswordVisibilityClick)
         },
         isPasswordVisible = state.isPasswordVisible,
         modifier = Modifier.fillMaxWidth()
@@ -247,10 +247,10 @@ private fun PasswordRequirementView(
 
 @Preview
 @Composable
-private fun RegistrationScreenPreview() {
+private fun SignScreenPreview() {
     RunItTheme {
-        RegistrationScreen(
-            state = RegistrationState(
+        SignUpScreen(
+            state = SignUpState(
                 passwordValidationState = PasswordValidationState(
                     hasNumber = true
                 )
