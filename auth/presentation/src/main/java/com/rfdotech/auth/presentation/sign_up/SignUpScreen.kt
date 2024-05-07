@@ -50,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SignUpScreenRoot(
     onSignInClick: () -> Unit,
-    onSuccessfulRegistration: () -> Unit,
+    onSignUpSuccess: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -65,7 +65,7 @@ fun SignUpScreenRoot(
             SignUpEvent.SignUpSuccess -> {
                 keyboardController?.hide()
                 context.showToastRes(R.string.sign_up_successful)
-                onSuccessfulRegistration()
+                onSignUpSuccess()
             }
         }
     }
