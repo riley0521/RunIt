@@ -29,8 +29,6 @@ class SignUpViewModel(
         val passwordFlow = state.password.textAsFlow()
 
         combine(emailFlow, passwordFlow) { email, password ->
-            Pair(email, password)
-        }.onEach { (email, password) ->
             val isEmailValid = userDataValidator.isValidEmail(email.toString())
             val passwordValidationState = userDataValidator.validatePassword(password.toString())
             val canRegister = isEmailValid && passwordValidationState.isValidPassword && !state.isRegistering
