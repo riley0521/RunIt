@@ -3,6 +3,7 @@ package com.rfdotech.runtracker
 import android.app.Application
 import com.rfdotech.auth.data.di.authDataModule
 import com.rfdotech.auth.presentation.di.authPresentationModule
+import com.rfdotech.core.data.di.coreDataModule
 import com.rfdotech.runtracker.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -23,6 +24,7 @@ class RunItApp : Application() {
             modules(
                 authDataModule,
                 authPresentationModule,
+                coreDataModule,
                 appModule
             )
         }

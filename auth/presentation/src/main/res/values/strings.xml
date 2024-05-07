@@ -16,4 +16,6 @@
     <string name="at_least_one_number">At least one number</string>
     <string name="contains_lowercase_character">Contains lowercase character</string>
     <string name="contains_uppercase_character">Contains uppercase character</string>
+    <string name="error_email_exists">A user with email %s already exists.</string>
+    <string name="sign_up_successful">Sign up successful! You can log in now.</string>
 </resources>

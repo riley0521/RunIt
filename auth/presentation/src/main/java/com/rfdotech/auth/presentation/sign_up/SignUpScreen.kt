@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -40,6 +42,9 @@ import com.rfdotech.core.presentation.designsystem.components.PasswordTextField
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryTextField
 import com.rfdotech.core.presentation.designsystem.primaryFontFamily
+import com.rfdotech.core.presentation.designsystem.util.showToastRes
+import com.rfdotech.core.presentation.designsystem.util.showToastStr
+import com.rfdotech.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,11 +53,28 @@ fun SignUpScreenRoot(
     onSuccessfulRegistration: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel()
 ) {
-    RegistrationScreen(
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is SignUpEvent.Error -> {
+                keyboardController?.hide()
+                context.showToastStr(event.error.asString(context))
+            }
+            SignUpEvent.SignUpSuccess -> {
+                keyboardController?.hide()
+                context.showToastRes(R.string.sign_up_successful)
+                onSuccessfulRegistration()
+            }
+        }
+    }
+
+    SignUpScreen(
         state = viewModel.state,
         onAction = { action ->
             when (action) {
-                RegistrationAction.OnSignInClick -> onSignInClick()
+                SignUpAction.OnSignInClick -> onSignInClick()
                 else -> {
                     viewModel.onAction(action)
                 }
