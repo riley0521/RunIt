@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.rfdotech.auth.presentation.intro.IntroScreenRoot
+import com.rfdotech.auth.presentation.sign_in.SignInScreenRoot
 import com.rfdotech.auth.presentation.sign_up.SignUpScreenRoot
 
 @Composable
@@ -50,6 +51,34 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
             )
         }
         composable(route = "sign_in") {
+            SignInScreenRoot(
+                onSignUpClick = {
+                    navController.navigate("sign_up") {
+                        popUpTo("sign_in") {
+                            inclusive = true
+                            saveState = true
+                        }
+                        restoreState = true
+                    }
+                },
+                onSignInSuccess = {
+                    navController.navigate("run") {
+                        popUpTo("auth") {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.runGraph(navController: NavHostController) {
+    navigation(
+        startDestination = "run_list",
+        route = "run"
+    ) {
+        composable(route = "run_list") {
 
         }
     }
