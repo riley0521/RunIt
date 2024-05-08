@@ -12,9 +12,16 @@ import com.rfdotech.auth.presentation.sign_up.SignUpScreenRoot
 
 @Composable
 fun NavigationRoot(
-    navController: NavHostController
+    navController: NavHostController,
+    isSignedIn: Boolean
 ) {
-    NavHost(navController = navController, startDestination = "auth") {
+    val startDestination = if (isSignedIn) {
+        "run"
+    } else {
+        "auth"
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
         authGraph(navController)
         runGraph(navController)
     }
