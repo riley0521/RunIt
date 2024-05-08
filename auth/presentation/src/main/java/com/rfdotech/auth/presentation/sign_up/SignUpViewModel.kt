@@ -40,12 +40,12 @@ class SignUpViewModel(
         combine(emailFlow, passwordFlow) { email, password ->
             val isEmailValid = userDataValidator.isValidEmail(email.toString())
             val passwordValidationState = userDataValidator.validatePassword(password.toString())
-            val canRegister = isEmailValid && passwordValidationState.isValidPassword && !state.isRegistering
+            val canSignUp = isEmailValid && passwordValidationState.isValidPassword
 
             state = state.copy(
                 isEmailValid = isEmailValid,
                 passwordValidationState = passwordValidationState,
-                canRegister = canRegister
+                canSignUp = canSignUp
             )
         }.launchIn(viewModelScope)
     }
@@ -61,20 +61,29 @@ class SignUpViewModel(
     }
 
     private fun signUp() = viewModelScope.launch {
-        state = state.copy(isRegistering = true)
+        state = state.copy(isSigningUp = true)
 
         val email = state.email.text.toString().trim()
         val password = state.password.text.toString()
 
         val result = authRepository.signUp(email, password)
-        state = state.copy(isRegistering = false)
+        state = state.copy(isSigningUp = false)
 
         when (result) {
             is Result.Error -> {
-                if (result.error == DataError.Network.CONFLICT) {
-                    eventChannel.send(SignUpEvent.Error(UiText.StringResource(R.string.error_email_exists, arrayOf(email))))
-                } else {
-                    eventChannel.send(SignUpEvent.Error(result.error.asUiText()))
+                with (result.error) {
+                    if (this == DataError.Network.CONFLICT) {
+                        eventChannel.send(
+                            SignUpEvent.Error(
+                                UiText.StringResource(
+                                    R.string.error_email_exists,
+                                    arrayOf(email)
+                                )
+                            )
+                        )
+                    } else {
+                        eventChannel.send(SignUpEvent.Error(this.asUiText()))
+                    }
                 }
             }
             is Result.Success -> {

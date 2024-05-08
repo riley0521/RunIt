@@ -22,4 +22,5 @@
     <string name="welcome_description_alt">Welcome to your ultimate running companion! Track, analyze and conquer your runs.</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="sign_in_successful">Sign in successful!</string>
+    <string name="error_invalid_email_or_password">Invalid email or password.</string>
 </resources>

@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -104,6 +105,7 @@ private fun SignInScreen(
                 hint = stringResource(id = R.string.email_example),
                 title = stringResource(id = R.string.email),
                 startIcon = EmailIcon,
+                keyboardType = KeyboardType.Email,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -121,7 +123,7 @@ private fun SignInScreen(
             PrimaryButton(
                 text = stringResource(id = R.string.sign_in),
                 isLoading = state.isSigningIn,
-                enabled = state.canSignIn,
+                enabled = state.canSignIn && !state.isSigningIn,
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     onAction(SignInAction.OnSignInClick)

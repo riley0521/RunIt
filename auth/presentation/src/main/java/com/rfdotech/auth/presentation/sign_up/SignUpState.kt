@@ -12,6 +12,6 @@ data class SignUpState(
     val password: TextFieldState = TextFieldState(),
     val isPasswordVisible: Boolean = false,
     val passwordValidationState: PasswordValidationState = PasswordValidationState(),
-    val isRegistering: Boolean = false,
-    val canRegister: Boolean = false
+    val isSigningUp: Boolean = false,
+    val canSignUp: Boolean = false
 )

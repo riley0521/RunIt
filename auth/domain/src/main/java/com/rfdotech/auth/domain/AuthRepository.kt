@@ -6,4 +6,5 @@ import com.rfdotech.core.domain.util.EmptyResult
 interface AuthRepository {
 
     suspend fun signUp(email: String, password: String): EmptyResult<DataError.Network>
+    suspend fun signIn(email: String, password: String): EmptyResult<DataError.Network>
 }

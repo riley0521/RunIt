@@ -10,6 +10,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.auth.domain.AuthRepository
+import com.rfdotech.auth.domain.UserDataValidator
+import com.rfdotech.auth.presentation.R
+import com.rfdotech.core.domain.util.DataError
+import com.rfdotech.core.domain.util.Result
+import com.rfdotech.core.presentation.ui.UiText
+import com.rfdotech.core.presentation.ui.asUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -17,7 +23,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class SignInViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userDataValidator: UserDataValidator
 ) : ViewModel() {
 
     var state by mutableStateOf(SignInState())
@@ -27,11 +34,12 @@ class SignInViewModel(
     val events = eventChannel.receiveAsFlow()
 
     init {
-        val email = state.email.textAsFlow()
-        val password = state.password.textAsFlow()
+        val emailFlow = state.email.textAsFlow()
+        val passwordFlow = state.password.textAsFlow()
 
-        combine(email, password) { emailStr, passwordStr ->
-            val canSignIn = emailStr.isNotBlank() && passwordStr.isNotBlank() && !state.isSigningIn
+        combine(emailFlow, passwordFlow) { email, password ->
+            val isValidEmail = userDataValidator.isValidEmail(email.toString())
+            val canSignIn = isValidEmail && password.isNotEmpty()
 
             state = state.copy(canSignIn = canSignIn)
         }.launchIn(viewModelScope)
@@ -50,8 +58,28 @@ class SignInViewModel(
     private fun signIn() = viewModelScope.launch {
         state = state.copy(isSigningIn = true)
 
-        // TODO: Add signIn function to AuthRepository
+        val email = state.email.text.toString().trim()
+        val password = state.password.text.toString()
+        val result = authRepository.signIn(
+            email = email,
+            password = password
+        )
 
         state = state.copy(isSigningIn = false)
+
+        when (result) {
+            is Result.Error -> {
+                with (result.error) {
+                    if (this == DataError.Network.UNAUTHORIZED) {
+                        eventChannel.send(SignInEvent.Error(UiText.StringResource(R.string.error_invalid_email_or_password)))
+                    } else {
+                        eventChannel.send(SignInEvent.Error(this.asUiText()))
+                    }
+                }
+            }
+            is Result.Success -> {
+                eventChannel.send(SignInEvent.SignInSuccess)
+            }
+        }
     }
 }

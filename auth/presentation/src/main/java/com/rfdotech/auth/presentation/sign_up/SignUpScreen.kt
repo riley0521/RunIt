@@ -110,8 +110,8 @@ private fun SignUpScreen(
             Spacer(modifier = Modifier.height(32.dp))
             PrimaryButton(
                 text = stringResource(id = R.string.sign_up),
-                isLoading = state.isRegistering,
-                enabled = state.canRegister,
+                isLoading = state.isSigningUp,
+                enabled = state.canSignUp && !state.isSigningUp,
                 onClick = {
                     onAction(SignUpAction.OnSignUpClick)
                 },
