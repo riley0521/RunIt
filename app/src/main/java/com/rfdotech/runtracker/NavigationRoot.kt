@@ -9,6 +9,7 @@ import androidx.navigation.navigation
 import com.rfdotech.auth.presentation.intro.IntroScreenRoot
 import com.rfdotech.auth.presentation.sign_in.SignInScreenRoot
 import com.rfdotech.auth.presentation.sign_up.SignUpScreenRoot
+import com.rfdotech.run.presentation.active_run.ActiveRunScreenRoot
 import com.rfdotech.run.presentation.run_overview.RunOverviewScreenRoot
 
 @Composable
@@ -90,8 +91,13 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
         composable(route = "run_overview") {
             RunOverviewScreenRoot(
                 onAnalyticsClick = {},
-                onStartClick = {}
+                onStartClick = {
+                    navController.navigate("active_run")
+                }
             )
+        }
+        composable(route = "active_run") {
+            ActiveRunScreenRoot()
         }
     }
 }
