@@ -2,6 +2,13 @@
 
 package com.rfdotech.run.presentation.active_run
 
+import android.Manifest
+import android.content.Context
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,20 +17,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rfdotech.core.presentation.designsystem.PauseIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.StartIcon
 import com.rfdotech.core.presentation.designsystem.StopIcon
+import com.rfdotech.core.presentation.designsystem.components.MyDialog
 import com.rfdotech.core.presentation.designsystem.components.MyFloatingActionButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
+import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
 import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.active_run.components.RunDataCard
+import com.rfdotech.run.presentation.util.hasLocationPermission
+import com.rfdotech.run.presentation.util.hasPostNotificationPermission
+import com.rfdotech.run.presentation.util.shouldShowLocationPermissionRationale
+import com.rfdotech.run.presentation.util.shouldShowPostNotificationPermissionRationale
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.minutes
 
@@ -42,6 +56,60 @@ private fun ActiveRunScreen(
     state: ActiveRunState,
     onAction: (ActiveRunAction) -> Unit
 ) {
+    val context = LocalContext.current
+    val activity = context as ComponentActivity
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { perms ->
+        val hasCoarseLocationPermission = perms[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        val hasFineLocationPermission = perms[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val hasPostNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            perms[Manifest.permission.POST_NOTIFICATIONS] == true
+        } else {
+            true
+        }
+
+        val showLocationRationale = activity.shouldShowLocationPermissionRationale()
+        val showPostNotificationRationale = activity.shouldShowPostNotificationPermissionRationale()
+
+        onAction(
+            ActiveRunAction.SubmitLocationPermissionInfo(
+                acceptedPermission = hasCoarseLocationPermission && hasFineLocationPermission,
+                shouldShowRationale = showLocationRationale
+            )
+        )
+
+        onAction(
+            ActiveRunAction.SubmitPostNotificationPermissionInfo(
+                acceptedPermission = hasPostNotificationPermission,
+                shouldShowRationale = showPostNotificationRationale
+            )
+        )
+    }
+
+    LaunchedEffect(key1 = true) {
+        val showLocationRationale = activity.shouldShowLocationPermissionRationale()
+        val showPostNotificationRationale = activity.shouldShowPostNotificationPermissionRationale()
+
+        onAction(
+            ActiveRunAction.SubmitLocationPermissionInfo(
+                acceptedPermission = context.hasLocationPermission(),
+                shouldShowRationale = showLocationRationale
+            )
+        )
+
+        onAction(
+            ActiveRunAction.SubmitPostNotificationPermissionInfo(
+                acceptedPermission = context.hasPostNotificationPermission(),
+                shouldShowRationale = showPostNotificationRationale
+            )
+        )
+
+        if (!showLocationRationale && !showPostNotificationRationale) {
+            permissionLauncher.requestAppPermissions(context)
+        }
+    }
 
     PrimaryScaffold(
         withGradient = false,
@@ -90,6 +158,65 @@ private fun ActiveRunScreen(
                     .padding(padding)
                     .fillMaxWidth()
             )
+        }
+    }
+
+    if (state.showLocationRationale || state.showPostNotificationRationale) {
+        MyDialog(
+            title = stringResource(id = R.string.permission_required),
+            description = when {
+                state.showLocationRationale && state.showPostNotificationRationale -> stringResource(
+                    id = R.string.location_notification_rationale
+                )
+                state.showLocationRationale -> stringResource(
+                    id = R.string.location_rationale
+                )
+                else -> stringResource(
+                    id = R.string.notification_rationale
+                )
+            },
+            positiveButton = {
+                 SecondaryButton(
+                     text = stringResource(id = R.string.okay),
+                     isLoading = false,
+                     onClick = {
+                         onAction(ActiveRunAction.DismissRationaleDialog)
+                         permissionLauncher.requestAppPermissions(context)
+                     }
+                 )
+            },
+            onDismiss = {
+                // We should only dismiss the dialog by pressing positive or negative button.
+            }
+        )
+    }
+}
+
+private fun ActivityResultLauncher<Array<String>>.requestAppPermissions(
+    context: Context
+) {
+    val hasLocationPermission = context.hasLocationPermission()
+    val hasPostNotificationPermission = context.hasPostNotificationPermission()
+
+    val locationPermissions = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val postNotificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+    } else {
+        arrayOf()
+    }
+
+    when {
+        !hasLocationPermission && !hasPostNotificationPermission -> {
+            launch(locationPermissions + postNotificationPermissions)
+        }
+        !hasLocationPermission -> {
+            launch(locationPermissions)
+        }
+        !hasPostNotificationPermission -> {
+            launch(postNotificationPermissions)
         }
     }
 }
