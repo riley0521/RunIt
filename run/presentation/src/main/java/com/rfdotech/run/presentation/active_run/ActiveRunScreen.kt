@@ -22,8 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space18
 import com.rfdotech.core.presentation.designsystem.StartIcon
 import com.rfdotech.core.presentation.designsystem.StopIcon
 import com.rfdotech.core.presentation.designsystem.components.MyDialog
@@ -57,58 +58,29 @@ private fun ActiveRunScreen(
     onAction: (ActiveRunAction) -> Unit
 ) {
     val context = LocalContext.current
-    val activity = context as ComponentActivity
+
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { perms ->
-        val hasCoarseLocationPermission = perms[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-        val hasFineLocationPermission = perms[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        val hasPostNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            perms[Manifest.permission.POST_NOTIFICATIONS] == true
-        } else {
-            true
-        }
-
-        val showLocationRationale = activity.shouldShowLocationPermissionRationale()
-        val showPostNotificationRationale = activity.shouldShowPostNotificationPermissionRationale()
-
-        onAction(
-            ActiveRunAction.SubmitLocationPermissionInfo(
-                acceptedPermission = hasCoarseLocationPermission && hasFineLocationPermission,
-                shouldShowRationale = showLocationRationale
-            )
-        )
-
-        onAction(
-            ActiveRunAction.SubmitPostNotificationPermissionInfo(
-                acceptedPermission = hasPostNotificationPermission,
-                shouldShowRationale = showPostNotificationRationale
-            )
+    ) {
+        handlePermissionRequest(
+            context = context,
+            onActions = { actions ->
+                actions.forEach(onAction)
+            }
         )
     }
 
     LaunchedEffect(key1 = true) {
-        val showLocationRationale = activity.shouldShowLocationPermissionRationale()
-        val showPostNotificationRationale = activity.shouldShowPostNotificationPermissionRationale()
-
-        onAction(
-            ActiveRunAction.SubmitLocationPermissionInfo(
-                acceptedPermission = context.hasLocationPermission(),
-                shouldShowRationale = showLocationRationale
-            )
+        handlePermissionRequest(
+            context = context,
+            onActions = { actions ->
+                actions.forEach(onAction)
+            },
+            onPermissionLauncher = {
+                permissionLauncher.requestAppPermissions(context)
+            }
         )
-
-        onAction(
-            ActiveRunAction.SubmitPostNotificationPermissionInfo(
-                acceptedPermission = context.hasPostNotificationPermission(),
-                shouldShowRationale = showPostNotificationRationale
-            )
-        )
-
-        if (!showLocationRationale && !showPostNotificationRationale) {
-            permissionLauncher.requestAppPermissions(context)
-        }
     }
 
     PrimaryScaffold(
@@ -140,7 +112,7 @@ private fun ActiveRunScreen(
                 onClick = {
                     onAction(ActiveRunAction.OnToggleRunClick)
                 },
-                iconSize = 20.dp,
+                iconSize = Space18,
                 contentDescription = fabContentDesc
             )
         }
@@ -154,7 +126,7 @@ private fun ActiveRunScreen(
                 elapsedTime = state.elapsedTime,
                 runData = state.runData,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(Space16)
                     .padding(padding)
                     .fillMaxWidth()
             )
@@ -189,6 +161,33 @@ private fun ActiveRunScreen(
                 // We should only dismiss the dialog by pressing positive or negative button.
             }
         )
+    }
+}
+
+private fun handlePermissionRequest(
+    context: Context,
+    onActions: (List<ActiveRunAction>) -> Unit,
+    onPermissionLauncher: (() -> Unit)? = null
+) {
+    val activity = context as ComponentActivity
+    val showLocationRationale = activity.shouldShowLocationPermissionRationale()
+    val showPostNotificationRationale = activity.shouldShowPostNotificationPermissionRationale()
+
+    onActions(
+        listOf(
+            ActiveRunAction.SubmitLocationPermissionInfo(
+                acceptedPermission = activity.hasLocationPermission(),
+                shouldShowRationale = showLocationRationale
+            ),
+            ActiveRunAction.SubmitPostNotificationPermissionInfo(
+                acceptedPermission = activity.hasPostNotificationPermission(),
+                shouldShowRationale = showPostNotificationRationale
+            )
+        )
+    )
+
+    if (!showLocationRationale && !showPostNotificationRationale) {
+        onPermissionLauncher?.invoke()
     }
 }
 

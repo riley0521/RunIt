@@ -12,12 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
 import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.RunIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.SignOutIcon
+import com.rfdotech.core.presentation.designsystem.Space24
+import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.MyFloatingActionButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
@@ -73,7 +74,7 @@ private fun RunOverviewScreen(
                         imageVector = LogoIcon,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(Space32)
                     )
                 }
             )
@@ -85,7 +86,7 @@ private fun RunOverviewScreen(
                     onAction(RunOverviewAction.OnStartClick)
                 },
                 contentDescription = stringResource(id = R.string.start_your_run),
-                iconSize = 25.dp
+                iconSize = Space24
             )
         }
     ) { padding ->

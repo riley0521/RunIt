@@ -6,6 +6,11 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.rfdotech.core.presentation.FontSize12
+import com.rfdotech.core.presentation.FontSize14
+import com.rfdotech.core.presentation.FontSize16
+import com.rfdotech.core.presentation.FontSize18
+import com.rfdotech.core.presentation.FontSize24
 
 val primaryFontFamily = FontFamily(
     Font(resId = R.font.poppins_light, weight = FontWeight.Light),
@@ -19,38 +24,35 @@ val typography = Typography(
     bodySmall = TextStyle(
         fontFamily = primaryFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 20.sp,
-        color = Gray
+        fontSize = FontSize12,
+        lineHeight = FontSize18
     ),
     bodyMedium = TextStyle(
         fontFamily = primaryFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 22.sp
+        fontSize = FontSize14,
+        lineHeight = FontSize24
     ),
     bodyLarge = TextStyle(
         fontFamily = primaryFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontSize = FontSize16,
+        lineHeight = FontSize24,
         letterSpacing = 0.5.sp
     ),
     labelLarge = TextStyle(
         fontFamily = primaryFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 24.sp
+        fontSize = FontSize14,
+        lineHeight = FontSize24
     ),
     headlineSmall = TextStyle(
         fontFamily = primaryFontFamily,
-        fontSize = 20.sp,
-        color = White
+        fontSize = FontSize18
     ),
     headlineMedium = TextStyle(
         fontFamily = primaryFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
-        color = White
+        fontSize = FontSize24
     )
 )

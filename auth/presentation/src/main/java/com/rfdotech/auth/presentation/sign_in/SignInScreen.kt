@@ -36,9 +36,11 @@ import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.PasswordTextField
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryTextField
+import com.rfdotech.core.presentation.designsystem.components.util.colorOnBackGround
+import com.rfdotech.core.presentation.designsystem.components.util.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.primaryFontFamily
-import com.rfdotech.core.presentation.designsystem.util.showToastRes
-import com.rfdotech.core.presentation.designsystem.util.showToastStr
+import com.rfdotech.core.presentation.ui.showToastRes
+import com.rfdotech.core.presentation.ui.showToastStr
 import com.rfdotech.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -92,11 +94,13 @@ private fun SignInScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.hi_there),
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                color = colorOnBackGround
             )
             Text(
                 text = stringResource(id = R.string.welcome_description_alt),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = colorOnSurfaceVariant
             )
             Spacer(modifier = Modifier.height(48.dp))
 

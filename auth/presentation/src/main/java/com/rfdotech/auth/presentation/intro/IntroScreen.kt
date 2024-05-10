@@ -13,16 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.rfdotech.auth.presentation.R
 import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.Space12
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space32
+import com.rfdotech.core.presentation.designsystem.Space48
+import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
+import com.rfdotech.core.presentation.designsystem.components.util.colorOnBackGround
+import com.rfdotech.core.presentation.designsystem.components.util.colorOnSurfaceVariant
 
 @Composable
 fun IntroScreenRoot(
@@ -55,19 +59,21 @@ private fun IntroScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .padding(bottom = 48.dp)
+                .padding(Space16)
+                .padding(bottom = Space48)
         ) {
             Text(
                 text = stringResource(id = R.string.welcome_title),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                color = colorOnBackGround
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Space8))
             Text(
                 text = stringResource(id = R.string.welcome_description),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = colorOnSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Space32))
             SecondaryButton(
                 text = stringResource(id = R.string.sign_in),
                 isLoading = false,
@@ -75,7 +81,7 @@ private fun IntroScreen(
                     onAction(IntroAction.OnSignInClick)
                 }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Space16))
             PrimaryButton(
                 text = stringResource(id = R.string.sign_up),
                 isLoading = false,
@@ -100,10 +106,11 @@ private fun LogoVertical(
             contentDescription = stringResource(id = R.string.acc_logo),
             tint = MaterialTheme.colorScheme.onBackground
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Space12))
         Text(
             text = stringResource(id = R.string.app_name),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = colorOnBackGround
         )
     }
 }

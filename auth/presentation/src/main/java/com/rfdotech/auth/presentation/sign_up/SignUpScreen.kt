@@ -41,9 +41,11 @@ import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.PasswordTextField
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryTextField
+import com.rfdotech.core.presentation.designsystem.components.util.colorOnBackGround
+import com.rfdotech.core.presentation.designsystem.components.util.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.primaryFontFamily
-import com.rfdotech.core.presentation.designsystem.util.showToastRes
-import com.rfdotech.core.presentation.designsystem.util.showToastStr
+import com.rfdotech.core.presentation.ui.showToastRes
+import com.rfdotech.core.presentation.ui.showToastStr
 import com.rfdotech.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -127,13 +129,14 @@ private fun HeaderView(
 ) {
     Text(
         text = stringResource(id = R.string.create_account),
-        style = MaterialTheme.typography.headlineMedium
+        style = MaterialTheme.typography.headlineMedium,
+        color = colorOnBackGround
     )
     val annotatedString = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
                 fontFamily = primaryFontFamily,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = colorOnSurfaceVariant
             )
         ) {
             append(stringResource(id = R.string.already_have_an_account) + " ")

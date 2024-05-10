@@ -42,14 +42,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rfdotech.core.presentation.designsystem.CheckIcon
 import com.rfdotech.core.presentation.designsystem.EmailIcon
 import com.rfdotech.core.presentation.designsystem.EyeClosedIcon
 import com.rfdotech.core.presentation.designsystem.EyeOpenedIcon
 import com.rfdotech.core.presentation.designsystem.LockIcon
+import com.rfdotech.core.presentation.designsystem.NoSpace
 import com.rfdotech.core.presentation.designsystem.R
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.Space1
+import com.rfdotech.core.presentation.designsystem.Space12
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space8
 
 @Composable
 fun PrimaryTextField(
@@ -98,9 +102,9 @@ fun PrimaryTextField(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Space8))
 
-        val textFieldShape = RoundedCornerShape(16.dp)
+        val textFieldShape = RoundedCornerShape(Space16)
 
         val textFieldBackground = if (isFocused) {
             MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
@@ -128,11 +132,11 @@ fun PrimaryTextField(
                 .clip(textFieldShape)
                 .background(textFieldBackground)
                 .border(
-                    width = 1.dp,
+                    width = Space1,
                     color = textFieldBorderColor,
                     shape = textFieldShape
                 )
-                .padding(12.dp)
+                .padding(Space12)
                 .onFocusChanged {
                     isFocused = it.isFocused
                 },
@@ -148,7 +152,7 @@ fun PrimaryTextField(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(Space16))
                     }
                     Box(
                         modifier = Modifier
@@ -164,12 +168,12 @@ fun PrimaryTextField(
                         innerBox()
                     }
                     if (endIcon != null) {
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(Space16))
                         Icon(
                             imageVector = endIcon,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.padding(end = Space8)
                         )
                     }
                 }
@@ -220,9 +224,9 @@ fun PasswordTextField(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Space8))
 
-        val textFieldShape = RoundedCornerShape(16.dp)
+        val textFieldShape = RoundedCornerShape(Space16)
 
         val textFieldBackground = if (isFocused) {
             MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
@@ -254,11 +258,11 @@ fun PasswordTextField(
                 .clip(textFieldShape)
                 .background(textFieldBackground)
                 .border(
-                    width = 1.dp,
+                    width = Space1,
                     color = textFieldBorderColor,
                     shape = textFieldShape
                 )
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = Space12)
                 .onFocusChanged {
                     isFocused = it.isFocused
                 },
@@ -273,7 +277,7 @@ fun PasswordTextField(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(Space16))
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -300,10 +304,10 @@ fun PasswordTextField(
                         stringResource(id = R.string.acc_show_password)
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(Space16))
                     IconButton(
                         onClick = onTogglePasswordVisibility,
-                        modifier = Modifier.padding(0.dp)
+                        modifier = Modifier.padding(NoSpace)
                     ) {
                         Icon(
                             imageVector = passwordVisibilityIcon,

@@ -15,9 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.rfdotech.core.presentation.FontSize12
+import com.rfdotech.core.presentation.designsystem.Space12
+import com.rfdotech.core.presentation.designsystem.Space16
 
 @Composable
 fun MyDialog(
@@ -31,10 +32,10 @@ fun MyDialog(
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = modifier
-                .clip(RoundedCornerShape(15.dp))
+                .clip(RoundedCornerShape(Space16))
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(15.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(Space16),
+            verticalArrangement = Arrangement.spacedBy(Space12),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -45,7 +46,7 @@ fun MyDialog(
             )
             Text(
                 text = description,
-                fontSize = 12.sp,
+                fontSize = FontSize12,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -53,7 +54,7 @@ fun MyDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(Space16),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 negativeButton?.invoke()

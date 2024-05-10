@@ -25,9 +25,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.rfdotech.core.presentation.designsystem.RunIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.Space1
+import com.rfdotech.core.presentation.designsystem.Space12
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space24
+import com.rfdotech.core.presentation.designsystem.Space48
+import com.rfdotech.core.presentation.designsystem.Space70
+import com.rfdotech.core.presentation.designsystem.Space8
 
 @Composable
 fun PrimaryButton(
@@ -54,13 +60,13 @@ fun PrimaryButton(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = Space8),
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(16.dp),
-                    strokeWidth = 1.5.dp,
+                    modifier = Modifier.size(Space16),
+                    strokeWidth = Space1,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
@@ -89,7 +95,7 @@ fun SecondaryButton(
             contentColor = MaterialTheme.colorScheme.onBackground,
         ),
         border = BorderStroke(
-            width = 0.5.dp,
+            width = Space1,
             color = MaterialTheme.colorScheme.onBackground
         ),
         shape = RoundedCornerShape(100f),
@@ -99,13 +105,13 @@ fun SecondaryButton(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = Space8),
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(16.dp),
-                    strokeWidth = 1.5.dp,
+                    modifier = Modifier.size(Space16),
+                    strokeWidth = Space1,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
@@ -124,14 +130,12 @@ fun MyFloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
-    iconSize: Dp = 25.dp
+    iconSize: Dp = Space24
 ) {
-    val outerBoxSize = iconSize * 3
-    val innerBoxSize = iconSize * 2
 
     Box(
         modifier = modifier
-            .size(outerBoxSize)
+            .size(Space70)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
             .clickable(onClick = onClick),
@@ -139,10 +143,10 @@ fun MyFloatingActionButton(
     ) {
         Box(
             modifier = Modifier
-                .size(innerBoxSize)
+                .size(Space48)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(12.dp),
+                .padding(Space12),
             contentAlignment = Alignment.Center
         ) {
             Icon(

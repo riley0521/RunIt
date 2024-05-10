@@ -32,13 +32,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
 import com.rfdotech.core.presentation.designsystem.ArrowLeftIcon
 import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.SignOutIcon
 import com.rfdotech.core.presentation.designsystem.R
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space32
+import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.components.util.DropDownItem
 import com.rfdotech.core.presentation.designsystem.primaryFontFamily
 
@@ -64,7 +66,7 @@ fun PrimaryToolbar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 startContent?.invoke()
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(Space8))
                 Text(
                     text = title,
                     fontWeight = FontWeight.SemiBold,
@@ -108,13 +110,13 @@ fun PrimaryToolbar(
                                         onMenuItemClick(index)
                                     }
                                     .fillMaxWidth()
-                                    .padding(16.dp)
+                                    .padding(Space16)
                             ) {
                                 Icon(
                                     imageVector = item.icon,
                                     contentDescription = item.title
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(Space8))
                                 Text(
                                     text = item.title
                                 )
@@ -149,7 +151,7 @@ private fun PrimaryToolbarPreview() {
                     imageVector = LogoIcon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier.size(Space32)
                 )
             },
             menuItems = listOf(

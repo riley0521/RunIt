@@ -1,4 +1,4 @@
-package com.rfdotech.core.presentation.designsystem.util
+package com.rfdotech.core.presentation.ui
 
 import android.content.Context
 import android.widget.Toast
