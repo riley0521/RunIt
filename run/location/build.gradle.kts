@@ -13,4 +13,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.google.play.services.location)
+
+    implementation(libs.bundles.koin)
 }

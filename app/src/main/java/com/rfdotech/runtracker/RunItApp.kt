@@ -4,14 +4,19 @@ import android.app.Application
 import com.rfdotech.auth.data.di.authDataModule
 import com.rfdotech.auth.presentation.di.authPresentationModule
 import com.rfdotech.core.data.di.coreDataModule
+import com.rfdotech.run.location.di.runLocationModule
 import com.rfdotech.run.presentation.di.runPresentationModule
 import com.rfdotech.runtracker.di.appModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class RunItApp : Application() {
+
+    val applicationScope = CoroutineScope(SupervisorJob())
 
     override fun onCreate() {
         super.onCreate()
@@ -26,6 +31,7 @@ class RunItApp : Application() {
                 authDataModule,
                 authPresentationModule,
                 coreDataModule,
+                runLocationModule,
                 runPresentationModule,
                 appModule
             )
