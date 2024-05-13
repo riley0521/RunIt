@@ -1,4 +1,4 @@
-package com.rfdotech.core.presentation
+package com.rfdotech.core.presentation.designsystem
 
 import androidx.compose.ui.unit.sp
 

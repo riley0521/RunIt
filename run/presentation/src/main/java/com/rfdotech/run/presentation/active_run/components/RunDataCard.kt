@@ -19,9 +19,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.rfdotech.core.presentation.designsystem.FontSize12
+import com.rfdotech.core.presentation.designsystem.FontSize16
+import com.rfdotech.core.presentation.designsystem.FontSize32
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space24
+import com.rfdotech.core.presentation.designsystem.Space70
 import com.rfdotech.core.presentation.ui.formatted
 import com.rfdotech.core.presentation.ui.toFormattedKm
 import com.rfdotech.core.presentation.ui.toFormattedPace
@@ -29,6 +33,7 @@ import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.presentation.R
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun RunDataCard(
@@ -40,17 +45,17 @@ fun RunDataCard(
 
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(15.dp))
+            .clip(RoundedCornerShape(Space16))
             .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
+            .padding(Space16),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         RunDataItem(
             title = stringResource(id = R.string.duration),
             value = elapsedTime.formatted(),
-            valueFontSize = 32.sp
+            valueFontSize = FontSize32
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(Space24))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
@@ -59,12 +64,12 @@ fun RunDataCard(
             RunDataItem(
                 title = stringResource(id = R.string.distance),
                 value = distanceKm.toFormattedKm(),
-                modifier = Modifier.defaultMinSize(minWidth = 75.dp)
+                modifier = Modifier.defaultMinSize(minWidth = Space70)
             )
             RunDataItem(
                 title = stringResource(id = R.string.pace),
                 value = elapsedTime.toFormattedPace(distanceKm),
-                modifier = Modifier.defaultMinSize(minWidth = 75.dp)
+                modifier = Modifier.defaultMinSize(minWidth = Space70)
             )
         }
     }
@@ -75,7 +80,7 @@ private fun RunDataItem(
     title: String,
     value: String,
     modifier: Modifier = Modifier,
-    valueFontSize: TextUnit = 16.sp
+    valueFontSize: TextUnit = FontSize16
 ) {
     Column(
         modifier = modifier,
@@ -84,7 +89,7 @@ private fun RunDataItem(
         Text(
             text = title,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 12.sp
+            fontSize = FontSize12
         )
         Text(
             text = value,
@@ -102,7 +107,7 @@ private fun RunDataCardPreview() {
             elapsedTime = 10.minutes,
             runData = RunData(
                 distanceMeters = 800,
-                paceInSeconds = 3.minutes
+                paceInSeconds = 180.seconds
             ),
             modifier = Modifier.fillMaxWidth()
         )

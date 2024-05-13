@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
-import com.rfdotech.core.presentation.FontSize12
+import com.rfdotech.core.presentation.designsystem.FontSize12
 import com.rfdotech.core.presentation.designsystem.Space12
 import com.rfdotech.core.presentation.designsystem.Space16
 
