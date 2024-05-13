@@ -35,6 +35,7 @@ import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
 import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.active_run.components.RunDataCard
+import com.rfdotech.run.presentation.active_run.maps.TrackerMap
 import com.rfdotech.run.presentation.util.hasLocationPermission
 import com.rfdotech.run.presentation.util.hasPostNotificationPermission
 import com.rfdotech.run.presentation.util.shouldShowLocationPermissionRationale
@@ -122,6 +123,14 @@ private fun ActiveRunScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
+            TrackerMap(
+                isRunFinished = state.isRunFinished,
+                currentLocation = state.currentLocation,
+                locations = state.runData.locations,
+                onSnapshot = {},
+                modifier = Modifier.fillMaxSize()
+            )
+
             RunDataCard(
                 elapsedTime = state.elapsedTime,
                 runData = state.runData,
