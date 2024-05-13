@@ -29,6 +29,7 @@ import com.rfdotech.core.presentation.designsystem.StartIcon
 import com.rfdotech.core.presentation.designsystem.StopIcon
 import com.rfdotech.core.presentation.designsystem.components.MyDialog
 import com.rfdotech.core.presentation.designsystem.components.MyFloatingActionButton
+import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
@@ -142,6 +143,36 @@ private fun ActiveRunScreen(
         }
     }
 
+    if (!state.shouldTrack && state.hasStartedRunning) {
+        MyDialog(
+            title = stringResource(id = R.string.running_is_paused),
+            description = stringResource(id = R.string.resume_or_finish_the_run),
+            positiveButton = {
+                PrimaryButton(
+                    text = stringResource(id = R.string.resume),
+                    isLoading = false,
+                    onClick = {
+                        onAction(ActiveRunAction.OnResumeRunClick)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            },
+            negativeButton = {
+                SecondaryButton(
+                    text = stringResource(id = R.string.finish),
+                    isLoading = state.isSavingRun,
+                    onClick = {
+                        onAction(ActiveRunAction.OnFinishRunClick)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            },
+            onDismiss = {
+                onAction(ActiveRunAction.OnResumeRunClick)
+            }
+        )
+    }
+
     if (state.showLocationRationale || state.showPostNotificationRationale) {
         MyDialog(
             title = stringResource(id = R.string.permission_required),
@@ -149,22 +180,24 @@ private fun ActiveRunScreen(
                 state.showLocationRationale && state.showPostNotificationRationale -> stringResource(
                     id = R.string.location_notification_rationale
                 )
+
                 state.showLocationRationale -> stringResource(
                     id = R.string.location_rationale
                 )
+
                 else -> stringResource(
                     id = R.string.notification_rationale
                 )
             },
             positiveButton = {
-                 SecondaryButton(
-                     text = stringResource(id = R.string.okay),
-                     isLoading = false,
-                     onClick = {
-                         onAction(ActiveRunAction.DismissRationaleDialog)
-                         permissionLauncher.requestAppPermissions(context)
-                     }
-                 )
+                SecondaryButton(
+                    text = stringResource(id = R.string.okay),
+                    isLoading = false,
+                    onClick = {
+                        onAction(ActiveRunAction.DismissRationaleDialog)
+                        permissionLauncher.requestAppPermissions(context)
+                    }
+                )
             },
             onDismiss = {
                 // We should only dismiss the dialog by pressing positive or negative button.
@@ -220,9 +253,11 @@ private fun ActivityResultLauncher<Array<String>>.requestAppPermissions(
         !hasLocationPermission && !hasPostNotificationPermission -> {
             launch(locationPermissions + postNotificationPermissions)
         }
+
         !hasLocationPermission -> {
             launch(locationPermissions)
         }
+
         !hasPostNotificationPermission -> {
             launch(postNotificationPermissions)
         }
