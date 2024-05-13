@@ -28,6 +28,7 @@ class RunningTracker(
 
     companion object {
         private const val OBSERVE_LOCATION_INTERVAL = 1000L
+        private const val METERS_PER_KILOMETER = 1000.0
     }
 
     private val _runData = MutableStateFlow(RunData())
@@ -70,30 +71,7 @@ class RunningTracker(
                     durationTimestamp = elapsedTime
                 )
             }.onEach { location ->
-                val currentLocations = runData.value.locations
-                val lastLocationsList = if (currentLocations.isNotEmpty()) {
-                    currentLocations.last() + location
-                } else {
-                    listOf(location)
-                }
-                val newLocationsList = currentLocations.replaceLast(lastLocationsList)
-                val distanceMeters = LocationDataCalculator.getTotalDistanceInMeters(newLocationsList)
-                val distanceKm = distanceMeters / 1000.0
-                val currentDuration = location.durationTimestamp
-
-                val avgSecondsPerKm = if (distanceKm == 0.0) {
-                    0
-                } else {
-                    (currentDuration.inWholeSeconds / distanceKm).roundToInt()
-                }
-
-                _runData.update {
-                    RunData(
-                        distanceMeters = distanceMeters,
-                        pace = avgSecondsPerKm.seconds,
-                        locations = newLocationsList
-                    )
-                }
+                convertLocationWithTimestampToRunData(location)
             }
             .launchIn(applicationScope)
     }
@@ -109,11 +87,46 @@ class RunningTracker(
     fun stopObservingLocation() {
         isObservingLocation.update { false }
     }
-}
 
-private fun <T> List<List<T>>.replaceLast(replacement: List<T>): List<List<T>> {
-    if (this.isEmpty()) {
-        return listOf(replacement)
+    private fun convertLocationWithTimestampToRunData(location: LocationTimestamp) {
+        val currentLocations = runData.value.locations
+        val lastLocationsList = if (currentLocations.isNotEmpty()) {
+            currentLocations.last() + location
+        } else {
+            listOf(location)
+        }
+        val newLocationsList = currentLocations.replaceLast(lastLocationsList)
+        val distanceMeters = LocationDataCalculator.getTotalDistanceInMeters(newLocationsList)
+        val distanceKm = getKmFromMeter(distanceMeters)
+        val currentDuration = location.durationTimestamp
+
+        val avgSecondsPerKm = getAvgSecondsPerKm(distanceKm, currentDuration)
+
+        _runData.update {
+            RunData(
+                distanceMeters = distanceMeters,
+                paceInSeconds = avgSecondsPerKm.seconds,
+                locations = newLocationsList
+            )
+        }
     }
-    return this.dropLast(1) + listOf(replacement)
+
+    private fun ListOfLocations.replaceLast(replacement: List<LocationTimestamp>): ListOfLocations {
+        if (this.isEmpty()) {
+            return listOf(replacement)
+        }
+        return this.dropLast(1) + listOf(replacement)
+    }
+
+    private fun getKmFromMeter(meters: Int): Double {
+        return meters / METERS_PER_KILOMETER
+    }
+
+    private fun getAvgSecondsPerKm(distanceKm: Double, time: Duration): Int {
+        return if (distanceKm == 0.0) {
+            0
+        } else {
+            (time.inWholeSeconds / distanceKm).roundToInt()
+        }
+    }
 }

@@ -5,17 +5,21 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 
+const val DECIMAL_COUNT = 1
+const val SECONDS_PER_MINUTE = 60
+const val SECONDS_PER_HOUR = 3600
+
 fun Duration.formatted(): String {
     val totalSeconds = inWholeSeconds
-    val hours = String.format("%02d", totalSeconds / 3600)
-    val minutes = String.format("%02d", (totalSeconds % 3600) / 60)
-    val seconds = String.format("%02d", totalSeconds % 60)
+    val hours = String.format("%02d", totalSeconds / SECONDS_PER_HOUR)
+    val minutes = String.format("%02d", (totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE)
+    val seconds = String.format("%02d", totalSeconds % SECONDS_PER_MINUTE)
 
     return "$hours:$minutes:$seconds"
 }
 
 fun Double.toFormattedKm(): String {
-    return "${this.roundToDecimals(1)} km"
+    return "${this.roundToDecimals(DECIMAL_COUNT)} km"
 }
 
 fun Duration.toFormattedPace(distanceKm: Double): String {
@@ -24,8 +28,8 @@ fun Duration.toFormattedPace(distanceKm: Double): String {
     }
 
     val secondsPerKm = (this.inWholeSeconds / distanceKm).roundToInt()
-    val avgPaceMinutes = secondsPerKm / 60
-    val avgPaceSeconds = String.format("%02d", secondsPerKm % 60)
+    val avgPaceMinutes = secondsPerKm / DECIMAL_COUNT
+    val avgPaceSeconds = String.format("%02d", secondsPerKm % SECONDS_PER_MINUTE)
 
     return "$avgPaceMinutes:$avgPaceSeconds / km"
 }

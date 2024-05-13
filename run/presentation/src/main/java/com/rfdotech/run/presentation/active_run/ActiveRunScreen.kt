@@ -229,7 +229,7 @@ private fun ActiveRunScreenPreview() {
                 elapsedTime = 10.minutes,
                 runData = RunData(
                     distanceMeters = 800,
-                    pace = 3.minutes
+                    paceInSeconds = 3.minutes
                 )
             ),
             onAction = {}
