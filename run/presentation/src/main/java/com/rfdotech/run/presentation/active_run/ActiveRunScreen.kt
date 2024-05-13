@@ -37,6 +37,7 @@ import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.active_run.components.RunDataCard
 import com.rfdotech.run.presentation.active_run.maps.TrackerMap
+import com.rfdotech.run.presentation.active_run.service.ActiveRunService
 import com.rfdotech.run.presentation.util.hasLocationPermission
 import com.rfdotech.run.presentation.util.hasPostNotificationPermission
 import com.rfdotech.run.presentation.util.shouldShowLocationPermissionRationale
@@ -46,10 +47,12 @@ import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun ActiveRunScreenRoot(
+    onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     viewModel: ActiveRunViewModel = koinViewModel()
 ) {
     ActiveRunScreen(
         state = viewModel.state,
+        onServiceToggle = onServiceToggle,
         onAction = viewModel::onAction
     )
 }
@@ -57,6 +60,7 @@ fun ActiveRunScreenRoot(
 @Composable
 private fun ActiveRunScreen(
     state: ActiveRunState,
+    onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     onAction: (ActiveRunAction) -> Unit
 ) {
     val context = LocalContext.current
@@ -83,6 +87,18 @@ private fun ActiveRunScreen(
                 permissionLauncher.requestAppPermissions(context)
             }
         )
+    }
+
+    LaunchedEffect(key1 = state.isRunFinished) {
+        if (state.isRunFinished) {
+            onServiceToggle(false)
+        }
+    }
+
+    LaunchedEffect(key1 = state.shouldTrack) {
+        if (context.hasLocationPermission() && state.shouldTrack && !ActiveRunService.isServiceActive) {
+            onServiceToggle(true)
+        }
     }
 
     PrimaryScaffold(
@@ -276,6 +292,7 @@ private fun ActiveRunScreenPreview() {
                     paceInSeconds = 3.minutes
                 )
             ),
+            onServiceToggle = {},
             onAction = {}
         )
     }
