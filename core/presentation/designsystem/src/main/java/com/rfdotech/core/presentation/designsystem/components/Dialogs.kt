@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,9 +25,9 @@ import com.rfdotech.core.presentation.designsystem.Space16
 fun MyDialog(
     title: String,
     description: String,
-    positiveButton: @Composable () -> Unit,
+    positiveButton: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
-    negativeButton: (@Composable () -> Unit)? = null,
+    negativeButton: @Composable RowScope.() -> Unit = {},
     onDismiss: () -> Unit
 ) {
     Dialog(onDismissRequest = onDismiss) {
@@ -57,7 +58,7 @@ fun MyDialog(
                 horizontalArrangement = Arrangement.spacedBy(Space16),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                negativeButton?.invoke()
+                negativeButton()
                 positiveButton()
             }
         }
