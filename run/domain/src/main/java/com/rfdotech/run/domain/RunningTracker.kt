@@ -2,6 +2,7 @@ package com.rfdotech.run.domain
 
 import com.rfdotech.core.domain.Timer
 import com.rfdotech.core.domain.location.LocationTimestamp
+import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,6 @@ class RunningTracker(
 
     companion object {
         private const val OBSERVE_LOCATION_INTERVAL = 1000L
-        private const val METERS_PER_KILOMETER = 1000.0
     }
 
     private val _runData = MutableStateFlow(RunData())
@@ -108,10 +108,10 @@ class RunningTracker(
         }
         val newLocationsList = currentLocations.replaceLast(lastLocationsList)
         val distanceMeters = LocationDataCalculator.getTotalDistanceInMeters(newLocationsList)
-        val distanceKm = getKmFromMeter(distanceMeters)
+        val distanceKm = DistanceAndSpeedCalculator.getKmFromMeters(distanceMeters)
         val currentDuration = location.durationTimestamp
 
-        val avgSecondsPerKm = getAvgSecondsPerKm(distanceKm, currentDuration)
+        val avgSecondsPerKm = DistanceAndSpeedCalculator.getAvgSecondsPerKm(distanceKm, currentDuration)
 
         _runData.update {
             RunData(
@@ -127,17 +127,5 @@ class RunningTracker(
             return listOf(replacement)
         }
         return this.dropLast(1) + listOf(replacement)
-    }
-
-    private fun getKmFromMeter(meters: Int): Double {
-        return meters / METERS_PER_KILOMETER
-    }
-
-    private fun getAvgSecondsPerKm(distanceKm: Double, time: Duration): Int {
-        return if (distanceKm == 0.0) {
-            0
-        } else {
-            (time.inWholeSeconds / distanceKm).roundToInt()
-        }
     }
 }
