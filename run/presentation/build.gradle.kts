@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.runtracker.android.feature.ui.plugin)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets)
 }
 
 android {
