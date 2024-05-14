@@ -6,6 +6,7 @@ import com.rfdotech.auth.presentation.di.authPresentationModule
 import com.rfdotech.core.data.di.coreDataModule
 import com.rfdotech.core.database.di.coreDatabaseModule
 import com.rfdotech.run.location.di.runLocationModule
+import com.rfdotech.run.network.di.runNetworkModule
 import com.rfdotech.run.presentation.di.runPresentationModule
 import com.rfdotech.runtracker.di.appModule
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +35,7 @@ class RunItApp : Application() {
                 coreDataModule,
                 coreDatabaseModule,
                 runLocationModule,
+                runNetworkModule,
                 runPresentationModule,
                 appModule
             )
