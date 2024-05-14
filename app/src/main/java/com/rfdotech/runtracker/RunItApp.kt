@@ -4,6 +4,7 @@ import android.app.Application
 import com.rfdotech.auth.data.di.authDataModule
 import com.rfdotech.auth.presentation.di.authPresentationModule
 import com.rfdotech.core.data.di.coreDataModule
+import com.rfdotech.core.database.di.coreDatabaseModule
 import com.rfdotech.run.location.di.runLocationModule
 import com.rfdotech.run.presentation.di.runPresentationModule
 import com.rfdotech.runtracker.di.appModule
@@ -31,6 +32,7 @@ class RunItApp : Application() {
                 authDataModule,
                 authPresentationModule,
                 coreDataModule,
+                coreDatabaseModule,
                 runLocationModule,
                 runPresentationModule,
                 appModule
