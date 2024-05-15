@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import com.rfdotech.core.domain.run.Run
+import com.rfdotech.core.domain.run.RunRepository
+import com.rfdotech.core.domain.util.Result
+import com.rfdotech.core.presentation.ui.asUiText
 import com.rfdotech.run.domain.RunningTracker
 import com.rfdotech.run.presentation.active_run.service.ActiveRunService
 import kotlinx.coroutines.channels.Channel
@@ -25,7 +28,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class ActiveRunViewModel(
-    private val runningTracker: RunningTracker
+    private val runningTracker: RunningTracker,
+    private val runRepository: RunRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(
@@ -141,10 +145,17 @@ class ActiveRunViewModel(
             totalElevationMeters = DistanceAndSpeedCalculator.getTotalElevationMeters(locations),
             mapPictureUrl = null
         )
-
-        // Save run in repository
-
         runningTracker.finishRun()
+
+        when (val result = runRepository.upsert(run, mapPictureBytes)) {
+            is Result.Error -> {
+                eventChannel.send(ActiveRunEvent.Error(result.error.asUiText()))
+            }
+            is Result.Success -> {
+                eventChannel.send(ActiveRunEvent.RunSaved)
+            }
+        }
+
         state = state.copy(isSavingRun = false)
     }
 

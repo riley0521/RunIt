@@ -1,8 +1,15 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
 package com.rfdotech.run.presentation.run_overview
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +17,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
@@ -17,6 +25,7 @@ import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.RunIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.SignOutIcon
+import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space24
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.MyFloatingActionButton
@@ -24,6 +33,7 @@ import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
 import com.rfdotech.core.presentation.designsystem.components.util.DropDownItem
 import com.rfdotech.run.presentation.R
+import com.rfdotech.run.presentation.run_overview.components.RunListItem
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -33,6 +43,7 @@ fun RunOverviewScreenRoot(
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
     RunOverviewScreen(
+        state = viewModel.state,
         onAction = { action ->
             when (action) {
                 RunOverviewAction.OnAnalyticsClick -> onAnalyticsClick()
@@ -45,6 +56,7 @@ fun RunOverviewScreenRoot(
 
 @Composable
 private fun RunOverviewScreen(
+    state: RunOverviewState,
     onAction: (RunOverviewAction) -> Unit
 ) {
     val topAppBarState = rememberTopAppBarState()
@@ -90,7 +102,24 @@ private fun RunOverviewScreen(
             )
         }
     ) { padding ->
-
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .padding(horizontal = Space16),
+            contentPadding = padding,
+            verticalArrangement = Arrangement.spacedBy(Space16)
+        ) {
+            items(items = state.runs, key = { it.id }) { run ->
+                RunListItem(
+                    run = run,
+                    onDeleteClick = {
+                        onAction(RunOverviewAction.DeleteRunById(run.id))
+                    },
+                    modifier = Modifier.animateItemPlacement()
+                )
+            }
+        }
     }
 }
 
@@ -99,6 +128,7 @@ private fun RunOverviewScreen(
 private fun RunOverviewScreenScreenPreview() {
     RunItTheme {
         RunOverviewScreen(
+            state = RunOverviewState(),
             onAction = {}
         )
     }

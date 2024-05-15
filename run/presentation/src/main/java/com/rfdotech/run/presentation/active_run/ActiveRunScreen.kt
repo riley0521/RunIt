@@ -34,6 +34,8 @@ import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
+import com.rfdotech.core.presentation.ui.ObserveAsEvents
+import com.rfdotech.core.presentation.ui.showToastStr
 import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.active_run.components.RunDataCard
@@ -50,12 +52,36 @@ import kotlin.time.Duration.Companion.minutes
 @Composable
 fun ActiveRunScreenRoot(
     onServiceToggle: (isServiceRunning: Boolean) -> Unit,
+    onFinish: () -> Unit,
+    onBack: () -> Unit,
     viewModel: ActiveRunViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is ActiveRunEvent.Error -> {
+                context.showToastStr(event.error.asString(context))
+            }
+            ActiveRunEvent.RunSaved -> {
+                onFinish()
+            }
+        }
+    }
+
     ActiveRunScreen(
         state = viewModel.state,
         onServiceToggle = onServiceToggle,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                ActiveRunAction.OnBackClick -> {
+                    if (!viewModel.state.hasStartedRunning) {
+                        onBack()
+                    }
+                }
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 

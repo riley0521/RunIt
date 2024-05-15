@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.io.koin.androidx.workmanager)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.koin)
 }
