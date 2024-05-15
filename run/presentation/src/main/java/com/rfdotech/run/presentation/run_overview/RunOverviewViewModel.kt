@@ -27,6 +27,8 @@ class RunOverviewViewModel(
             .launchIn(viewModelScope)
 
         viewModelScope.launch {
+            // We should sync pending runs FIRST to make sure that the API is up to date with what happen in offline.
+            runRepository.syncPendingRuns()
             runRepository.fetchFromRemote()
         }
     }
