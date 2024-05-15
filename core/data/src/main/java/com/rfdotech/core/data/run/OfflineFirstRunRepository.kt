@@ -1,5 +1,7 @@
 package com.rfdotech.core.data.run
 
+import com.rfdotech.core.data.networking.get
+import com.rfdotech.core.data.networking.post
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.mapper.toRun
 import com.rfdotech.core.domain.SessionStorage
@@ -14,6 +16,10 @@ import com.rfdotech.core.domain.util.DataError
 import com.rfdotech.core.domain.util.EmptyResult
 import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.domain.util.asEmptyDataResult
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
+import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -27,6 +33,7 @@ class OfflineFirstRunRepository(
     private val sessionStorage: SessionStorage,
     private val runPendingSyncDao: RunPendingSyncDao,
     private val syncRunScheduler: SyncRunScheduler,
+    private val httpClient: HttpClient,
     private val applicationScope: CoroutineScope
 ) : RunRepository {
     override fun getAllLocal(): Flow<List<Run>> {
@@ -69,6 +76,10 @@ class OfflineFirstRunRepository(
                 }.await()
             }
         }
+    }
+
+    override suspend fun deleteAllFromLocal() {
+        localRunDataSource.deleteAll()
     }
 
     override suspend fun deleteById(id: RunId) {
@@ -141,5 +152,17 @@ class OfflineFirstRunRepository(
             createJobs.forEach { it.join() }
             deleteJobs.forEach { it.join() }
         }
+    }
+
+    override suspend fun signOut(): EmptyResult<DataError.Network> {
+        val result = httpClient.get<Unit>(
+            route = "/logout"
+        ).asEmptyDataResult()
+
+        httpClient.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
+            .firstOrNull()
+            ?.clearToken()
+
+        return result
     }
 }

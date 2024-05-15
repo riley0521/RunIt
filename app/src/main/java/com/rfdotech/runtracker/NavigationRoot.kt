@@ -96,6 +96,13 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
                 onAnalyticsClick = {},
                 onStartClick = {
                     navController.navigate("active_run")
+                },
+                onSignOutClick = {
+                    navController.navigate("auth") {
+                        popUpTo("run") {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

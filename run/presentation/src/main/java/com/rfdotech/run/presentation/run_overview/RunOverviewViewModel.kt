@@ -5,17 +5,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rfdotech.core.domain.SessionStorage
 import com.rfdotech.core.domain.run.RunRepository
 import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.run.presentation.run_overview.mapper.toRunUi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class RunOverviewViewModel(
     private val runRepository: RunRepository,
-    private val syncRunScheduler: SyncRunScheduler
+    private val syncRunScheduler: SyncRunScheduler,
+    private val sessionStorage: SessionStorage,
+    private val applicationScope: CoroutineScope
 ) : ViewModel() {
 
     var state by mutableStateOf(RunOverviewState())
@@ -42,7 +46,7 @@ class RunOverviewViewModel(
 
     fun onAction(action: RunOverviewAction) {
         when (action) {
-            RunOverviewAction.OnSignOutClick -> {}
+            RunOverviewAction.OnSignOutClick -> signOut()
             is RunOverviewAction.DeleteRunById -> {
                 viewModelScope.launch {
                     runRepository.deleteById(action.id)
@@ -50,5 +54,12 @@ class RunOverviewViewModel(
             }
             else -> Unit
         }
+    }
+
+    private fun signOut() = applicationScope.launch {
+        syncRunScheduler.cancelAllSyncs()
+        runRepository.deleteAllFromLocal()
+        sessionStorage.set(null) // Remove the session from sharedPrefs
+        runRepository.signOut()
     }
 }
