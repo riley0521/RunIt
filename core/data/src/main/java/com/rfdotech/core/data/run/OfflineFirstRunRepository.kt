@@ -83,15 +83,7 @@ class OfflineFirstRunRepository(
         }
 
         when (remoteResult.await()) {
-            is Result.Error -> {
-                val userId = getUserId() ?: return
-
-                // If something went wrong while deleting from remote API
-                // We add this to our pending deleted runs.
-                runPendingSyncDao.upsertDeletedRunSyncEntity(
-                    DeletedRunSyncEntity(runId = id, userId = userId)
-                )
-            }
+            is Result.Error -> TODO()
             is Result.Success -> TODO()
         }
     }
