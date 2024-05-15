@@ -15,5 +15,5 @@ data class Run(
     val mapPictureUrl: String?
 ) {
     val avgSpeedKhm: Double
-        get() = DistanceAndSpeedCalculator.getAvgSpeedKhm(distanceMeters, duration)
+        get() = DistanceAndSpeedCalculator.getAvgSpeedKmh(distanceMeters, duration)
 }
