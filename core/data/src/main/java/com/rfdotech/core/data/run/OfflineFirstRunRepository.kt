@@ -1,7 +1,8 @@
-package com.rfdotech.run.data
+package com.rfdotech.core.data.run
 
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.entity.DeletedRunSyncEntity
+import com.rfdotech.core.database.entity.RunPendingSyncEntity
 import com.rfdotech.core.database.mapper.toRun
 import com.rfdotech.core.database.mapper.toRunEntity
 import com.rfdotech.core.domain.SessionStorage
