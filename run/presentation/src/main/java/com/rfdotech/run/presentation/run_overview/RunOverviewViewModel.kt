@@ -6,19 +6,26 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.core.domain.run.RunRepository
+import com.rfdotech.core.domain.run.SyncRunScheduler
+import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.run.presentation.run_overview.mapper.toRunUi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class RunOverviewViewModel(
-    private val runRepository: RunRepository
+    private val runRepository: RunRepository,
+    private val syncRunScheduler: SyncRunScheduler
 ) : ViewModel() {
 
     var state by mutableStateOf(RunOverviewState())
         private set
 
     init {
+        viewModelScope.launch {
+            syncRunScheduler.scheduleSync(SyncType.FetchRuns())
+        }
+
         runRepository
             .getAllLocal()
             .onEach { runs ->

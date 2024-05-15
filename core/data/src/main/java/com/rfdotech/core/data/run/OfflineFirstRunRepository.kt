@@ -1,16 +1,15 @@
 package com.rfdotech.core.data.run
 
 import com.rfdotech.core.database.dao.RunPendingSyncDao
-import com.rfdotech.core.database.entity.DeletedRunSyncEntity
-import com.rfdotech.core.database.entity.RunPendingSyncEntity
 import com.rfdotech.core.database.mapper.toRun
-import com.rfdotech.core.database.mapper.toRunEntity
 import com.rfdotech.core.domain.SessionStorage
 import com.rfdotech.core.domain.run.LocalRunDataSource
 import com.rfdotech.core.domain.run.RemoteRunDataSource
 import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.domain.run.RunId
 import com.rfdotech.core.domain.run.RunRepository
+import com.rfdotech.core.domain.run.SyncRunScheduler
+import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.core.domain.util.DataError
 import com.rfdotech.core.domain.util.EmptyResult
 import com.rfdotech.core.domain.util.Result
@@ -27,6 +26,7 @@ class OfflineFirstRunRepository(
     private val remoteRunDataSource: RemoteRunDataSource,
     private val sessionStorage: SessionStorage,
     private val runPendingSyncDao: RunPendingSyncDao,
+    private val syncRunScheduler: SyncRunScheduler,
     private val applicationScope: CoroutineScope
 ) : RunRepository {
     override fun getAllLocal(): Flow<List<Run>> {
@@ -58,7 +58,10 @@ class OfflineFirstRunRepository(
 
         return when (remoteResult) {
             is Result.Error -> {
-                Result.Error(DataError.Network.NO_INTERNET)
+                applicationScope.async {
+                    syncRunScheduler.scheduleSync(SyncType.CreateRun(runWithId, mapPicture))
+                    Result.Success(Unit)
+                }.await()
             }
             is Result.Success -> {
                 applicationScope.async {
@@ -80,11 +83,12 @@ class OfflineFirstRunRepository(
 
         val remoteResult = applicationScope.async {
             remoteRunDataSource.deleteById(id)
-        }
+        }.await()
 
-        when (remoteResult.await()) {
-            is Result.Error -> TODO()
-            is Result.Success -> TODO()
+        if (remoteResult is Result.Error) {
+            applicationScope.async {
+                syncRunScheduler.scheduleSync(SyncType.DeleteRun(id))
+            }.await()
         }
     }
 
