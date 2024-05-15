@@ -1,4 +1,4 @@
-package com.rfdotech.core.presentation.designsystem.components.util
+package com.rfdotech.core.presentation.designsystem
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.SubcomposeAsyncImage
+import com.rfdotech.core.presentation.designsystem.ASPECT_RATIO_16_9
 import com.rfdotech.core.presentation.designsystem.CalendarIcon
 import com.rfdotech.core.presentation.designsystem.FontSize12
 import com.rfdotech.core.presentation.designsystem.RunItTheme
@@ -54,8 +55,8 @@ import com.rfdotech.core.presentation.designsystem.Space18
 import com.rfdotech.core.presentation.designsystem.Space2
 import com.rfdotech.core.presentation.designsystem.Space4
 import com.rfdotech.core.presentation.designsystem.Space40
-import com.rfdotech.core.presentation.designsystem.components.util.colorOnSurfaceVariant
-import com.rfdotech.core.presentation.designsystem.components.util.colorPrimary
+import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
+import com.rfdotech.core.presentation.designsystem.colorPrimary
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.run_overview.model.RunDataUi
 import com.rfdotech.run.presentation.run_overview.model.RunUi
@@ -122,7 +123,7 @@ private fun MapImage(
         contentDescription = stringResource(id = R.string.run_map),
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(16 / 9f)
+            .aspectRatio(ASPECT_RATIO_16_9)
             .clip(RoundedCornerShape(Space16)),
         loading = {
             Box(

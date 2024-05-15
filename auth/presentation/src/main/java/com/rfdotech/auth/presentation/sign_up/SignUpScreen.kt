@@ -37,12 +37,12 @@ import com.rfdotech.core.presentation.designsystem.CheckIcon
 import com.rfdotech.core.presentation.designsystem.CrossIcon
 import com.rfdotech.core.presentation.designsystem.EmailIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import com.rfdotech.core.presentation.designsystem.colorOnBackGround
+import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.PasswordTextField
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryTextField
-import com.rfdotech.core.presentation.designsystem.components.util.colorOnBackGround
-import com.rfdotech.core.presentation.designsystem.components.util.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.primaryFontFamily
 import com.rfdotech.core.presentation.ui.showToastRes
 import com.rfdotech.core.presentation.ui.showToastStr

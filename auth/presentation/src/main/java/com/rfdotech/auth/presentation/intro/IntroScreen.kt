@@ -22,11 +22,11 @@ import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.Space48
 import com.rfdotech.core.presentation.designsystem.Space8
+import com.rfdotech.core.presentation.designsystem.colorOnBackGround
+import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
-import com.rfdotech.core.presentation.designsystem.components.util.colorOnBackGround
-import com.rfdotech.core.presentation.designsystem.components.util.colorOnSurfaceVariant
 
 @Composable
 fun IntroScreenRoot(

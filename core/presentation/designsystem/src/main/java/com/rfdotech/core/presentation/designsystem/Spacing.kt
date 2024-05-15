@@ -16,5 +16,7 @@ val Space40 = 40.dp
 val Space48 = 48.dp
 val Space64 = 64.dp
 val Space70 = 70.dp
+val Space100 = 100.dp
 val Space128 = 128.dp
+val Space300 = 300.dp
 val Space1000 = 1000.dp
