@@ -140,6 +140,7 @@ runtracker-android-library-plugin = { id = "runtracker.android.library", version
 runtracker-android-library-compose-plugin = { id = "runtracker.android.library.compose", version = "unspecified" }
 runtracker-android-feature-ui-plugin = { id = "runtracker.android.feature-ui", version = "unspecified" }
 runtracker-android-room-plugin = { id = "runtracker.android.room", version = "unspecified" }
+runtracker-android-dynamic-feature-plugin = { id = "runtracker.android.dynamic_feature", version = "unspecified" }
 runtracker-jvm-library-plugin = { id = "runtracker.jvm.library", version = "unspecified" }
 runtracker-jvm-ktor-plugin = { id = "runtracker.jvm.ktor", version = "unspecified" }
 

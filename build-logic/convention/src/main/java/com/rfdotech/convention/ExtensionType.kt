@@ -2,5 +2,6 @@ package com.rfdotech.convention
 
 enum class ExtensionType {
     APPLICATION,
-    LIBRARY
+    LIBRARY,
+    DYNAMIC_FEATURE
 }

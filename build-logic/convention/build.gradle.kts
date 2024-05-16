@@ -38,6 +38,10 @@ gradlePlugin {
             id = "runtracker.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("androidDynamicFeature") {
+            id = "runtracker.android.dynamic_feature"
+            implementationClass = "AndroidDynamicFeatureConventionPlugin"
+        }
         register("jvmLibrary") {
             id = "runtracker.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
