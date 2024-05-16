@@ -48,6 +48,10 @@ object DistanceAndSpeedCalculator  {
         return (distanceMeters / METERS_PER_KILOMETER)
     }
 
+    fun getKmFromMeters(distanceMeters: Double): Double {
+        return (distanceMeters / METERS_PER_KILOMETER)
+    }
+
     fun getAvgSecondsPerKm(distanceKm: Double, duration: Duration): Int {
         return if (distanceKm == 0.0) {
             0

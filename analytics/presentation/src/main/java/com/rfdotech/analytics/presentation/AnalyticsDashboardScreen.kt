@@ -120,7 +120,7 @@ private fun AnalyticsScreenPreview() {
                 totalTimeRun = "1d 2h 3m",
                 fastestEverRun = "16.7 km/h",
                 avgDistance = "17 km",
-                avgPace = "17:38 / km"
+                avgPace = "00:00:00"
             ),
             onAction = {}
         )
