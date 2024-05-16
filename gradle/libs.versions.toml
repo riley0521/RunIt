@@ -12,7 +12,6 @@ espresso-core = "3.5.1"
 activity-compose = "1.8.2"
 ktor = "2.3.8"
 ktor-client-logging = "2.3.8"
-ktor-server-call-logging = "2.3.7"
 koin = "3.5.3"
 lifecycle-runtime-ktx = "2.7.0"
 compose-bom = "2024.02.02"
@@ -22,19 +21,15 @@ security-crypto-ktx = "1.1.0-alpha06"
 timber = "5.0.1"
 ksp = "1.9.22-1.0.17"
 room = "2.6.1"
-appcompat = "1.6.1"
 material = "1.11.0"
 kotlin-jvm = "1.9.22"
 maps = "4.3.3"
 coroutines = "1.8.0"
 gms-location = "21.2.0"
-maps-utils = "5.0.0"
 bson = "4.11.1"
 work = "2.9.0"
 kotlinx-serialization = "1.6.3"
 secrets-plugin = "2.0.1"
-play-services-maps = "18.2.0"
-annotation = "1.7.1"
 
 # Not referenced here
 android-tools = "31.2.2"
@@ -56,9 +51,6 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization"}
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines"}
-kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines"}
-androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 # Coil
 io-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
@@ -68,9 +60,7 @@ google-core = { group = "com.google.android.play", name = "core", version.ref = 
 google-core-testing = { group = "com.google.android.play", name = "core-testing", version.ref = "play-core" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "maps" }
-google-maps-utils-ktx = { group = "com.google.maps.android", name = "maps-utils-ktx", version.ref = "maps-utils" }
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "gms-location" }
-google-play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "play-services-maps" }
 
 # Desugar
 desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
@@ -131,7 +121,6 @@ android-tools-common = { group = "com.android.tools", name = "common", version.r
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 google-devtools-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 androidx-room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
-androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
