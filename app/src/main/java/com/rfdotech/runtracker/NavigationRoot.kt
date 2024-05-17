@@ -45,6 +45,13 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
                 },
                 onSignInClick = {
                     navController.navigate("sign_in")
+                },
+                onSignInSuccess = {
+                    navController.navigate("run") {
+                        popUpTo("auth") {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

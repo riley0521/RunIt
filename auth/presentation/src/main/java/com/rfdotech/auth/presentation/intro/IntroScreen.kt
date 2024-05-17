@@ -1,5 +1,10 @@
 package com.rfdotech.auth.presentation.intro
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,10 +15,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.gms.auth.api.identity.Identity
 import com.rfdotech.auth.presentation.R
 import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
@@ -27,16 +36,68 @@ import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
+import com.rfdotech.core.presentation.ui.ObserveAsEvents
+import com.rfdotech.core.presentation.ui.showToastRes
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun IntroScreenRoot(
     onSignUpClick: () -> Unit,
-    onSignInClick: () -> Unit
+    onSignInClick: () -> Unit,
+    onSignInSuccess: () -> Unit,
+    viewModel: IntroViewModel = koinViewModel()
 ) {
+    val activityContext = LocalContext.current as Activity
+    val coroutineScope = rememberCoroutineScope()
+
+    val googleAuthUiClient = remember {
+        GoogleAuthUiClient(
+            oneTapClient = Identity.getSignInClient(activityContext.applicationContext),
+            onSignOut = {} // We will implement this in the home screen.
+        )
+    }
+    val authLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if (result.resultCode == RESULT_OK) {
+                coroutineScope.launch {
+                    val userId = googleAuthUiClient.signInWithIntent(
+                        intent = result.data ?: return@launch
+                    )
+
+                    if (userId != null) {
+                        viewModel.onSignInSuccess(userId)
+                    }
+                }
+            }
+        }
+    )
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            IntroEvent.OnSignInSuccessful -> onSignInSuccess()
+        }
+    }
+
     IntroScreen(
         onAction = { action ->
             when (action) {
-                IntroAction.OnSignInClick -> onSignInClick()
+                IntroAction.OnSignInClick -> {
+                    coroutineScope.launch {
+                        val signInIntentSender = googleAuthUiClient.signIn()
+                        if (signInIntentSender == null) {
+                            activityContext.showToastRes(R.string.error_no_signed_in_user)
+                            return@launch
+                        }
+
+                        authLauncher.launch(
+                            IntentSenderRequest.Builder(
+                                signInIntentSender
+                            ).build()
+                        )
+                    }
+                }
                 IntroAction.OnSignUpClick -> onSignUpClick()
             }
         }

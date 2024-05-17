@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.runtracker.android.application.compose.plugin)
     alias(libs.plugins.runtracker.jvm.ktor.plugin)
+    alias(libs.plugins.google.services)
 }
 
 android {

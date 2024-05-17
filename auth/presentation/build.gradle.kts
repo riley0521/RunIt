@@ -11,5 +11,6 @@ dependencies {
     implementation(projects.auth.domain)
 
     implementation(libs.bundles.koin)
-    implementation(libs.firebase.auth)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.bundles.google.auth)
 }

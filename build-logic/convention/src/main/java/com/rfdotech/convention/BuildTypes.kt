@@ -20,16 +20,17 @@ internal fun Project.configureBuildTypes(
         }
 
         val apiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("API_KEY")
+        val authApiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("AUTH_API_KEY")
 
         when (extensionType) {
             ExtensionType.APPLICATION -> {
                 extensions.configure<ApplicationExtension> {
                     buildTypes {
                         debug {
-                            configureDebugBuildType(apiKey)
+                            configureDebugBuildType(apiKey, authApiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonExtension, apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey, authApiKey)
                         }
                     }
                 }
@@ -38,10 +39,10 @@ internal fun Project.configureBuildTypes(
                 extensions.configure<LibraryExtension> {
                     buildTypes {
                         debug {
-                            configureDebugBuildType(apiKey)
+                            configureDebugBuildType(apiKey, authApiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonExtension, apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey, authApiKey)
                         }
                     }
                 }
@@ -50,10 +51,10 @@ internal fun Project.configureBuildTypes(
                 extensions.configure<DynamicFeatureExtension> {
                     buildTypes {
                         debug {
-                            configureDebugBuildType(apiKey)
+                            configureDebugBuildType(apiKey, authApiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonExtension, apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey, authApiKey)
                             isMinifyEnabled = false
                         }
                     }
@@ -63,15 +64,18 @@ internal fun Project.configureBuildTypes(
     }
 }
 
-private fun BuildType.configureDebugBuildType(apiKey: String) {
+private fun BuildType.configureDebugBuildType(apiKey: String, authApiKey: String) {
+    buildConfigField("String", "AUTH_API_KEY", "\"$authApiKey\"")
     buildConfigField("String", "API_KEY", "\"$apiKey\"")
     buildConfigField("String", "BASE_URL", "\"https://runique.pl-coding.com:8080\"")
 }
 
 private fun BuildType.configureReleaseBuildType(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
-    apiKey: String
+    apiKey: String,
+    authApiKey: String
 ) {
+    buildConfigField("String", "AUTH_API_KEY", "\"$authApiKey\"")
     buildConfigField("String", "API_KEY", "\"$apiKey\"")
     buildConfigField("String", "BASE_URL", "\"https://runique.pl-coding.com:8080\"")
 
