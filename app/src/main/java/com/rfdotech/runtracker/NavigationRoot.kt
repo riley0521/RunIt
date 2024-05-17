@@ -18,7 +18,8 @@ import com.rfdotech.run.presentation.run_overview.RunOverviewScreenRoot
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
-    isSignedIn: Boolean
+    isSignedIn: Boolean,
+    onAnalyticsClick: () -> Unit
 ) {
     val startDestination = if (isSignedIn) {
         "run"
@@ -28,7 +29,7 @@ fun NavigationRoot(
 
     NavHost(navController = navController, startDestination = startDestination) {
         authGraph(navController)
-        runGraph(navController)
+        runGraph(navController, onAnalyticsClick)
     }
 }
 
@@ -86,14 +87,17 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
     }
 }
 
-private fun NavGraphBuilder.runGraph(navController: NavHostController) {
+private fun NavGraphBuilder.runGraph(
+    navController: NavHostController,
+    onAnalyticsClick: () -> Unit
+) {
     navigation(
         startDestination = "run_overview",
         route = "run"
     ) {
         composable(route = "run_overview") {
             RunOverviewScreenRoot(
-                onAnalyticsClick = {},
+                onAnalyticsClick = onAnalyticsClick,
                 onStartClick = {
                     navController.navigate("active_run")
                 },

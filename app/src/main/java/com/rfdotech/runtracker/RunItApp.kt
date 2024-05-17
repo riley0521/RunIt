@@ -1,6 +1,8 @@
 package com.rfdotech.runtracker
 
 import android.app.Application
+import android.content.Context
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.rfdotech.auth.data.di.authDataModule
 import com.rfdotech.auth.presentation.di.authPresentationModule
 import com.rfdotech.core.data.di.coreDataModule
@@ -44,5 +46,10 @@ class RunItApp : Application() {
                 appModule
             )
         }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SplitCompat.install(this)
     }
 }

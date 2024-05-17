@@ -146,15 +146,13 @@ runtracker-jvm-ktor-plugin = { id = "runtracker.jvm.ktor", version = "unspecifie
 
 [bundles]
 compose = [
-    "androidx-activity-compose",
     "androidx-compose-ui",
     "androidx-compose-ui-graphics",
     "androidx-compose-ui-tooling-preview",
     "androidx-compose-material3",
     "androidx-lifecycle-runtime-compose",
     "androidx-lifecycle-viewmodel-compose",
-    "androidx-compose-material-icons-extended",
-    "androidx-navigation-compose"
+    "androidx-compose-material-icons-extended"
 ]
 compose-debug = [
     "androidx-compose-ui-tooling",

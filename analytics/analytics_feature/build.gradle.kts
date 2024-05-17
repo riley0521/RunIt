@@ -6,10 +6,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":app"))
-
     api(projects.analytics.presentation)
     implementation(projects.analytics.domain)
     implementation(projects.analytics.data)
     implementation(projects.core.database)
+    implementation(project(":app"))
+
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
 }

@@ -3,7 +3,6 @@ package com.rfdotech.core.database.di
 import androidx.room.Room
 import com.rfdotech.core.database.RoomLocalRunDataSource
 import com.rfdotech.core.database.RunDatabase
-import com.rfdotech.core.database.dao.AnalyticsDao
 import com.rfdotech.core.database.dao.RunDao
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.domain.run.LocalRunDataSource
@@ -25,9 +24,6 @@ val coreDatabaseModule = module {
     }
     single<RunPendingSyncDao> {
         get<RunDatabase>().runPendingSyncDao
-    }
-    single<AnalyticsDao> {
-        get<RunDatabase>().analyticsDao
     }
     singleOf(::RoomLocalRunDataSource).bind<LocalRunDataSource>()
 }
