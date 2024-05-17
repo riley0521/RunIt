@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.runtracker.android.feature.ui.firebase.plugin)
+    alias(libs.plugins.runtracker.android.feature.ui.plugin)
 }
 
 android {
@@ -11,4 +11,5 @@ dependencies {
     implementation(projects.auth.domain)
 
     implementation(libs.bundles.koin)
+    implementation(libs.firebase.auth)
 }

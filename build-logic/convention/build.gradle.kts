@@ -34,10 +34,6 @@ gradlePlugin {
             id = "runtracker.android.feature.ui"
             implementationClass = "AndroidFeatureUiConventionPlugin"
         }
-        register("androidFeatureUiFirebase") {
-            id = "runtracker.android.feature.ui.firebase"
-            implementationClass = "AndroidFeatureUiFirebaseConventionPlugin"
-        }
         register("androidRoom") {
             id = "runtracker.android.room"
             implementationClass = "AndroidRoomConventionPlugin"

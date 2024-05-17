@@ -21,7 +21,6 @@ security-crypto-ktx = "1.1.0-alpha06"
 timber = "5.0.1"
 ksp = "1.9.22-1.0.17"
 room = "2.6.1"
-material = "1.12.0"
 maps = "4.3.3"
 coroutines = "1.8.0"
 gms-location = "21.2.0"
@@ -29,11 +28,11 @@ bson = "4.11.1"
 work = "2.9.0"
 kotlinx-serialization = "1.6.3"
 secrets-plugin = "2.0.1"
-assertk = "0.26.1"
+assertk = "0.28.1"
 androidx-test-runner = "1.5.2"
 androidx-test-rules = "1.5.0"
-io-mockk = "1.12.5"
-app-cash-turbine = "0.7.0"
+io-mockk = "1.13.11"
+app-cash-turbine = "1.1.0"
 android-tools = "31.4.0"
 firebase-bom = "33.0.0"
 
@@ -44,7 +43,7 @@ projectMinSdkVersion = "24"
 projectTargetSdkVersion = "34"
 projectCompileSdkVersion = "34"
 projectVersionCode = "1"
-composeCompiler = "1.5.9"
+composeCompiler = "1.5.10"
 
 [libraries]
 
@@ -152,7 +151,6 @@ runtracker-android-application-compose-plugin = { id = "runtracker.android.appli
 runtracker-android-library-plugin = { id = "runtracker.android.library", version = "unspecified" }
 runtracker-android-library-compose-plugin = { id = "runtracker.android.library.compose", version = "unspecified" }
 runtracker-android-feature-ui-plugin = { id = "runtracker.android.feature.ui", version = "unspecified" }
-runtracker-android-feature-ui-firebase-plugin = { id = "runtracker.android.feature.ui.firebase", version = "unspecified" }
 runtracker-android-room-plugin = { id = "runtracker.android.room", version = "unspecified" }
 runtracker-android-dynamic-feature-plugin = { id = "runtracker.android.dynamic.feature", version = "unspecified" }
 runtracker-jvm-library-plugin = { id = "runtracker.jvm.library", version = "unspecified" }
