@@ -20,6 +20,10 @@ android {
         }
     }
     dynamicFeatures += setOf(":analytics:analytics_feature")
+
+    kotlin {
+
+    }
 }
 
 dependencies {

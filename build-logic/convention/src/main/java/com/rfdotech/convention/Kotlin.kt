@@ -7,10 +7,12 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *>
+    commonExtension: CommonExtension<*, *, *, *, *, *>
 ) {
     commonExtension.run {
         compileSdk = libs.findVersion("projectCompileSdkVersion").get().toString().toInt()
@@ -18,12 +20,12 @@ internal fun Project.configureKotlinAndroid(
 
         compileOptions {
             isCoreLibraryDesugaringEnabled = true
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
+        }
+
+        extensions.configure<KotlinAndroidProjectExtension> {
+            jvmToolchain(17)
         }
     }
-
-    configureKotlin()
 
     dependencies {
         "coreLibraryDesugaring"(libs.findLibrary("desugar.jdk.libs").get())
@@ -31,17 +33,7 @@ internal fun Project.configureKotlinAndroid(
 }
 
 internal fun Project.configureKotlinJvm() {
-    extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    configureKotlin()
-}
-
-private fun Project.configureKotlin() {
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11.toString()
-        }
+    extensions.configure<KotlinJvmProjectExtension> {
+        jvmToolchain(17)
     }
 }

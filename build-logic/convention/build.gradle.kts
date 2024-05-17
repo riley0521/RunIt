@@ -31,15 +31,19 @@ gradlePlugin {
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidFeatureUi") {
-            id = "runtracker.android.feature-ui"
+            id = "runtracker.android.feature.ui"
             implementationClass = "AndroidFeatureUiConventionPlugin"
+        }
+        register("androidFeatureUiFirebase") {
+            id = "runtracker.android.feature.ui.firebase"
+            implementationClass = "AndroidFeatureUiFirebaseConventionPlugin"
         }
         register("androidRoom") {
             id = "runtracker.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
         register("androidDynamicFeature") {
-            id = "runtracker.android.dynamic_feature"
+            id = "runtracker.android.dynamic.feature"
             implementationClass = "AndroidDynamicFeatureConventionPlugin"
         }
         register("jvmLibrary") {

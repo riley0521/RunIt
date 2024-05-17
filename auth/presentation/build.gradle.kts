@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.runtracker.android.feature.ui.plugin)
+    alias(libs.plugins.runtracker.android.feature.ui.firebase.plugin)
 }
 
 android {

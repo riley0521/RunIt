@@ -1,5 +1,7 @@
 import com.android.build.api.dsl.LibraryExtension
 import com.rfdotech.convention.ExtensionType
+import com.rfdotech.convention.addAndroidTestDependencies
+import com.rfdotech.convention.addTestDependencies
 import com.rfdotech.convention.configureBuildTypes
 import com.rfdotech.convention.configureKotlinAndroid
 import org.gradle.api.Plugin
@@ -29,6 +31,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "testImplementation"(kotlin("test"))
+
+                addTestDependencies(target)
+                addAndroidTestDependencies(target)
             }
         }
     }
