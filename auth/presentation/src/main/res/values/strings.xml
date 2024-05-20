@@ -6,6 +6,7 @@
     <string name="welcome_description">Track your runs, set goals and achieve fitness milestones with our intuitive app.</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_in_with_google">Sign In with Google</string>
     <string name="create_account">Create Account</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="email_example">example@test.com</string>

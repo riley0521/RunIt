@@ -13,9 +13,6 @@ internal fun DependencyHandlerScope.addUiLayerDependencies(target: Project) = wi
     "debugImplementation"(libs.findBundle("compose.debug").get())
     "androidTestImplementation"(libs.findLibrary("androidx.compose.ui.test.junit4").get())
     "androidTestImplementation"(libs.findLibrary("androidx.navigation.testing").get())
-
-    addTestDependencies(this)
-    addAndroidTestDependencies(this)
 }
 
 internal fun DependencyHandlerScope.addAndroidTestDependencies(target: Project) = with(target) {
