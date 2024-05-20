@@ -2,6 +2,7 @@ import com.android.build.api.dsl.LibraryExtension
 import com.rfdotech.convention.ExtensionType
 import com.rfdotech.convention.addAndroidTestDependencies
 import com.rfdotech.convention.addTestDependencies
+import com.rfdotech.convention.configureAndroidFirebase
 import com.rfdotech.convention.configureBuildTypes
 import com.rfdotech.convention.configureKotlinAndroid
 import org.gradle.api.Plugin
@@ -21,6 +22,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
+                configureAndroidFirebase(this)
                 configureBuildTypes(this, ExtensionType.LIBRARY)
 
                 defaultConfig {

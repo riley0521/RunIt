@@ -136,18 +136,10 @@ private fun IntroScreen(
             )
             Spacer(modifier = Modifier.height(Space32))
             SecondaryButton(
-                text = stringResource(id = R.string.sign_in),
+                text = stringResource(id = R.string.sign_in_with_google),
                 isLoading = false,
                 onClick = {
                     onAction(IntroAction.OnSignInClick)
-                }
-            )
-            Spacer(modifier = Modifier.height(Space16))
-            PrimaryButton(
-                text = stringResource(id = R.string.sign_up),
-                isLoading = false,
-                onClick = {
-                    onAction(IntroAction.OnSignUpClick)
                 }
             )
         }

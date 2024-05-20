@@ -12,4 +12,6 @@ dependencies {
     implementation(projects.core.data)
 
     implementation(libs.bundles.koin)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 }
