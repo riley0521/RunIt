@@ -188,3 +188,20 @@ google-auth = [
     "firebase-auth",
     "google-play-services-auth"
 ]
+testing = [
+    "io-mockk",
+    "willowtreeapps-assertk",
+    "kotlin-coroutines-test",
+    "app-cash-turbine"
+]
+android-testing = [
+    "io-mockk-android",
+    "kotlin-coroutines-test",
+    "app-cash-turbine",
+    "willowtreeapps-assertk",
+    "androidx-test-ext-junit",
+    "androidx-test-espresso-core",
+    "androidx-test-espresso-intents",
+    "androidx-test-runner",
+    "androidx-test-rules"
+]

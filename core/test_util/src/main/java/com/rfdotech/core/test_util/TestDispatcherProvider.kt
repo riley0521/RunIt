@@ -4,7 +4,7 @@ import com.rfdotech.core.domain.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.StandardTestDispatcher
 
-class AndroidTestDispatcherProvider : DispatcherProvider {
+class TestDispatcherProvider : DispatcherProvider {
     override val main: CoroutineDispatcher
         get() = StandardTestDispatcher()
     override val io: CoroutineDispatcher

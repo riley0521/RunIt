@@ -8,4 +8,7 @@ android {
 
 dependencies {
     implementation(projects.core.domain)
+
+    implementation(libs.bundles.testing)
+    implementation(libs.bundles.android.testing)
 }

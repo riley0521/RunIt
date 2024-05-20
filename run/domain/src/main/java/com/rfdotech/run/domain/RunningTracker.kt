@@ -17,13 +17,15 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
+import java.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RunningTracker(
     private val locationObserver: LocationObserver,
-    applicationScope: CoroutineScope
+    applicationScope: CoroutineScope,
+    private val clock: Clock = Clock.systemDefaultZone()
 ) {
 
     companion object {
@@ -62,7 +64,7 @@ class RunningTracker(
             }
             .flatMapLatest {
                 if (it) {
-                    Timer.timeAndEmit()
+                    Timer.timeAndEmit(clock)
                 } else flowOf()
             }.onEach { value ->
                 _elapsedTime.update { it + value }

@@ -19,20 +19,9 @@ internal fun DependencyHandlerScope.addUiLayerDependencies(target: Project) = wi
 }
 
 internal fun DependencyHandlerScope.addAndroidTestDependencies(target: Project) = with(target) {
-    "androidTestImplementation"(libs.findLibrary("io.mockk.android").get())
-    "androidTestImplementation"(libs.findLibrary("kotlin.coroutines.test").get())
-    "androidTestImplementation"(libs.findLibrary("app.cash.turbine").get())
-    "androidTestImplementation"(libs.findLibrary("willowtreeapps.assertk").get())
-    "androidTestImplementation"(libs.findLibrary("androidx.test.ext.junit").get())
-    "androidTestImplementation"(libs.findLibrary("androidx.test.espresso.core").get())
-    "androidTestImplementation"(libs.findLibrary("androidx.test.espresso.intents").get())
-    "androidTestImplementation"(libs.findLibrary("androidx.test.runner").get())
-    "androidTestImplementation"(libs.findLibrary("androidx.test.rules").get())
+    "androidTestImplementation"(libs.findBundle("android.testing").get())
 }
 
 internal fun DependencyHandlerScope.addTestDependencies(target: Project) = with(target) {
-    "testImplementation"(libs.findLibrary("io.mockk").get())
-    "testImplementation"(libs.findLibrary("willowtreeapps.assertk").get())
-    "testImplementation"(libs.findLibrary("kotlin.coroutines.test").get())
-    "testImplementation"(libs.findLibrary("app.cash.turbine").get())
+    "testImplementation"(libs.findBundle("testing").get())
 }
