@@ -1,6 +1,8 @@
 package com.rfdotech.run.network
 
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -31,9 +33,9 @@ class FirebaseRemoteRunDataSource(
             .whereEqualTo("userId", userId)
             .get()
             .await()
-            ?.toObjects(FirestoreRunDto::class.java)
+            .toObjects<FirestoreRunDto>()
 
-        val runs = result?.map { run -> run.toRun() } ?: emptyList()
+        val runs = result.map { run -> run.toRun() }
 
         Result.Success(runs)
     }
@@ -64,7 +66,7 @@ class FirebaseRemoteRunDataSource(
     }
 
     private suspend fun getRunDtoById(id: String): FirestoreRunDto? = withContext(dispatcherProvider.io) {
-        val result = runCollection.document(id).get().await()?.toObject(FirestoreRunDto::class.java)
+        val result = runCollection.document(id).get().await().toObject<FirestoreRunDto>()
         return@withContext result
     }
 
