@@ -15,10 +15,10 @@ import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.entity.DeletedRunSyncEntity
 import com.rfdotech.core.database.entity.RunPendingSyncEntity
 import com.rfdotech.core.database.mapper.toRunEntity
-import com.rfdotech.core.domain.SessionStorage
+import com.rfdotech.core.domain.auth.UserStorage
+import com.rfdotech.core.domain.run.FETCH_RUNS_INTERVAL
 import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.domain.run.RunId
-import com.rfdotech.core.domain.run.FETCH_RUNS_INTERVAL
 import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,7 @@ import kotlin.time.toJavaDuration
 class SyncRunWorkerScheduler(
     private val context: Context,
     private val runPendingSyncDao: RunPendingSyncDao,
-    private val sessionStorage: SessionStorage,
+    private val userStorage: UserStorage,
     private val applicationScope: CoroutineScope
 ) : SyncRunScheduler {
 
@@ -72,7 +72,7 @@ class SyncRunWorkerScheduler(
     }
 
     private suspend fun scheduleCreateRunWorker(run: Run, mapPictureBytes: ByteArray) {
-        val userId = sessionStorage.get()?.userId ?: return
+        val userId = userStorage.get() ?: return
 
         val pendingRun = RunPendingSyncEntity(
             run = run.toRunEntity(),
@@ -87,6 +87,7 @@ class SyncRunWorkerScheduler(
             .getDefaultBackoffCriteria()
             .setInputData(
                 Data.Builder()
+                    .putString(CreateRunWorker.USER_ID, userId)
                     .putString(CreateRunWorker.RUN_ID, pendingRun.runId)
                     .build()
             )
@@ -98,7 +99,7 @@ class SyncRunWorkerScheduler(
     }
 
     private suspend fun scheduleDeleteRunWorker(runId: RunId) {
-        val userId = sessionStorage.get()?.userId ?: return
+        val userId = userStorage.get() ?: return
 
         val pendingRunToDelete = DeletedRunSyncEntity(
             runId = runId,

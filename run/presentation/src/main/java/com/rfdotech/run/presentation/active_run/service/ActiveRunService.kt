@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import androidx.annotation.Keep
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.onEach
 import org.koin.android.ext.android.inject
 import com.rfdotech.core.presentation.designsystem.R as DesignSystemManifest
 
+@Keep
 class ActiveRunService: Service() {
 
     private val notificationManager by lazy {

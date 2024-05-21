@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rfdotech.core.domain.SessionStorage
+import com.rfdotech.core.domain.auth.UserStorage
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val sessionStorage: SessionStorage
+    private val userStorage: UserStorage
 ) : ViewModel() {
 
     var state by mutableStateOf(MainState())
@@ -19,7 +19,7 @@ class MainViewModel(
         viewModelScope.launch {
             state = state.copy(isCheckingAuth = true)
 
-            state = state.copy(isSignedIn = sessionStorage.get() != null)
+            state = state.copy(isSignedIn = userStorage.get() != null)
 
             state = state.copy(isCheckingAuth = false)
         }

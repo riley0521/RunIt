@@ -6,12 +6,15 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isTrue
+import com.rfdotech.core.test_util.MainCoroutineRule
 import com.rfdotech.core.test_util.MutableClock
 import com.rfdotech.core.test_util.advanceTimeBy
 import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.domain.RunningTracker
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import java.time.Clock
 import kotlin.random.Random
 import kotlin.test.Test
@@ -28,32 +31,35 @@ class ActiveRunViewModelTest {
     private lateinit var runningTracker: RunningTracker
     private lateinit var viewModel: ActiveRunViewModel
 
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
+    private val testScope = TestScope(mainCoroutineRule.testDispatcher)
+
     @Before
     fun setup() {
         runRepository = FakeRunRepository()
         locationObserver = FakeLocationObserver()
         mutableClock = MutableClock(Clock.systemDefaultZone())
-    }
 
-    @Test
-    fun testUserHasPermission_HasStartedRunning_ShouldTrack() = runTest {
         runningTracker = RunningTracker(
             locationObserver = locationObserver,
-            applicationScope = backgroundScope,
+            applicationScope = testScope.backgroundScope,
             clock = mutableClock
         )
         viewModel = ActiveRunViewModel(
             runningTracker = runningTracker,
-            runRepository = runRepository,
-            scope = backgroundScope
+            runRepository = runRepository
         )
+    }
+
+    @Test
+    fun testUserHasPermission_HasStartedRunning_ShouldTrack() = testScope.runTest {
 
         turbineScope {
             assertThat(viewModel.state).isEqualTo(ActiveRunState())
 
             viewModel.onAction(ActiveRunAction.SubmitLocationPermissionInfo(true, false))
             viewModel.onAction(ActiveRunAction.OnToggleRunClick)
-            mutableClock.advanceTimeBy(1.seconds.toJavaDuration())
 
             val currentLocation = runningTracker.currentLocation.testIn(backgroundScope)
             currentLocation.skipItems(1) // Skip initial
@@ -111,17 +117,7 @@ class ActiveRunViewModelTest {
     }
 
     @Test
-    fun testUserHasStartedRunning_ClickBackButton_OnResume() = runTest {
-        runningTracker = RunningTracker(
-            locationObserver = locationObserver,
-            applicationScope = backgroundScope,
-            clock = mutableClock
-        )
-        viewModel = ActiveRunViewModel(
-            runningTracker = runningTracker,
-            runRepository = runRepository,
-            scope = backgroundScope
-        )
+    fun testUserHasStartedRunning_ClickBackButton_OnResume() = testScope.runTest {
 
         viewModel.onAction(ActiveRunAction.SubmitLocationPermissionInfo(true, false))
         viewModel.onAction(ActiveRunAction.OnToggleRunClick)
@@ -139,21 +135,23 @@ class ActiveRunViewModelTest {
     }
 
     @Test
-    fun testUserDeniesPostNotificationPermissionOnce_ShowRationale_DismissRationale() = runTest {
-        runningTracker = RunningTracker(
-            locationObserver = locationObserver,
-            applicationScope = backgroundScope,
-            clock = mutableClock
-        )
-        viewModel = ActiveRunViewModel(
-            runningTracker = runningTracker,
-            runRepository = runRepository,
-            scope = backgroundScope
-        )
+    fun testUserDeniesPostNotificationPermissionOnce_ShowRationale_DismissRationale() = testScope.runTest {
 
         viewModel.onAction(ActiveRunAction.SubmitPostNotificationPermissionInfo(false, true))
         assertThat(viewModel.state.showPostNotificationRationale).isTrue()
         assertThat(viewModel.state.showLocationRationale).isFalse()
+
+        viewModel.onAction(ActiveRunAction.DismissRationaleDialog)
+        assertThat(viewModel.state.showPostNotificationRationale).isFalse()
+        assertThat(viewModel.state.showLocationRationale).isFalse()
+    }
+
+    @Test
+    fun testUserDeniesLocationPermissionOnce_ShowRationale_DismissRationale() = testScope.runTest {
+
+        viewModel.onAction(ActiveRunAction.SubmitLocationPermissionInfo(false, true))
+        assertThat(viewModel.state.showPostNotificationRationale).isFalse()
+        assertThat(viewModel.state.showLocationRationale).isTrue()
 
         viewModel.onAction(ActiveRunAction.DismissRationaleDialog)
         assertThat(viewModel.state.showPostNotificationRationale).isFalse()

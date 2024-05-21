@@ -11,5 +11,7 @@ interface RunRepository {
     suspend fun deleteById(id: RunId)
     suspend fun deleteAllFromLocal()
     suspend fun syncPendingRuns()
+
+    @Deprecated("We do not use this on our current set up with Firebase Authentication.")
     suspend fun signOut(): EmptyResult<DataError.Network>
 }

@@ -1,4 +1,4 @@
-@file:OptIn(MapsComposeExperimentalApi::class)
+@file:OptIn(MapsComposeExperimentalApi::class, DelicateCoroutinesApi::class)
 
 package com.rfdotech.run.presentation.active_run.maps
 
@@ -47,6 +47,7 @@ import com.rfdotech.core.presentation.designsystem.Space300
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.run.domain.ListOfLocations
 import com.rfdotech.run.presentation.R
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

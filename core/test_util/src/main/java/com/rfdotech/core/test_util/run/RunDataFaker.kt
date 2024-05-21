@@ -1,4 +1,4 @@
-package com.rfdotech.run.presentation
+package com.rfdotech.core.test_util.run
 
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.Run

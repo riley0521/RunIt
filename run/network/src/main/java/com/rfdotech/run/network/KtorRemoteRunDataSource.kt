@@ -4,8 +4,10 @@ import com.rfdotech.core.data.networking.constructRoute
 import com.rfdotech.core.data.networking.delete
 import com.rfdotech.core.data.networking.get
 import com.rfdotech.core.data.networking.safeCall
+import com.rfdotech.core.domain.auth.UserId
 import com.rfdotech.core.domain.run.RemoteRunDataSource
 import com.rfdotech.core.domain.run.Run
+import com.rfdotech.core.domain.run.RunId
 import com.rfdotech.core.domain.util.DataError
 import com.rfdotech.core.domain.util.EmptyResult
 import com.rfdotech.core.domain.util.Result
@@ -22,13 +24,13 @@ import kotlinx.serialization.json.Json
 class KtorRemoteRunDataSource(
     private val httpClient: HttpClient
 ) : RemoteRunDataSource {
-    override suspend fun getAll(): Result<List<Run>, DataError.Network> {
+    override suspend fun getAll(userId: UserId): Result<List<Run>, DataError.Network> {
         return httpClient.get<List<RunDto>>(
             route = "/runs"
         ).map { runs -> runs.map { it.toRun() } }
     }
 
-    override suspend fun upsert(run: Run, mapPicture: ByteArray): Result<Run, DataError.Network> {
+    override suspend fun upsert(userId: UserId, run: Run, mapPicture: ByteArray): Result<Run, DataError.Network> {
         val createRunRequestJson = Json.encodeToString(run.toCreateRunRequest())
         val result = safeCall<RunDto> {
             httpClient.submitFormWithBinaryData(
@@ -51,7 +53,7 @@ class KtorRemoteRunDataSource(
         return result
     }
 
-    override suspend fun deleteById(id: String): EmptyResult<DataError.Network> {
+    override suspend fun deleteById(id: RunId): EmptyResult<DataError.Network> {
         return httpClient.delete<Unit>(
             route = "/run",
             queryParameters = mapOf(

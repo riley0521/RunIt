@@ -8,7 +8,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val runPresentationModule = module {
-    singleOf(::RunningTracker)
+    single {
+        RunningTracker(get(), get())
+    }
 
     viewModelOf(::RunOverviewViewModel)
     viewModelOf(::ActiveRunViewModel)

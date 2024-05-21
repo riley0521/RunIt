@@ -15,14 +15,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.android.gms.auth.api.identity.Identity
 import com.rfdotech.auth.presentation.R
 import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
@@ -34,29 +32,25 @@ import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.colorOnBackGround
 import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
-import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
 import com.rfdotech.core.presentation.ui.ObserveAsEvents
+import com.rfdotech.core.presentation.ui.auth.GoogleAuthUiClient
 import com.rfdotech.core.presentation.ui.showToastRes
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun IntroScreenRoot(
     onSignUpClick: () -> Unit,
     onSignInClick: () -> Unit,
     onSignInSuccess: () -> Unit,
+    googleAuthUiClient: GoogleAuthUiClient = koinInject(),
     viewModel: IntroViewModel = koinViewModel()
 ) {
     val activityContext = LocalContext.current as Activity
     val coroutineScope = rememberCoroutineScope()
 
-    val googleAuthUiClient = remember {
-        GoogleAuthUiClient(
-            oneTapClient = Identity.getSignInClient(activityContext.applicationContext),
-            onSignOut = {} // We will implement this in the home screen.
-        )
-    }
     val authLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->

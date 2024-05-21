@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.rfdotech.core.database.dao.RunPendingSyncDao
+-dontwarn com.rfdotech.core.database.entity.RunEntity
+-dontwarn com.rfdotech.core.database.entity.RunPendingSyncEntity
+-dontwarn com.rfdotech.core.database.mapper.RunMapperKt

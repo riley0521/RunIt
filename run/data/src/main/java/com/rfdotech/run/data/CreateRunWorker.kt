@@ -20,12 +20,13 @@ class CreateRunWorker(
             return Result.failure()
         }
 
+        val userId = params.inputData.getString(USER_ID) ?: return Result.failure()
         val pendingRunId = params.inputData.getString(RUN_ID) ?: return Result.failure()
         val pendingRunEntity = runPendingSyncDao.getRunPendingSyncEntity(pendingRunId)
             ?: return Result.failure()
 
         val run = pendingRunEntity.run.toRun()
-        return when (val result = remoteRunDataSource.upsert(run, pendingRunEntity.mapPictureBytes)) {
+        return when (val result = remoteRunDataSource.upsert(userId, run, pendingRunEntity.mapPictureBytes)) {
             is MyResult.Error -> result.error.toWorkerResult()
             is MyResult.Success -> {
                 runPendingSyncDao.deleteRunPendingSyncEntity(pendingRunId)
@@ -36,5 +37,6 @@ class CreateRunWorker(
 
     companion object {
         const val RUN_ID = "RUN_ID"
+        const val USER_ID = "USER_ID"
     }
 }

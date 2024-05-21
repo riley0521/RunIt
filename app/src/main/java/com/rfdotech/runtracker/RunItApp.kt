@@ -7,6 +7,7 @@ import com.rfdotech.auth.data.di.authDataModule
 import com.rfdotech.auth.presentation.di.authPresentationModule
 import com.rfdotech.core.data.di.coreDataModule
 import com.rfdotech.core.database.di.coreDatabaseModule
+import com.rfdotech.core.presentation.ui.di.corePresentationUiModule
 import com.rfdotech.run.data.di.runDataModule
 import com.rfdotech.run.location.di.runLocationModule
 import com.rfdotech.run.network.di.runNetworkModule
@@ -39,6 +40,7 @@ class RunItApp : Application() {
                 authPresentationModule,
                 coreDataModule,
                 coreDatabaseModule,
+                corePresentationUiModule,
                 runDataModule,
                 runLocationModule,
                 runNetworkModule,

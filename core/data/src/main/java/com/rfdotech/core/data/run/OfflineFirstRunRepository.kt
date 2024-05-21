@@ -1,10 +1,9 @@
 package com.rfdotech.core.data.run
 
 import com.rfdotech.core.data.networking.get
-import com.rfdotech.core.data.networking.post
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.mapper.toRun
-import com.rfdotech.core.domain.SessionStorage
+import com.rfdotech.core.domain.auth.UserStorage
 import com.rfdotech.core.domain.run.LocalRunDataSource
 import com.rfdotech.core.domain.run.RemoteRunDataSource
 import com.rfdotech.core.domain.run.Run
@@ -30,7 +29,7 @@ import kotlinx.coroutines.withContext
 class OfflineFirstRunRepository(
     private val localRunDataSource: LocalRunDataSource,
     private val remoteRunDataSource: RemoteRunDataSource,
-    private val sessionStorage: SessionStorage,
+    private val userStorage: UserStorage,
     private val runPendingSyncDao: RunPendingSyncDao,
     private val syncRunScheduler: SyncRunScheduler,
     private val httpClient: HttpClient,
@@ -41,7 +40,8 @@ class OfflineFirstRunRepository(
     }
 
     override suspend fun fetchFromRemote(): EmptyResult<DataError> {
-        return when (val result = remoteRunDataSource.getAll()) {
+        val userId = getUserId() ?: return Result.Error(DataError.Network.UNAUTHORIZED)
+        return when (val result = remoteRunDataSource.getAll(userId)) {
             is Result.Error -> result.asEmptyDataResult()
             is Result.Success -> {
                 applicationScope.async {
@@ -57,8 +57,10 @@ class OfflineFirstRunRepository(
             return localResult.asEmptyDataResult()
         }
 
+        val userId = getUserId() ?: return Result.Error(DataError.Network.UNAUTHORIZED)
         val runWithId = run.copy(id = localResult.data)
         val remoteResult = remoteRunDataSource.upsert(
+            userId,
             run = runWithId,
             mapPicture = mapPicture
         )
@@ -104,7 +106,7 @@ class OfflineFirstRunRepository(
     }
 
     private suspend fun getUserId(): String? {
-        return sessionStorage.get()?.userId
+        return userStorage.get()
     }
 
     override suspend fun syncPendingRuns() {
@@ -123,7 +125,7 @@ class OfflineFirstRunRepository(
                 .map {
                     launch {
                         val run = it.run.toRun()
-                        when (remoteRunDataSource.upsert(run, it.mapPictureBytes)) {
+                        when (remoteRunDataSource.upsert(userId, run, it.mapPictureBytes)) {
                             is Result.Error -> Unit
                             is Result.Success -> {
                                 applicationScope.launch {
@@ -154,6 +156,7 @@ class OfflineFirstRunRepository(
         }
     }
 
+    @Deprecated("We do not use this on our current set up with Firebase Authentication.")
     override suspend fun signOut(): EmptyResult<DataError.Network> {
         val result = httpClient.get<Unit>(
             route = "/logout"

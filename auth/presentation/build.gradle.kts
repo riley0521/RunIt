@@ -12,5 +12,4 @@ dependencies {
 
     implementation(libs.bundles.koin)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.bundles.google.auth)
 }

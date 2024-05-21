@@ -14,7 +14,6 @@ import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.presentation.ui.asUiText
 import com.rfdotech.run.domain.RunningTracker
 import com.rfdotech.run.presentation.active_run.service.ActiveRunService
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,11 +29,8 @@ import java.time.ZonedDateTime
 
 class ActiveRunViewModel(
     private val runningTracker: RunningTracker,
-    private val runRepository: RunRepository,
-    scope: CoroutineScope? = null
+    private val runRepository: RunRepository
 ) : ViewModel() {
-
-    val currentScope = scope ?: viewModelScope
 
     var state by mutableStateOf(
         ActiveRunState(
@@ -48,7 +44,7 @@ class ActiveRunViewModel(
     val events = eventChannel.receiveAsFlow()
 
     private val shouldTrack = snapshotFlow { state.shouldTrack }
-        .stateIn(currentScope, SharingStarted.Lazily, state.shouldTrack)
+        .stateIn(viewModelScope, SharingStarted.Lazily, state.shouldTrack)
     private val hasLocationPermission = MutableStateFlow(false)
 
     private val isTracking = combine(
@@ -56,7 +52,7 @@ class ActiveRunViewModel(
         hasLocationPermission
     ) { shouldTrack, hasLocationPermission ->
         shouldTrack && hasLocationPermission
-    }.stateIn(currentScope, SharingStarted.Lazily, false)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     init {
         hasLocationPermission
@@ -67,23 +63,23 @@ class ActiveRunViewModel(
                     runningTracker.stopObservingLocation()
                 }
             }
-            .launchIn(currentScope)
+            .launchIn(viewModelScope)
 
         isTracking.onEach { isTracking ->
             runningTracker.setIsTracking(isTracking)
-        }.launchIn(currentScope)
+        }.launchIn(viewModelScope)
 
         runningTracker.currentLocation.onEach {
             state = state.copy(currentLocation = it?.location)
-        }.launchIn(currentScope)
+        }.launchIn(viewModelScope)
 
         runningTracker.runData.onEach {
             state = state.copy(runData = it)
-        }.launchIn(currentScope)
+        }.launchIn(viewModelScope)
 
         runningTracker.elapsedTime.onEach {
             state = state.copy(elapsedTime = it)
-        }.launchIn(currentScope)
+        }.launchIn(viewModelScope)
     }
 
     fun onAction(action: ActiveRunAction) {
@@ -132,7 +128,7 @@ class ActiveRunViewModel(
         }
     }
 
-    private fun finishRun(mapPictureBytes: ByteArray) = currentScope.launch {
+    private fun finishRun(mapPictureBytes: ByteArray) = viewModelScope.launch {
         val locations = state.runData.locations
         if (locations.isEmpty() || locations.first().size <= 1) {
             state = state.copy(isSavingRun = false)

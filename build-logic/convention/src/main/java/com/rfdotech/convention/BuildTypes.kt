@@ -54,8 +54,7 @@ internal fun Project.configureBuildTypes(
                             configureDebugBuildType(apiKey, authApiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonExtension, apiKey, authApiKey)
-                            isMinifyEnabled = false
+                            configureReleaseBuildType(commonExtension, apiKey, authApiKey, isDynamicFeature = true)
                         }
                     }
                 }
@@ -73,15 +72,18 @@ private fun BuildType.configureDebugBuildType(apiKey: String, authApiKey: String
 private fun BuildType.configureReleaseBuildType(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
     apiKey: String,
-    authApiKey: String
+    authApiKey: String,
+    isDynamicFeature: Boolean = false
 ) {
     buildConfigField("String", "AUTH_API_KEY", "\"$authApiKey\"")
     buildConfigField("String", "API_KEY", "\"$apiKey\"")
     buildConfigField("String", "BASE_URL", "\"https://runique.pl-coding.com:8080\"")
 
-    isMinifyEnabled = true
-    proguardFiles(
-        commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
-    )
+    isMinifyEnabled = !isDynamicFeature
+    if (!isDynamicFeature) {
+        proguardFiles(
+            commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
+    }
 }

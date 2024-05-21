@@ -1,4 +1,4 @@
-package com.rfdotech.auth.presentation.intro
+package com.rfdotech.core.presentation.ui.auth
 
 import android.content.Intent
 import android.content.IntentSender
@@ -10,11 +10,14 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rfdotech.core.domain.auth.UserId
 import com.rfdotech.core.domain.printAndThrowCancellationException
+import com.rfdotech.core.domain.util.DataError
+import com.rfdotech.core.domain.util.EmptyResult
+import com.rfdotech.core.domain.util.Result
+import com.rfdotech.core.presentation.ui.BuildConfig
 import kotlinx.coroutines.tasks.await
 
 class GoogleAuthUiClient(
-    private val oneTapClient: SignInClient,
-    private val onSignOut: () -> Unit
+    private val oneTapClient: SignInClient
 ) {
 
     private val auth = Firebase.auth
@@ -44,13 +47,14 @@ class GoogleAuthUiClient(
         }
     }
 
-    suspend fun signOut() {
-        try {
+    suspend fun signOut(): EmptyResult<DataError.Network> {
+        return try {
             oneTapClient.signOut().await()
             auth.signOut()
-            onSignOut()
+            Result.Success(Unit)
         } catch (e: Exception) {
             e.printAndThrowCancellationException()
+            Result.Error(DataError.Network.SERVER_ERROR)
         }
     }
 
@@ -59,8 +63,8 @@ class GoogleAuthUiClient(
             .setGoogleIdTokenRequestOptions(
                 GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
-                    .setFilterByAuthorizedAccounts(true)
-                    .setServerClientId("Something")
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(BuildConfig.AUTH_API_KEY)
                     .build()
             )
             .setAutoSelectEnabled(false)
