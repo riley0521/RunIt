@@ -7,6 +7,5 @@ typealias ListOfPolyLines = List<List<PolyLineUi>>
 
 data class PolyLineUi(
     val location1: Location,
-    val location2: Location,
-    val color: Color
+    val location2: Location
 )

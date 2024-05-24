@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.Polyline
+import com.rfdotech.core.presentation.designsystem.colorPrimary
 import com.rfdotech.run.domain.ListOfLocations
 
 @Composable
@@ -16,11 +17,7 @@ fun ActiveRunPolyLines(
             locations.zipWithNext { timestamp1, timestamp2 ->
                 PolyLineUi(
                     location1 = timestamp1.location.location,
-                    location2 = timestamp2.location.location,
-                    color = PolyLineColorCalculator.locationsToColor(
-                        location1 = timestamp1,
-                        location2 = timestamp2
-                    )
+                    location2 = timestamp2.location.location
                 )
             }
         }
@@ -33,7 +30,7 @@ fun ActiveRunPolyLines(
                     LatLng(data.location1.latitude, data.location1.longitude),
                     LatLng(data.location2.latitude, data.location2.longitude)
                 ),
-                color = data.color,
+                color = colorPrimary,
                 jointType = JointType.BEVEL
             )
         }
