@@ -35,6 +35,7 @@ import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
 import com.rfdotech.core.presentation.ui.ObserveAsEvents
+import com.rfdotech.core.presentation.ui.showToastRes
 import com.rfdotech.core.presentation.ui.showToastStr
 import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.presentation.R
@@ -64,6 +65,10 @@ fun ActiveRunScreenRoot(
                 context.showToastStr(event.error.asString(context))
             }
             ActiveRunEvent.RunSaved -> {
+                onFinish()
+            }
+            ActiveRunEvent.InvalidRunDiscarded -> {
+                context.showToastRes(R.string.invalid_run_not_saved)
                 onFinish()
             }
         }

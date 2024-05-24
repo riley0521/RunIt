@@ -132,6 +132,7 @@ class ActiveRunViewModel(
         val locations = state.runData.locations
         if (locations.isEmpty() || locations.first().size <= 1) {
             state = state.copy(isSavingRun = false)
+            eventChannel.send(ActiveRunEvent.InvalidRunDiscarded)
             return@launch
         }
 
