@@ -14,4 +14,5 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.com.jakewharton.timber)
 }

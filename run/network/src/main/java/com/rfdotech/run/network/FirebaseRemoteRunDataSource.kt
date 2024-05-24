@@ -45,7 +45,7 @@ class FirebaseRemoteRunDataSource(
             val storageRef = getStorageRefByUserId(userId)
             val isSuccessful = try {
                 storageRef.putBytes(mapPicture).await()
-                existingRun = existingRun.copy(mapPictureUrl = storageRef.downloadUrl.toString())
+                existingRun = existingRun.copy(mapPictureUrl = storageRef.downloadUrl.await().toString())
                 true
             } catch (e: Exception) {
                 e.printAndThrowCancellationException()
@@ -63,7 +63,12 @@ class FirebaseRemoteRunDataSource(
     }
 
     private suspend fun getRunDtoById(id: String): FirestoreRunDto? = withContext(dispatcherProvider.io) {
-        val result = runCollection.document(id).get().await().toObject<FirestoreRunDto>()
+        val result = try {
+            runCollection.document(id).get().await().toObject<FirestoreRunDto>()
+        } catch (e: Exception) {
+            e.printAndThrowCancellationException()
+            null
+        }
         return@withContext result
     }
 
