@@ -25,11 +25,13 @@ import kotlin.time.toJavaDuration
 class RunningTrackerTest {
 
     private lateinit var locationObserver: FakeLocationObserver
+    private lateinit var stepObserver: FakeStepObserver
     private lateinit var mutableClock: MutableClock
     private lateinit var runningTracker: RunningTracker
 
     @Before
     fun setup() {
+        stepObserver = FakeStepObserver()
         mutableClock = MutableClock(Clock.systemDefaultZone())
     }
 
@@ -38,6 +40,7 @@ class RunningTrackerTest {
         locationObserver = FakeLocationObserver()
         runningTracker = RunningTracker(
             locationObserver = locationObserver,
+            stepObserver = stepObserver,
             applicationScope = backgroundScope,
             clock = mutableClock
         )
@@ -62,6 +65,7 @@ class RunningTrackerTest {
         locationObserver = FakeLocationObserver()
         runningTracker = RunningTracker(
             locationObserver = locationObserver,
+            stepObserver = stepObserver,
             applicationScope = backgroundScope,
             clock = mutableClock
         )

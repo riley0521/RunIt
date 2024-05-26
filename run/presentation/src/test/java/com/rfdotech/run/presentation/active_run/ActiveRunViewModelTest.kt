@@ -27,6 +27,7 @@ class ActiveRunViewModelTest {
     private lateinit var runRepository: FakeRunRepository
 
     private lateinit var locationObserver: FakeLocationObserver
+    private lateinit var stepObserver: FakeStepObserver
     private lateinit var mutableClock: MutableClock
     private lateinit var runningTracker: RunningTracker
     private lateinit var viewModel: ActiveRunViewModel
@@ -39,10 +40,12 @@ class ActiveRunViewModelTest {
     fun setup() {
         runRepository = FakeRunRepository()
         locationObserver = FakeLocationObserver()
+        stepObserver = FakeStepObserver()
         mutableClock = MutableClock(Clock.systemDefaultZone())
 
         runningTracker = RunningTracker(
             locationObserver = locationObserver,
+            stepObserver = stepObserver,
             applicationScope = testScope.backgroundScope,
             clock = mutableClock
         )
