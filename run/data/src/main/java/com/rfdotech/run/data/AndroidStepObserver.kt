@@ -21,6 +21,7 @@ class AndroidStepObserver(
 
             if (sensor == null) {
                 close()
+                return@callbackFlow
             }
 
             var step = currentSteps
@@ -28,7 +29,7 @@ class AndroidStepObserver(
 
             val listener = object: SensorEventListener {
                 override fun onSensorChanged(event: SensorEvent?) {
-                    if (event == null) {
+                    if (event == null || event.sensor.type != sensor.type) {
                         return
                     }
 
