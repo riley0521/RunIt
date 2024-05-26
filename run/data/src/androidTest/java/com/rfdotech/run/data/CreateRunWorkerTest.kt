@@ -146,12 +146,13 @@ class CreateRunWorkerTest {
             run = RunEntity(
                 durationMillis = duration.inWholeMilliseconds,
                 distanceMeters = 2500,
-                dateTimeUtc = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")).toInstant().toString(),
+                dateTimeUtc = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")),
                 latitude = 1.0,
                 longitude = 1.0,
                 avgSpeedKmh = 10.5,
                 maxSpeedKmh = 15.0,
                 totalElevationMeters = 1,
+                numberOfSteps = 8500,
                 mapPictureUrl = null,
                 id = id
             ), runId = id, mapPictureBytes = mapPictureBytes, userId = userId

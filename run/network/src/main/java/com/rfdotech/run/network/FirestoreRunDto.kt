@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class FirestoreRunDto(
     val id: String = "",
     val userId: String = "",
-    val dateTimeUtc: String = "",
+    val dateTimeUtc: Long = 0,
     val durationMillis: Long = 0,
     val distanceMeters: Int = 0,
     val latitude: Double = 0.0,
@@ -14,5 +14,6 @@ data class FirestoreRunDto(
     val avgSpeedKmh: Double = 0.0,
     val maxSpeedKmh: Double = 0.0,
     val totalElevationMeters: Int = 0,
+    val numberOfSteps: Int = 0,
     val mapPictureUrl: String? = null
 )

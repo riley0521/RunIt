@@ -8,7 +8,7 @@ import kotlin.time.Duration.Companion.minutes
 fun runEntity(
     duration: Duration = 30.minutes,
     distanceMeters: Int = 0,
-    dateTimeUtc: String = ZonedDateTime.now().toInstant().toString(),
+    dateTimeUtc: ZonedDateTime = ZonedDateTime.now(),
     maxSpeedKmh: Double = 15.0
 ): RunEntity {
     return RunEntity(
@@ -20,6 +20,7 @@ fun runEntity(
         avgSpeedKmh = 10.5,
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = 1,
+        numberOfSteps = 8500,
         mapPictureUrl = null
     )
 }

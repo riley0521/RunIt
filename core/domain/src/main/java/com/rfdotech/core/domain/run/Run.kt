@@ -12,6 +12,7 @@ data class Run(
     val location: Location,
     val maxSpeedKmh: Double,
     val totalElevationMeters: Int,
+    val numberOfSteps: Int,
     val mapPictureUrl: String?
 ) {
     val avgSpeedKhm: Double

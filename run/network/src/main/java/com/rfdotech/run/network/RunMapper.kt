@@ -15,6 +15,7 @@ fun RunDto.toRun(): Run {
         location = Location(latitude = lat, longitude = long),
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = totalElevationMeters,
+        numberOfSteps = 0,
         mapPictureUrl = mapPictureUrl
     )
 }
@@ -23,11 +24,12 @@ fun FirestoreRunDto.toRun(): Run {
     return Run(
         id = id,
         duration = durationMillis.milliseconds,
-        dateTimeUtc = Instant.parse(dateTimeUtc).atZone(ZoneId.of("UTC")),
+        dateTimeUtc = Instant.ofEpochMilli(dateTimeUtc).atZone(ZoneId.of("UTC")),
         distanceMeters = distanceMeters,
         location = Location(latitude = latitude, longitude = longitude),
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = totalElevationMeters,
+        numberOfSteps = numberOfSteps,
         mapPictureUrl = mapPictureUrl
     )
 }
@@ -36,7 +38,7 @@ fun Run.toRunDtoV2(userId: String): FirestoreRunDto {
     return FirestoreRunDto(
         id = id.orEmpty(),
         userId = userId,
-        dateTimeUtc = dateTimeUtc.toInstant().toString(),
+        dateTimeUtc = dateTimeUtc.toInstant().toEpochMilli(),
         durationMillis = duration.inWholeMilliseconds,
         distanceMeters = distanceMeters,
         latitude = location.latitude,

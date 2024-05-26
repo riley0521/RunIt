@@ -3,6 +3,7 @@ package com.rfdotech.core.database.di
 import androidx.room.Room
 import com.rfdotech.core.database.RoomLocalRunDataSource
 import com.rfdotech.core.database.RunDatabase
+import com.rfdotech.core.database.converter.ZonedDateTimeConverter
 import com.rfdotech.core.database.dao.RunDao
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.domain.run.LocalRunDataSource
@@ -17,7 +18,7 @@ val coreDatabaseModule = module {
             androidApplication(),
             RunDatabase::class.java,
             "run.db"
-        ).build()
+        ).addTypeConverter(ZonedDateTimeConverter::class).build()
     }
     single<RunDao> {
         get<RunDatabase>().runDao

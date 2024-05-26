@@ -22,6 +22,7 @@ fun run(
         location = Location(latitude = 1.0, longitude = 1.0),
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = 1,
+        numberOfSteps = 8500,
         mapPictureUrl = null
     )
 }
