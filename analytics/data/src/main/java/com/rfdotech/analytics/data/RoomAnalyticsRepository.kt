@@ -2,9 +2,12 @@ package com.rfdotech.analytics.data
 
 import com.rfdotech.analytics.domain.AnalyticsValues
 import com.rfdotech.analytics.domain.AnalyticsRepository
+import com.rfdotech.analytics.domain.DateParam
+import com.rfdotech.analytics.domain.toZonedDateTime
 import com.rfdotech.core.database.dao.AnalyticsDao
+import com.rfdotech.core.database.mapper.toRun
 import com.rfdotech.core.domain.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
+import com.rfdotech.core.domain.run.Run
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,5 +35,17 @@ class RoomAnalyticsRepository(
         }
     }
 
+    override suspend fun getAllRunsThisMonth(): List<Run> {
+        return analyticsDao.getAllRunsThisMonth().map { it.toRun() }
+    }
 
+    override suspend fun getAllRunsBetweenDates(
+        startDate: DateParam,
+        endDate: DateParam
+    ): List<Run> {
+        val startDateZoned = startDate.toZonedDateTime()
+        val endDateZoned = endDate.toZonedDateTime(isEnd = true)
+
+        return analyticsDao.getAllRunsBetweenDates(startDateZoned, endDateZoned).map { it.toRun() }
+    }
 }

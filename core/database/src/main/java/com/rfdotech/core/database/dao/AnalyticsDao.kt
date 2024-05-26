@@ -2,6 +2,8 @@ package com.rfdotech.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import com.rfdotech.core.database.entity.RunEntity
+import java.time.ZonedDateTime
 
 @Dao
 interface AnalyticsDao {
@@ -23,4 +25,14 @@ interface AnalyticsDao {
      */
     @Query("SELECT AVG((durationMillis / 60000.0) / (distanceMeters / 1000.0)) FROM tbl_runs")
     suspend fun getAvgPacePerRun(): Double
+
+    @Query("SELECT * FROM tbl_runs " +
+            "WHERE strftime('%m', datetime(dateTimeUtc / 1000, 'unixepoch')) = strftime('%m', 'now', 'utc')"
+    )
+    suspend fun getAllRunsThisMonth(): List<RunEntity>
+
+    @Query("SELECT * FROM tbl_runs " +
+            "WHERE dateTimeUtc >= :startDate AND dateTimeUtc <= :endDate"
+    )
+    suspend fun getAllRunsBetweenDates(startDate: ZonedDateTime, endDate: ZonedDateTime): List<RunEntity>
 }
