@@ -15,6 +15,7 @@ import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.entity.DeletedRunSyncEntity
 import com.rfdotech.core.database.entity.RunPendingSyncEntity
 import com.rfdotech.core.database.mapper.toRunEntity
+import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.auth.UserStorage
 import com.rfdotech.core.domain.run.FETCH_RUNS_INTERVAL
 import com.rfdotech.core.domain.run.Run
@@ -33,6 +34,7 @@ class SyncRunWorkerScheduler(
     private val context: Context,
     private val runPendingSyncDao: RunPendingSyncDao,
     private val userStorage: UserStorage,
+    private val dispatcherProvider: DispatcherProvider,
     private val applicationScope: CoroutineScope
 ) : SyncRunScheduler {
 
@@ -48,7 +50,7 @@ class SyncRunWorkerScheduler(
 
     @SuppressLint("NewApi") // We have desugaring enabled so we are safe to use Duration and Dates
     private suspend fun scheduleFetchRunsWorker(interval: Duration) {
-        val isSyncScheduled = withContext(Dispatchers.IO) {
+        val isSyncScheduled = withContext(dispatcherProvider.io) {
             workManager
                 .getWorkInfosByTag(FETCH_RUNS_WORKER_TAG)
                 .get()

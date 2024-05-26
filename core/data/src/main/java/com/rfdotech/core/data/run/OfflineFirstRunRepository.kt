@@ -3,6 +3,7 @@ package com.rfdotech.core.data.run
 import com.rfdotech.core.data.networking.get
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.mapper.toRun
+import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.auth.UserStorage
 import com.rfdotech.core.domain.run.LocalRunDataSource
 import com.rfdotech.core.domain.run.RemoteRunDataSource
@@ -33,6 +34,7 @@ class OfflineFirstRunRepository(
     private val runPendingSyncDao: RunPendingSyncDao,
     private val syncRunScheduler: SyncRunScheduler,
     private val httpClient: HttpClient,
+    private val dispatcherProvider: DispatcherProvider,
     private val applicationScope: CoroutineScope
 ) : RunRepository {
     override fun getAllLocal(): Flow<List<Run>> {
@@ -110,7 +112,7 @@ class OfflineFirstRunRepository(
     }
 
     override suspend fun syncPendingRuns() {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcherProvider.io) {
             val userId = getUserId() ?: return@withContext
 
             val createdRuns = async {

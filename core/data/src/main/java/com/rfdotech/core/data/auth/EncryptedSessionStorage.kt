@@ -3,6 +3,7 @@ package com.rfdotech.core.data.auth
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.rfdotech.core.domain.AuthInfo
+import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.SessionStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,10 +11,11 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class EncryptedSessionStorage(
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val dispatcherProvider: DispatcherProvider
 ) : SessionStorage {
     override suspend fun get(): AuthInfo? {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcherProvider.io) {
             val json = sharedPreferences.getString(KEY_AUTH_INFO, null)
             json?.let {
                 val authInfoSerializable = Json.decodeFromString<AuthInfoSerializable>(json)
@@ -24,7 +26,7 @@ class EncryptedSessionStorage(
 
     @SuppressLint("ApplySharedPref")
     override suspend fun set(info: AuthInfo?) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcherProvider.io) {
             if(info == null) {
                 sharedPreferences.edit().remove(KEY_AUTH_INFO).commit()
                 return@withContext
