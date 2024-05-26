@@ -7,6 +7,7 @@ import kotlin.time.Duration
 data class ActiveRunState(
     val elapsedTime: Duration = Duration.ZERO,
     val runData: RunData = RunData(),
+    val stepCount: Int = 0,
     val shouldTrack: Boolean = false,
     val hasStartedRunning: Boolean = false,
     val currentLocation: Location? = null,

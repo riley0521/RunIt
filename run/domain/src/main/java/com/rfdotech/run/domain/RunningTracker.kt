@@ -24,6 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalCoroutinesApi::class)
 class RunningTracker(
     private val locationObserver: LocationObserver,
+    private val stepObserver: StepObserver,
     applicationScope: CoroutineScope,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
@@ -51,6 +52,9 @@ class RunningTracker(
         }
         .stateIn(applicationScope, SharingStarted.Lazily, null)
 
+    private val _stepCount = MutableStateFlow(0)
+    val stepCount = _stepCount.asStateFlow()
+
     init {
         _isTracking
             .onEach { isTracking ->
@@ -70,6 +74,14 @@ class RunningTracker(
                 _elapsedTime.update { it + value }
             }
             .launchIn(applicationScope)
+
+        _isTracking.flatMapLatest {
+            if (it) {
+                stepObserver.observeSteps(_stepCount.value)
+            } else flowOf()
+        }.onEach { newStepCount ->
+            _stepCount.update { newStepCount }
+        }.launchIn(applicationScope)
 
         currentLocation
             .filterNotNull()
@@ -105,6 +117,7 @@ class RunningTracker(
         setIsTracking(false)
         _elapsedTime.update { Duration.ZERO }
         _runData.update { RunData() }
+        _stepCount.update { 0 }
     }
 
     private fun convertLocationWithTimestampToRunData(location: LocationTimestamp) {

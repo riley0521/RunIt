@@ -80,6 +80,10 @@ class ActiveRunViewModel(
         runningTracker.elapsedTime.onEach {
             state = state.copy(elapsedTime = it)
         }.launchIn(viewModelScope)
+
+        runningTracker.stepCount.onEach {
+            state = state.copy(stepCount = it)
+        }.launchIn(viewModelScope)
     }
 
     fun onAction(action: ActiveRunAction) {
@@ -144,7 +148,7 @@ class ActiveRunViewModel(
             location = state.currentLocation ?: Location(0.0, 0.0),
             maxSpeedKmh = DistanceAndSpeedCalculator.getMaxSpeedKmh(locations),
             totalElevationMeters = DistanceAndSpeedCalculator.getTotalElevationMeters(locations),
-            numberOfSteps = 0, // TODO: Get the number of steps
+            numberOfSteps = state.stepCount,
             mapPictureUrl = null
         )
         runningTracker.finishRun()
