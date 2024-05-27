@@ -7,6 +7,7 @@
     <string name="average_distance">Avg. distance per run</string>
     <string name="average_pace">Avg. pace per run</string>
     <string name="acc_go_to_detail_screen">Go to details</string>
-    <string name="avg_distance_overtime">Avg. Distance per run over time</string>
+    <string name="avg_distance_overtime">Avg. Distance over time</string>
     <string name="avg_pace_overtime">Avg. Pace over time</string>
+    <string name="acc_pick_date">Pick range of dates.</string>
 </resources>

@@ -46,7 +46,8 @@ fun AnalyticsCardWithChart(
     monthAndYear: String,
     analyticType: AnalyticType,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isDetailed: Boolean = false
 ) {
 
     Column(
@@ -66,26 +67,31 @@ fun AnalyticsCardWithChart(
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = FontSize16
             )
-            IconButton(onClick = onClick) {
-                Icon(
-                    imageVector = ArrowRightIcon,
-                    contentDescription = stringResource(id = R.string.acc_go_to_detail_screen),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+            if (!isDetailed) {
+                IconButton(onClick = onClick) {
+                    Icon(
+                        imageVector = ArrowRightIcon,
+                        contentDescription = stringResource(id = R.string.acc_go_to_detail_screen),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(Space8))
         AnalyticChart(
             analyticType = analyticType,
+            scrollEnabled = isDetailed,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(Space32))
-        Text(
-            text = monthAndYear,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        if (!isDetailed) {
+            Text(
+                text = monthAndYear,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 

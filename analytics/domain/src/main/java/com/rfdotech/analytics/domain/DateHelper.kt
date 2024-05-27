@@ -11,4 +11,10 @@ object DateHelper {
 
         return formatter.format(now)
     }
+
+    fun getFormattedDate(startDate: ZonedDateTime, endDate: ZonedDateTime): String {
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+
+        return "${formatter.format(startDate)} - ${formatter.format(endDate)}"
+    }
 }

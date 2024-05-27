@@ -26,6 +26,7 @@ import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCardWit
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
 
@@ -71,6 +72,7 @@ private fun AnalyticsDashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .padding(bottom = Space32)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Space16)
         ) {

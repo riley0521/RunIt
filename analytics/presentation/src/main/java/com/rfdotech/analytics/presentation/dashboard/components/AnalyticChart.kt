@@ -29,7 +29,8 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun AnalyticChart(
     analyticType: AnalyticType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollEnabled: Boolean = false
 ) {
     val modelProducer = remember {
         CartesianChartModelProducer.build()
@@ -95,7 +96,7 @@ fun AnalyticChart(
         modelProducer = modelProducer,
         modifier = modifier,
         marker = marker,
-        scrollState = rememberVicoScrollState(scrollEnabled = false),
+        scrollState = rememberVicoScrollState(scrollEnabled = scrollEnabled),
         horizontalLayout = HorizontalLayout.fullWidth()
     )
 }
