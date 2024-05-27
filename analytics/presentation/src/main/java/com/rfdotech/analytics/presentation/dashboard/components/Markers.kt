@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import com.patrykandpatrick.vico.compose.common.component.rememberLayeredComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
@@ -26,6 +27,7 @@ import com.rfdotech.core.presentation.designsystem.colorPrimary
 
 @Composable
 fun rememberDefaultLineChartMarker(
+    textWidth: Dp = Space48,
     getFormattedValue: (Float) -> String
 ): CartesianMarker {
     val labelBackgroundShape = Shape.markerCornered(Corner.FullyRounded)
@@ -35,7 +37,7 @@ fun rememberDefaultLineChartMarker(
         background = labelBackground,
         margins = Dimensions.of(bottom = Space16),
         textAlignment = Layout.Alignment.ALIGN_CENTER,
-        minWidth = TextComponent.MinWidth.fixed(Space48.value)
+        minWidth = TextComponent.MinWidth.fixed(textWidth.value)
     )
 
     val indicatorRearComponent = rememberShapeComponent(

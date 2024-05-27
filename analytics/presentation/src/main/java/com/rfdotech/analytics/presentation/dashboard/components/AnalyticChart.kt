@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.fullWidth
@@ -20,6 +21,9 @@ import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shader.TopBottomShader
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
+import com.rfdotech.core.presentation.designsystem.Space16
+import com.rfdotech.core.presentation.designsystem.Space32
+import com.rfdotech.core.presentation.designsystem.Space48
 import com.rfdotech.core.presentation.designsystem.colorPrimary
 import com.rfdotech.core.presentation.ui.formatted
 import java.time.LocalDate
@@ -30,7 +34,8 @@ import kotlin.time.Duration.Companion.seconds
 fun AnalyticChart(
     analyticType: AnalyticType,
     modifier: Modifier = Modifier,
-    scrollEnabled: Boolean = false
+    scrollEnabled: Boolean = false,
+    markerTextWidth: Dp = Space48
 ) {
     val modelProducer = remember {
         CartesianChartModelProducer.build()
@@ -60,6 +65,7 @@ fun AnalyticChart(
     }
 
     val marker = rememberDefaultLineChartMarker(
+        textWidth = markerTextWidth,
         getFormattedValue = { value ->
             return@rememberDefaultLineChartMarker when (analyticType) {
                 is AnalyticType.Distance -> "$value km"
@@ -70,6 +76,8 @@ fun AnalyticChart(
             }
         }
     )
+    val horizontalSpace = markerTextWidth + Space16
+
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
@@ -80,7 +88,8 @@ fun AnalyticChart(
                             DynamicShader.color(colorPrimary.copy(alpha = 0.5f))
                         )
                     )
-                )
+                ),
+                spacing = if (scrollEnabled) horizontalSpace else Space32
             ),
             startAxis = null,
             bottomAxis = rememberBottomAxis(
@@ -91,11 +100,16 @@ fun AnalyticChart(
                 itemPlacer = remember {
                     AxisItemPlacer.Horizontal.default(addExtremeLabelPadding = true)
                 }
-            )
+            ),
+            persistentMarkers = if (scrollEnabled) {
+                xToDates.keys.associateWith {
+                    marker
+                }
+            } else null
         ),
         modelProducer = modelProducer,
         modifier = modifier,
-        marker = marker,
+        marker = if (!scrollEnabled) marker else null,
         scrollState = rememberVicoScrollState(scrollEnabled = scrollEnabled),
         horizontalLayout = HorizontalLayout.fullWidth()
     )

@@ -29,7 +29,7 @@ import com.rfdotech.analytics.domain.DateHelper
 import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
 import com.rfdotech.analytics.presentation.R
 import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCardWithChart
-import com.rfdotech.analytics.presentation.dashboard.components.getRunsWithDistance
+import com.rfdotech.analytics.presentation.dashboard.components.getRunsWithPace
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
 import com.rfdotech.core.presentation.designsystem.CalendarIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
@@ -153,9 +153,9 @@ private fun ShowAndPickDateCard(
 private fun AnalyticsDetailScreenPreview() {
     RunItTheme {
         AnalyticsDetailScreen(
-            analyticDetailType = AnalyticDetailType.DISTANCE,
+            analyticDetailType = AnalyticDetailType.PACE,
             state = AnalyticsDetailState(
-                runs = getRunsWithDistance()
+                runs = getRunsWithPace()
             ),
             onAction = {}
         )

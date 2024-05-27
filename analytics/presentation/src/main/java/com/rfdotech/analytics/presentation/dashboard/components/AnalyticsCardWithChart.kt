@@ -83,8 +83,8 @@ fun AnalyticsCardWithChart(
             scrollEnabled = isDetailed,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(Space32))
         if (!isDetailed) {
+            Spacer(modifier = Modifier.height(Space32))
             Text(
                 text = monthAndYear,
                 modifier = Modifier.fillMaxWidth(),
@@ -139,7 +139,7 @@ fun getRunsWithDistance(): List<Run> {
         ),
         sampleRun(
             distanceMeters = 3200,
-            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 11))
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 10))
         ),
         sampleRun(
             distanceMeters = 3600,
