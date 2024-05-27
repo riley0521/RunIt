@@ -8,9 +8,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.rfdotech.analytics.data.di.analyticsDataModule
-import com.rfdotech.analytics.presentation.AnalyticsDashboardScreenRoot
-import com.rfdotech.analytics.presentation.di.analyticsPresentationModule
+import com.rfdotech.analytics.presentation.dashboard.AnalyticsDashboardScreenRoot
+import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
+import com.rfdotech.analytics.presentation.dashboard.di.analyticsPresentationModule
 import com.rfdotech.core.presentation.designsystem.RunItTheme
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.context.loadKoinModules
 
 class AnalyticsActivity: ComponentActivity() {
@@ -23,9 +25,16 @@ class AnalyticsActivity: ComponentActivity() {
         setContent {
             RunItTheme {
                 val navController = rememberNavController()
+                val viewModel: AnalyticsSharedViewModel = koinViewModel()
+
                 NavHost(navController = navController, startDestination = "analytics_dashboard") {
                     composable("analytics_dashboard") {
-                        AnalyticsDashboardScreenRoot(onBackClick = { finish() })
+                        AnalyticsDashboardScreenRoot(
+                            onBackClick = { finish() },
+                            onNavigateToDetail = { type ->
+                            },
+                            viewModel = viewModel
+                        )
                     }
                 }
             }

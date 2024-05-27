@@ -1,4 +1,4 @@
-package com.rfdotech.analytics.presentation.components
+package com.rfdotech.analytics.presentation.dashboard.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +20,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.rfdotech.analytics.domain.DateHelper
 import com.rfdotech.analytics.domain.DateParam
 import com.rfdotech.analytics.domain.toZonedDateTime
 import com.rfdotech.analytics.presentation.R
+import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
 import com.rfdotech.core.domain.location.Location
-import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.presentation.designsystem.ArrowRightIcon
 import com.rfdotech.core.presentation.designsystem.FontSize16
@@ -35,12 +36,15 @@ import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import java.time.ZonedDateTime
 import java.util.UUID
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun AnalyticsCardWithChart(
+    title: String,
     monthAndYear: String,
-    data: RunAndDistanceMap,
+    analyticType: AnalyticType,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,21 +62,21 @@ fun AnalyticsCardWithChart(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(id = R.string.avg_distance_overtime),
+                text = title,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = FontSize16
             )
             IconButton(onClick = onClick) {
                 Icon(
                     imageVector = ArrowRightIcon,
-                    contentDescription = stringResource(id = R.string.go_to_analytics_detail),
+                    contentDescription = stringResource(id = R.string.acc_go_to_detail_screen),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
         Spacer(modifier = Modifier.height(Space8))
         AnalyticChart(
-            data = data,
+            analyticType = analyticType,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(Space32))
@@ -92,8 +96,9 @@ private fun AnalyticsChartPreview() {
         GradientBackground {
             Column {
                 AnalyticsCardWithChart(
-                    monthAndYear = "May 2024",
-                    data = getSampleMap(),
+                    title = "Avg. Something",
+                    monthAndYear = DateHelper.getMontAndYearFormatted(),
+                    analyticType = AnalyticType.Pace(getRunsWithPace()),
                     onClick = {},
                     modifier = Modifier
                         .fillMaxWidth()
@@ -104,8 +109,8 @@ private fun AnalyticsChartPreview() {
     }
 }
 
-fun getSampleMap(): RunAndDistanceMap {
-    return mapOf(
+fun getRunsWithDistance(): List<Run> {
+    return listOf(
         sampleRun(
             distanceMeters = 1000,
             dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 1))
@@ -149,14 +154,67 @@ fun getSampleMap(): RunAndDistanceMap {
     )
 }
 
+fun getRunsWithPace(): List<Run> {
+    return listOf(
+        sampleRun(
+            distanceMeters = 1000,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 1)),
+            duration = 2.hours
+        ),
+//                sampleRun(
+//                    distanceMeters = 2000,
+//                    dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 3))
+//                ),
+        sampleRun(
+            distanceMeters = 1500,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 5)),
+            duration = 180.minutes
+        ),
+//                sampleRun(
+//                    distanceMeters = 1900,
+//                    dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 7))
+//                ),
+        sampleRun(
+            distanceMeters = 3000,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 9)),
+            duration = 185.minutes
+        ),
+        sampleRun(
+            distanceMeters = 3200,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 11)),
+            duration = 210.minutes
+        ),
+        sampleRun(
+            distanceMeters = 3600,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 13)),
+            duration = 236.minutes
+        ),
+        sampleRun(
+            distanceMeters = 5000,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 15)),
+            duration = 60.minutes
+        ),
+        sampleRun(
+            distanceMeters = 4800,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 17)),
+            duration = 70.minutes
+        ),
+        sampleRun(
+            distanceMeters = 6700,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 22)),
+            duration = 69.minutes
+        )
+    )
+}
+
 private fun getZonedDateTime(param: DateParam): ZonedDateTime {
     return param.toZonedDateTime(isEnd = true)
 }
 
-private fun sampleRun(distanceMeters: Int, dateTimeUtc: ZonedDateTime): Pair<Run, Float> {
+private fun sampleRun(distanceMeters: Int, dateTimeUtc: ZonedDateTime, duration: Duration = 30.minutes): Run {
     return Run(
         id = UUID.randomUUID().toString(),
-        duration = 30.minutes,
+        duration = duration,
         dateTimeUtc = dateTimeUtc,
         distanceMeters = distanceMeters,
         location = Location(latitude = 1.0, longitude = 1.0),
@@ -164,5 +222,5 @@ private fun sampleRun(distanceMeters: Int, dateTimeUtc: ZonedDateTime): Pair<Run
         totalElevationMeters = 10,
         numberOfSteps = 9500,
         mapPictureUrl = null
-    ) to DistanceAndSpeedCalculator.getKmFromMeters(distanceMeters).toFloat()
+    )
 }

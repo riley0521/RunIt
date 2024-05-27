@@ -1,4 +1,4 @@
-package com.rfdotech.analytics.presentation.components
+package com.rfdotech.analytics.presentation.dashboard.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

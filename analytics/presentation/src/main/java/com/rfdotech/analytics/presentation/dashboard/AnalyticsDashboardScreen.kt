@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.rfdotech.analytics.presentation
+package com.rfdotech.analytics.presentation.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,29 +10,41 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.rfdotech.analytics.presentation.components.AnalyticsCard
+import com.rfdotech.analytics.domain.AnalyticDetailType
+import com.rfdotech.analytics.domain.DateHelper
+import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
+import com.rfdotech.analytics.presentation.R
+import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCard
+import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCardWithChart
+import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AnalyticsDashboardScreenRoot(
     onBackClick: () -> Unit,
-    viewModel: AnalyticsDashboardViewModel = koinViewModel()
+    onNavigateToDetail: (AnalyticDetailType) -> Unit,
+    viewModel: AnalyticsSharedViewModel
 ) {
     AnalyticsDashboardScreen(
-        state = viewModel.state,
+        state = viewModel.dashBoardState,
         onAction = { action ->
             when (action) {
                 AnalyticsDashboardAction.OnBackClick -> {
                     onBackClick()
+                }
+
+                is AnalyticsDashboardAction.OnNavigateToDetail -> {
+                    onNavigateToDetail(action.analyticDetailType)
                 }
             }
         }
@@ -58,7 +70,8 @@ private fun AnalyticsDashboardScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(Space16)
         ) {
             Row(
@@ -106,6 +119,28 @@ private fun AnalyticsDashboardScreen(
                     modifier = Modifier.weight(1f)
                 )
             }
+            AnalyticsCardWithChart(
+                title = stringResource(id = R.string.avg_distance_overtime),
+                monthAndYear = DateHelper.getMontAndYearFormatted(),
+                analyticType = AnalyticType.Distance(state.runs),
+                onClick = {
+                    onAction(AnalyticsDashboardAction.OnNavigateToDetail(AnalyticDetailType.DISTANCE))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Space16)
+            )
+            AnalyticsCardWithChart(
+                title = stringResource(id = R.string.avg_pace_overtime),
+                monthAndYear = DateHelper.getMontAndYearFormatted(),
+                analyticType = AnalyticType.Pace(state.runs),
+                onClick = {
+                    onAction(AnalyticsDashboardAction.OnNavigateToDetail(AnalyticDetailType.DISTANCE))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Space16)
+            )
         }
     }
 }

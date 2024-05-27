@@ -1,7 +1,7 @@
-package com.rfdotech.analytics.presentation.mapper
+package com.rfdotech.analytics.presentation.dashboard.mapper
 
 import com.rfdotech.analytics.domain.AnalyticsValues
-import com.rfdotech.analytics.presentation.AnalyticsDashboardState
+import com.rfdotech.analytics.presentation.dashboard.AnalyticsDashboardState
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import com.rfdotech.core.presentation.ui.formatted
 import com.rfdotech.core.presentation.ui.toFormattedKm

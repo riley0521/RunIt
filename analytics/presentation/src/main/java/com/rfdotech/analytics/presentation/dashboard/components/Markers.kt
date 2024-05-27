@@ -1,4 +1,4 @@
-package com.rfdotech.analytics.presentation.components
+package com.rfdotech.analytics.presentation.dashboard.components
 
 import android.text.Layout
 import androidx.compose.material3.MaterialTheme

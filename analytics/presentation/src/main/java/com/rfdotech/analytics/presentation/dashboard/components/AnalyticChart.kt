@@ -1,4 +1,4 @@
-package com.rfdotech.analytics.presentation.components
+package com.rfdotech.analytics.presentation.dashboard.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,20 +19,24 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shader.TopBottomShader
-import com.rfdotech.core.domain.run.Run
+import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
 import com.rfdotech.core.presentation.designsystem.colorPrimary
+import com.rfdotech.core.presentation.ui.formatted
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-typealias RunAndDistanceMap = Map<Run, Float>
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun AnalyticChart(
-    data: RunAndDistanceMap,
+    analyticType: AnalyticType,
     modifier: Modifier = Modifier
 ) {
     val modelProducer = remember {
         CartesianChartModelProducer.build()
+    }
+
+    val data = remember {
+        analyticType.getData()
     }
 
     val xToDates = remember {
@@ -55,8 +59,14 @@ fun AnalyticChart(
     }
 
     val marker = rememberDefaultLineChartMarker(
-        getFormattedValue = {
-            "$it km"
+        getFormattedValue = { value ->
+            return@rememberDefaultLineChartMarker when (analyticType) {
+                is AnalyticType.Distance -> "$value km"
+                is AnalyticType.Pace -> {
+                    val pace = value.toInt().seconds.formatted()
+                    pace
+                }
+            }
         }
     )
     CartesianChartHost(
