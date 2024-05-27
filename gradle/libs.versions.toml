@@ -37,6 +37,7 @@ app-cash-turbine = "1.1.0"
 android-tools = "31.4.0"
 firebase-bom = "33.0.0"
 google-services-plugin = "4.4.1"
+vico-charts = "2.0.0-alpha.20"
 
 # Project versions
 projectApplicationId = "com.rfdotech.runtracker"
@@ -132,6 +133,9 @@ androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx
 
 # MongoDB
 mongodb-bson = { module = "org.mongodb:bson", version.ref = "bson" }
+
+# Vico Charts
+vico-compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico-charts" }
 
 # Gradle
 android-tools-build-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
