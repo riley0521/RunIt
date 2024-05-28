@@ -11,5 +11,6 @@ dependencies {
     implementation(projects.core.domain)
 
     implementation(libs.bundles.koin)
+    implementation(libs.bundles.compose.dialogs)
     implementation(libs.vico.compose.m3)
 }

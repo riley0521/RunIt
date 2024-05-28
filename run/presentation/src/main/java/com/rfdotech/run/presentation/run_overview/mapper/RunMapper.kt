@@ -12,8 +12,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun Run.toRunUi(): RunUi {
-    val dateTimeInLocalTime = dateTimeUtc
-        .withZoneSameInstant(ZoneId.systemDefault())
+    val dateTimeInLocalTime = dateTimeUtc.withZoneSameInstant(ZoneId.systemDefault())
     val formattedDateTime = DateTimeFormatter
         .ofPattern("MMM dd, yyyy - hh:mma")
         .format(dateTimeInLocalTime)

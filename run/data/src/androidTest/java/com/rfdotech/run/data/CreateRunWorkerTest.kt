@@ -18,6 +18,7 @@ import assertk.assertions.isTrue
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.entity.RunEntity
 import com.rfdotech.core.database.entity.RunPendingSyncEntity
+import com.rfdotech.core.domain.ZonedDateTimeHelper
 import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.test_util.run.FakeRemoteRunDataSource
 import io.mockk.coEvery
@@ -146,7 +147,7 @@ class CreateRunWorkerTest {
             run = RunEntity(
                 durationMillis = duration.inWholeMilliseconds,
                 distanceMeters = 2500,
-                dateTimeUtc = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")),
+                dateTimeUtc = ZonedDateTimeHelper.addZoneIdToZonedDateTime(ZonedDateTime.now()),
                 latitude = 1.0,
                 longitude = 1.0,
                 avgSpeedKmh = 10.5,

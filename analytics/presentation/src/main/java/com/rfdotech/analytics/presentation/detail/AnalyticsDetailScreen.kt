@@ -2,6 +2,7 @@
 
 package com.rfdotech.analytics.presentation.detail
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,12 +19,21 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.rfdotech.analytics.domain.AnalyticDetailType
 import com.rfdotech.analytics.domain.DateHelper
 import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
@@ -53,6 +63,7 @@ fun AnalyticsDetailScreenRoot(
                 AnalyticsDetailAction.OnBackClick -> {
                     onBackClick()
                 }
+
                 else -> viewModel.onAction(action)
             }
         }
@@ -108,15 +119,41 @@ private fun AnalyticsDetailScreen(
                 title = title,
                 monthAndYear = "",
                 analyticType = analyticType,
-                onClick = { /*TODO*/ },
+                onClick = {},
                 modifier = Modifier.fillMaxWidth(),
                 isDetailed = true
             )
         }
     }
 
-    if (state.showDatePickerDialog) {
-        // TODO: DatePicker Dialog
+    val calendarState = rememberUseCaseState(
+        onDismissRequest = {
+            onAction(AnalyticsDetailAction.OnToggleDatePickerDialog)
+        },
+        onFinishedRequest = {
+            onAction(AnalyticsDetailAction.OnToggleDatePickerDialog)
+        }
+    )
+    CalendarDialog(
+        state = calendarState,
+        selection = CalendarSelection.Period { startDate, endDate ->
+            val selectedStartDate = DateHelper.convertLocalDateToDateParam(startDate)
+            val selectedEndDate = DateHelper.convertLocalDateToDateParam(endDate)
+
+            onAction(AnalyticsDetailAction.OnDateSelected(selectedStartDate, selectedEndDate))
+        },
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH,
+            boundary = DateHelper.getAllowedDates()
+        )
+    )
+
+    LaunchedEffect(state.showDatePickerDialog) {
+        if (state.showDatePickerDialog) {
+            calendarState.show()
+        }
     }
 }
 
@@ -152,12 +189,29 @@ private fun ShowAndPickDateCard(
 @Composable
 private fun AnalyticsDetailScreenPreview() {
     RunItTheme {
+        var state by remember {
+            mutableStateOf(
+                AnalyticsDetailState(
+                    runs = getRunsWithPace()
+                )
+            )
+        }
+
         AnalyticsDetailScreen(
             analyticDetailType = AnalyticDetailType.PACE,
-            state = AnalyticsDetailState(
-                runs = getRunsWithPace()
-            ),
-            onAction = {}
+            state = state,
+            onAction = { action ->
+                when (action) {
+                    AnalyticsDetailAction.OnBackClick -> {}
+                    is AnalyticsDetailAction.OnDateSelected -> {
+                        Log.d("SELECTED_DATE", action.startDate.toString())
+                        Log.d("SELECTED_DATE", action.endDate.toString())
+                    }
+                    AnalyticsDetailAction.OnToggleDatePickerDialog -> {
+                        state = state.copy(showDatePickerDialog = !state.showDatePickerDialog)
+                    }
+                }
+            }
         )
     }
 }

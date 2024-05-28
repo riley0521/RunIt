@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rfdotech.core.domain.ZonedDateTimeHelper
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import com.rfdotech.core.domain.run.Run
@@ -143,7 +144,7 @@ class ActiveRunViewModel(
         val run = Run(
             id = null,
             duration = state.elapsedTime,
-            dateTimeUtc = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")),
+            dateTimeUtc = ZonedDateTimeHelper.addZoneIdToZonedDateTime(ZonedDateTime.now()),
             distanceMeters = state.runData.distanceMeters,
             location = state.currentLocation ?: Location(0.0, 0.0),
             maxSpeedKmh = DistanceAndSpeedCalculator.getMaxSpeedKmh(locations),

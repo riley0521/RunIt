@@ -1,8 +1,8 @@
 package com.rfdotech.core.test_util.run
 
+import com.rfdotech.core.domain.ZonedDateTimeHelper
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.Run
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.minutes
 fun run(
     id: String? = null,
     duration: Duration = 30.minutes,
-    dateTimeUtc: ZonedDateTime = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")),
+    dateTimeUtc: ZonedDateTime = ZonedDateTimeHelper.addZoneIdToZonedDateTime(ZonedDateTime.now()),
     distanceMeters: Int = 2500,
     maxSpeedKmh: Double = 15.0
 ): Run {

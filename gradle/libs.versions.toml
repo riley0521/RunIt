@@ -38,6 +38,7 @@ android-tools = "31.4.0"
 firebase-bom = "33.0.0"
 google-services-plugin = "4.4.1"
 vico-charts = "2.0.0-alpha.20"
+compose-dialogs = "1.3.0"
 
 # Project versions
 projectApplicationId = "com.rfdotech.runtracker"
@@ -137,6 +138,10 @@ mongodb-bson = { module = "org.mongodb:bson", version.ref = "bson" }
 # Vico Charts
 vico-compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico-charts" }
 
+# Compose Dialogs
+compose-dialogs-core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "compose-dialogs" }
+compose-dialogs-calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "compose-dialogs" }
+
 # Gradle
 android-tools-build-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
@@ -190,6 +195,10 @@ ktor = [
     "io-ktor-client-cio",
     "io-ktor-client-auth",
     "io-ktor-client-logging"
+]
+compose-dialogs = [
+    "compose-dialogs-core",
+    "compose-dialogs-calendar"
 ]
 google-auth = [
     "firebase-auth",

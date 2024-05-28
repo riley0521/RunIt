@@ -6,11 +6,11 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import com.rfdotech.core.database.MyTestHelper
 import com.rfdotech.core.database.runEntity
+import com.rfdotech.core.domain.ZonedDateTimeHelper
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.minutes
 
@@ -58,7 +58,7 @@ class AnalyticsDaoTest : MyTestHelper() {
 
     @Test
     fun testGetAllRunsThisMonth_InsertRunFromLastMonth_MustNotBeIncluded() = runTest {
-        val firstRun = runEntity(distanceMeters = 2500, dateTimeUtc = ZonedDateTime.of(LocalDate.of(2024, 4, 1).atTime(0, 0), ZoneId.of("UTC")))
+        val firstRun = runEntity(distanceMeters = 2500, dateTimeUtc = ZonedDateTime.of(LocalDate.of(2024, 4, 1).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE))
 
         db.runDao.upsert(firstRun)
 
@@ -70,10 +70,10 @@ class AnalyticsDaoTest : MyTestHelper() {
 
     @Test
     fun testGetAllRunsBetweenDates_InsertRunFromThisMonth_MustBeIncluded() = runTest {
-        val firstRun = runEntity(distanceMeters = 2500, dateTimeUtc = ZonedDateTime.of(LocalDate.of(2024, 5, 20).atTime(0, 0), ZoneId.of("UTC")))
+        val firstRun = runEntity(distanceMeters = 2500, dateTimeUtc = ZonedDateTime.of(LocalDate.of(2024, 5, 20).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE))
 
-        val startDate = ZonedDateTime.of(LocalDate.of(2024, 5, 1).atTime(0, 0), ZoneId.of("UTC"))
-        val endDate = ZonedDateTime.of(LocalDate.of(2024, 5, 30).atTime(0, 0), ZoneId.of("UTC"))
+        val startDate = ZonedDateTime.of(LocalDate.of(2024, 5, 1).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE)
+        val endDate = ZonedDateTime.of(LocalDate.of(2024, 5, 30).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE)
 
         db.runDao.upsert(firstRun)
 
@@ -85,10 +85,10 @@ class AnalyticsDaoTest : MyTestHelper() {
 
     @Test
     fun testGetAllRunsBetweenDates_InsertRunFromLastMonth_MustNotBeIncluded() = runTest {
-        val firstRun = runEntity(distanceMeters = 2500, dateTimeUtc = ZonedDateTime.of(LocalDate.of(2024, 4, 20).atTime(0, 0), ZoneId.of("UTC")))
+        val firstRun = runEntity(distanceMeters = 2500, dateTimeUtc = ZonedDateTime.of(LocalDate.of(2024, 4, 20).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE))
 
-        val startDate = ZonedDateTime.of(LocalDate.of(2024, 5, 1).atTime(0, 0), ZoneId.of("UTC"))
-        val endDate = ZonedDateTime.of(LocalDate.of(2024, 5, 30).atTime(0, 0), ZoneId.of("UTC"))
+        val startDate = ZonedDateTime.of(LocalDate.of(2024, 5, 1).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE)
+        val endDate = ZonedDateTime.of(LocalDate.of(2024, 5, 30).atTime(0, 0), ZonedDateTimeHelper.UTC_ZONE)
 
         db.runDao.upsert(firstRun)
 
