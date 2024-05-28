@@ -209,6 +209,21 @@ fun getRunsWithPace(): List<Run> {
             distanceMeters = 6700,
             dateTimeUtc = getZonedDateTime(DateParam(2024, 1, 22)),
             duration = 69.minutes
+        ),
+        sampleRun(
+            distanceMeters = 6700,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 2, 10)),
+            duration = 69.minutes
+        ),
+        sampleRun(
+            distanceMeters = 6700,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 2, 11)),
+            duration = 69.minutes
+        ),
+        sampleRun(
+            distanceMeters = 6700,
+            dateTimeUtc = getZonedDateTime(DateParam(2024, 2, 12)),
+            duration = 69.minutes
         )
     )
 }
@@ -219,7 +234,7 @@ private fun getZonedDateTime(param: DateParam): ZonedDateTime {
 
 private fun sampleRun(distanceMeters: Int, dateTimeUtc: ZonedDateTime, duration: Duration = 30.minutes): Run {
     return Run(
-        id = UUID.randomUUID().toString(),
+        id = null,
         duration = duration,
         dateTimeUtc = dateTimeUtc,
         distanceMeters = distanceMeters,

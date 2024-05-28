@@ -21,7 +21,6 @@ import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shader.TopBottomShader
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
-import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.Space48
 import com.rfdotech.core.presentation.designsystem.colorPrimary
@@ -76,7 +75,7 @@ fun AnalyticChart(
             }
         }
     )
-    val horizontalSpace = markerTextWidth + Space16
+    val horizontalSpace = markerTextWidth + Space32
 
     CartesianChartHost(
         chart = rememberCartesianChart(
@@ -94,7 +93,13 @@ fun AnalyticChart(
             startAxis = null,
             bottomAxis = rememberBottomAxis(
                 valueFormatter = { x, chartValues, _ ->
-                    val formatter = DateTimeFormatter.ofPattern("d")
+                    val pattern = if (scrollEnabled) {
+                        "MMM d"
+                    } else {
+                        "d"
+                    }
+
+                    val formatter = DateTimeFormatter.ofPattern(pattern)
                     (chartValues.model.extraStore[xToDateMapKey][x] ?: LocalDate.ofEpochDay(x.toLong())).format(formatter)
                 },
                 itemPlacer = remember {
