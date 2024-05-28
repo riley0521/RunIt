@@ -56,14 +56,14 @@ class AnalyticsSharedViewModel(
     }
 
     private fun getRunsBetweenDates(startDate: DateParam, endDate: DateParam) = viewModelScope.launch {
-        detailState = detailState.copy(showDatePickerDialog = false)
-
         val startDateZoned = startDate.toZonedDateTime()
         val endDateZoned = endDate.toZonedDateTime(isEnd = true)
 
         if (startDateZoned > endDateZoned) {
             return@launch
         }
+
+        detailState = detailState.copy(showDatePickerDialog = false, startDate = startDateZoned, endDate = endDateZoned)
 
         detailState = detailState.copy(isGettingRuns = true)
 

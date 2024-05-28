@@ -137,7 +137,7 @@ private fun AnalyticsDashboardScreen(
                 monthAndYear = DateHelper.getMontAndYearFormatted(),
                 analyticType = AnalyticType.Pace(state.runs),
                 onClick = {
-                    onAction(AnalyticsDashboardAction.OnNavigateToDetail(AnalyticDetailType.DISTANCE))
+                    onAction(AnalyticsDashboardAction.OnNavigateToDetail(AnalyticDetailType.PACE))
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -47,13 +47,12 @@ import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AnalyticsDetailScreenRoot(
     analyticDetailType: AnalyticDetailType,
     onBackClick: () -> Unit,
-    viewModel: AnalyticsSharedViewModel = koinViewModel()
+    viewModel: AnalyticsSharedViewModel
 ) {
     AnalyticsDetailScreen(
         analyticDetailType = analyticDetailType,
@@ -191,9 +190,7 @@ private fun AnalyticsDetailScreenPreview() {
     RunItTheme {
         var state by remember {
             mutableStateOf(
-                AnalyticsDetailState(
-                    runs = getRunsWithPace()
-                )
+                AnalyticsDetailState()
             )
         }
 
@@ -202,7 +199,10 @@ private fun AnalyticsDetailScreenPreview() {
             state = state,
             onAction = { action ->
                 when (action) {
-                    AnalyticsDetailAction.OnBackClick -> {}
+                    AnalyticsDetailAction.OnBackClick -> {
+                        state = state.copy(runs = getRunsWithPace())
+                        Log.d("GETTING_RUNS", "here")
+                    }
                     is AnalyticsDetailAction.OnDateSelected -> {
                         Log.d("SELECTED_DATE", action.startDate.toString())
                         Log.d("SELECTED_DATE", action.endDate.toString())
