@@ -5,6 +5,7 @@ package com.rfdotech.analytics.presentation.detail
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -98,30 +100,39 @@ private fun AnalyticsDetailScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = Space16)
-                .padding(bottom = Space32)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(Space16)
-        ) {
-            ShowAndPickDateCard(
-                title = DateHelper.getFormattedDate(state.startDate, state.endDate),
-                onClick = {
-                    onAction(AnalyticsDetailAction.OnToggleDatePickerDialog)
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            AnalyticsCardWithChart(
-                title = title,
-                monthAndYear = "",
-                analyticType = analyticType,
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(),
-                isDetailed = true
-            )
+        if (state.isGettingRuns) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = Space16)
+                    .padding(bottom = Space32)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(Space16)
+            ) {
+                ShowAndPickDateCard(
+                    title = DateHelper.getFormattedDate(state.startDate, state.endDate),
+                    onClick = {
+                        onAction(AnalyticsDetailAction.OnToggleDatePickerDialog)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                AnalyticsCardWithChart(
+                    title = title,
+                    monthAndYear = "",
+                    analyticType = analyticType,
+                    onClick = {},
+                    modifier = Modifier.fillMaxWidth(),
+                    isDetailed = true
+                )
+            }
         }
     }
 
