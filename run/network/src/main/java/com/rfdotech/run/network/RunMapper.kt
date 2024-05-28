@@ -46,6 +46,7 @@ fun Run.toRunDtoV2(userId: String): FirestoreRunDto {
         avgSpeedKmh = avgSpeedKhm,
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = totalElevationMeters,
+        numberOfSteps = numberOfSteps,
         mapPictureUrl = mapPictureUrl
     )
 }
