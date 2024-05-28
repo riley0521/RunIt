@@ -32,9 +32,11 @@ class AnalyticsSharedViewModel(
             val allRunsThisMonth = analyticsRepository.getAllRunsThisMonth()
             dashBoardState = dashBoardState.copy(runs = allRunsThisMonth)
         }
+
+        getInitialRuns()
     }
 
-    fun getInitialRuns() {
+    private fun getInitialRuns() {
         val startDate = detailState.startDate.let {
             DateParam(year = it.year, month = it.monthValue, day = it.dayOfMonth)
         }

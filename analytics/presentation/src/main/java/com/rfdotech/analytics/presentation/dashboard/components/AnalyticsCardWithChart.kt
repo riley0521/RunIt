@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.rfdotech.analytics.domain.DateHelper
@@ -25,6 +27,7 @@ import com.rfdotech.analytics.domain.DateParam
 import com.rfdotech.analytics.domain.toZonedDateTime
 import com.rfdotech.analytics.presentation.R
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
+import com.rfdotech.core.domain.TextWithContentDesc
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.presentation.designsystem.ArrowRightIcon
@@ -35,14 +38,13 @@ import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import java.time.ZonedDateTime
-import java.util.UUID
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun AnalyticsCardWithChart(
-    title: String,
+    title: TextWithContentDesc,
     monthAndYear: String,
     analyticType: AnalyticType,
     onClick: () -> Unit,
@@ -63,9 +65,13 @@ fun AnalyticsCardWithChart(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = title,
+                text = title.text,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = FontSize16
+                fontSize = FontSize16,
+                modifier = Modifier
+                    .semantics {
+                        this.contentDescription = title.contentDesc
+                    }
             )
             if (!isDetailed) {
                 IconButton(onClick = onClick) {
@@ -112,7 +118,7 @@ private fun AnalyticsChartPreview() {
         GradientBackground {
             Column {
                 AnalyticsCardWithChart(
-                    title = "Avg. Something",
+                    title = TextWithContentDesc("Avg. Something"),
                     monthAndYear = DateHelper.getMontAndYearFormatted(),
                     analyticType = AnalyticType.Pace(getRunsWithPace()),
                     onClick = {},

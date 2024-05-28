@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.rfdotech.analytics.presentation.detail
 
@@ -30,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -43,12 +45,16 @@ import com.rfdotech.analytics.presentation.R
 import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCardWithChart
 import com.rfdotech.analytics.presentation.dashboard.components.getRunsWithPace
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
+import com.rfdotech.core.domain.TextWithContentDesc
 import com.rfdotech.core.presentation.designsystem.CalendarIcon
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
+import com.rfdotech.core.presentation.ui.TDSAccessibilityManager
+import org.koin.compose.koinInject
+import java.time.LocalDate
 
 @Composable
 fun AnalyticsDetailScreenRoot(
@@ -77,9 +83,17 @@ private fun AnalyticsDetailScreen(
     state: AnalyticsDetailState,
     onAction: (AnalyticsDetailAction) -> Unit
 ) {
+    val tdsAccessibilityManager: TDSAccessibilityManager = koinInject()
+
     val title = when (analyticDetailType) {
-        AnalyticDetailType.DISTANCE -> stringResource(id = R.string.avg_distance_overtime)
-        AnalyticDetailType.PACE -> stringResource(id = R.string.avg_pace_overtime)
+        AnalyticDetailType.DISTANCE -> TextWithContentDesc(
+            text = stringResource(id = R.string.avg_distance_overtime),
+            contentDesc = stringResource(id = R.string.acc_avg_distance_overtime)
+        )
+        AnalyticDetailType.PACE -> TextWithContentDesc(
+            text = stringResource(id = R.string.avg_pace_overtime),
+            contentDesc = stringResource(id = R.string.acc_avg_pace_overtime)
+        )
     }
 
     val analyticType = remember(state.runs) {
@@ -92,7 +106,8 @@ private fun AnalyticsDetailScreen(
     PrimaryScaffold(
         topAppBar = {
             PrimaryToolbar(
-                title = title,
+                title = title.text,
+                titleContentDesc = title.contentDesc,
                 showBackButton = true,
                 onBackClick = {
                     onAction(AnalyticsDetailAction.OnBackClick)
@@ -117,10 +132,18 @@ private fun AnalyticsDetailScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(Space16)
             ) {
-                ShowAndPickDateCard(
-                    title = DateHelper.getFormattedDate(state.startDate, state.endDate),
+                ShowAndPickDateRangeCard(
+                    startDate = state.startDate.toLocalDate(),
+                    endDate = state.endDate.toLocalDate(),
                     onClick = {
                         onAction(AnalyticsDetailAction.OnToggleDatePickerDialog)
+                    },
+                    formatDates = {
+                        tdsAccessibilityManager.getTextForDateRange(
+                            startDate = state.startDate.toLocalDate(),
+                            endDate = state.endDate.toLocalDate(),
+                            datePattern = "MMM dd, yyyy"
+                        )
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -168,11 +191,16 @@ private fun AnalyticsDetailScreen(
 }
 
 @Composable
-private fun ShowAndPickDateCard(
-    title: String,
+private fun ShowAndPickDateRangeCard(
+    startDate: LocalDate,
+    endDate: LocalDate,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    formatDates: (() -> String)? = null
 ) {
+    val title = DateHelper.getFormattedDate(startDate, endDate)
+    val titleAcc = formatDates?.invoke() ?: title
+
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(Space16))
@@ -182,7 +210,11 @@ private fun ShowAndPickDateCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = title
+            text = title,
+            modifier = Modifier
+                .semantics {
+                    contentDescription = titleAcc
+                }
         )
         IconButton(
             onClick = onClick

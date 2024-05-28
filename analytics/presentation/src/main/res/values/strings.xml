@@ -4,11 +4,21 @@
     <string name="total_distance_run">Total distance run</string>
     <string name="total_time_run">Total time run</string>
     <string name="fastest_ever_run">Fastest ever run</string>
+
     <string name="average_distance">Avg. distance per run</string>
+    <string name="acc_average_distance">Average distance per run</string>
+
     <string name="average_pace">Avg. pace per run</string>
+    <string name="acc_average_pace">Average pace per run</string>
+
     <string name="acc_go_to_detail_screen">Go to details</string>
+
     <string name="avg_distance_overtime">Avg. Distance over time</string>
+    <string name="acc_avg_distance_overtime">Average distance over time</string>
+
     <string name="avg_pace_overtime">Avg. Pace over time</string>
-    <string name="acc_pick_date">Pick range of dates.</string>
+    <string name="acc_avg_pace_overtime">Average pace over time</string>
+
+    <string name="acc_pick_date">Select start date and end date to get runs between those dates.</string>
     <string name="data_not_available">Data is not available.</string>
 </resources>

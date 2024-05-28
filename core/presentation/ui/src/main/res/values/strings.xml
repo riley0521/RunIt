@@ -8,4 +8,32 @@
     <string name="error_server_error">Unknown server error. Please try again.</string>
     <string name="error_serialization_error">Could not parse data.</string>
     <string name="error_unknown">An unknown error occurred.</string>
+
+    <!-- I do this because you cannot use double or float in plurals -->
+    <string name="x_km_per_hour_singular">%s kilometer per hour</string>
+    <string name="x_km_per_hour_plural">%s kilometers per hour</string>
+    <string name="x_km_singular">%s kilometer</string>
+    <string name="x_km_plural">%s kilometers</string>
+
+    <string name="start_date_end_date">Start date: %s . End date: %s</string>
+
+    <plurals name="x_day">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+
+    <plurals name="x_hour">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+
+    <plurals name="x_minute">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+
+    <plurals name="x_second">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
 </resources>

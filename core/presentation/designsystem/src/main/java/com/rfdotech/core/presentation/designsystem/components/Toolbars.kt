@@ -30,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
@@ -48,6 +50,7 @@ import com.rfdotech.core.presentation.designsystem.primaryFontFamily
 fun PrimaryToolbar(
     title: String,
     modifier: Modifier = Modifier,
+    titleContentDesc: String? = null,
     showBackButton: Boolean = false,
     onBackClick: () -> Unit = {},
     menuItems: List<DropDownItem> = emptyList(),
@@ -71,7 +74,11 @@ fun PrimaryToolbar(
                     text = title,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = primaryFontFamily
+                    fontFamily = primaryFontFamily,
+                    modifier = Modifier
+                        .semantics {
+                            contentDescription = titleContentDesc ?: title
+                        }
                 )
             }
         },

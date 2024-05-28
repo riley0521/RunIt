@@ -1,12 +1,13 @@
 package com.rfdotech.analytics.presentation.dashboard
 
 import com.rfdotech.core.domain.run.Run
+import kotlin.time.Duration
 
 data class AnalyticsDashboardState(
-    val totalDistanceRun: String = "0.0 km",
-    val totalTimeRun: String = "0d 0h 0m",
-    val fastestEverRun: String = "0.0 km/h",
-    val avgDistance: String = "0.0 km",
-    val avgPace: String = "00:00:00",
+    val totalDistanceRun: Double = 0.0,
+    val totalTimeRun: Duration = Duration.ZERO,
+    val fastestEverRun: Double = 0.0,
+    val avgDistance: Double = 0.0,
+    val avgPace: Duration = Duration.ZERO,
     val runs: List<Run> = emptyList()
 )

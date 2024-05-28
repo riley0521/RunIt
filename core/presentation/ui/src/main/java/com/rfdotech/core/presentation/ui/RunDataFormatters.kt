@@ -1,5 +1,6 @@
 package com.rfdotech.core.presentation.ui
 
+import java.util.Locale
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
@@ -11,9 +12,9 @@ const val SECONDS_PER_HOUR = 3600
 
 fun Duration.formatted(): String {
     val totalSeconds = inWholeSeconds
-    val hours = String.format("%02d", totalSeconds / SECONDS_PER_HOUR)
-    val minutes = String.format("%02d", (totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE)
-    val seconds = String.format("%02d", totalSeconds % SECONDS_PER_MINUTE)
+    val hours = String.format(Locale.getDefault(), "%02d", totalSeconds / SECONDS_PER_HOUR)
+    val minutes = String.format(Locale.getDefault(),"%02d", (totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE)
+    val seconds = String.format(Locale.getDefault(),"%02d", totalSeconds % SECONDS_PER_MINUTE)
 
     return "$hours:$minutes:$seconds"
 }
