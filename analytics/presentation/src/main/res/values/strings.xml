@@ -10,4 +10,5 @@
     <string name="avg_distance_overtime">Avg. Distance over time</string>
     <string name="avg_pace_overtime">Avg. Pace over time</string>
     <string name="acc_pick_date">Pick range of dates.</string>
+    <string name="data_not_available">Data is not available.</string>
 </resources>

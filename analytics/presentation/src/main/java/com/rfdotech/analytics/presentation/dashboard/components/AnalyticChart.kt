@@ -40,11 +40,11 @@ fun AnalyticChart(
         CartesianChartModelProducer.build()
     }
 
-    val data = remember {
+    val data = remember(analyticType) {
         analyticType.getData()
     }
 
-    val xToDates = remember {
+    val xToDates = remember(data) {
         data.keys.associate {
             val localDate = it.dateTimeUtc.toLocalDate()
             val dateFloat = localDate.toEpochDay().toFloat()
@@ -52,15 +52,15 @@ fun AnalyticChart(
             dateFloat to localDate
         }
     }
-    val xToDateMapKey = remember {
+    val xToDateMapKey = remember(xToDates) {
         ExtraStore.Key<Map<Float, LocalDate>>()
     }
 
-    LaunchedEffect(Unit) {
-        modelProducer.tryRunTransaction {
+    LaunchedEffect(analyticType) {
+        modelProducer.runTransaction {
             lineSeries { series(xToDates.keys, data.values) }
             updateExtras { it[xToDateMapKey] = xToDates }
-        }
+        }.await()
     }
 
     val marker = rememberDefaultLineChartMarker(

@@ -78,11 +78,21 @@ fun AnalyticsCardWithChart(
             }
         }
         Spacer(modifier = Modifier.height(Space8))
-        AnalyticChart(
-            analyticType = analyticType,
-            scrollEnabled = isDetailed,
-            modifier = Modifier.fillMaxWidth()
-        )
+
+        // When we do this, we also recompose the modelProducer which will forcefully show the chart.
+        // We currently have a bug using vico-compose 2.0.0-alpha.20
+        if (analyticType.getData().isEmpty()) {
+            Text(
+                text = stringResource(id = R.string.data_not_available),
+                color = MaterialTheme.colorScheme.error
+            )
+        } else {
+            AnalyticChart(
+                analyticType = analyticType,
+                scrollEnabled = isDetailed,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         if (!isDetailed) {
             Spacer(modifier = Modifier.height(Space32))
             Text(
