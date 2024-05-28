@@ -52,11 +52,15 @@ fun AnalyticChart(
             dateFloat to localDate
         }
     }
-    val xToDateMapKey = remember(xToDates) {
+    val xToDateMapKey = remember {
         ExtraStore.Key<Map<Float, LocalDate>>()
     }
 
     LaunchedEffect(analyticType) {
+        if (data.isEmpty()) {
+            return@LaunchedEffect
+        }
+
         modelProducer.runTransaction {
             lineSeries { series(xToDates.keys, data.values) }
             updateExtras { it[xToDateMapKey] = xToDates }
