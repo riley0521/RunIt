@@ -111,7 +111,8 @@ private fun RunOverviewScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .padding(horizontal = Space16),
+                .padding(Space16)
+                .padding(bottom = Space16),
             contentPadding = padding,
             verticalArrangement = Arrangement.spacedBy(Space16)
         ) {
