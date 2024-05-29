@@ -132,7 +132,7 @@ class RunningTracker(
         val distanceKm = DistanceAndSpeedCalculator.getKmFromMeters(distanceMeters)
         val currentDuration = location.durationTimestamp
 
-        val avgSecondsPerKm = DistanceAndSpeedCalculator.getAvgSecondsPerKm(distanceKm, currentDuration)
+        val avgSecondsPerKm = DistanceAndSpeedCalculator.getSecondsPerKm(distanceKm, currentDuration)
 
         _runData.update {
             RunData(

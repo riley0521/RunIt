@@ -2,6 +2,7 @@ package com.rfdotech.core.presentation.ui
 
 import android.content.Context
 import androidx.annotation.PluralsRes
+import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -50,6 +51,17 @@ fun Context.appendTextToHourMinuteSecond(text: String, time: Duration): String {
     val secondStr = this.getPlurals(R.plurals.x_second, time.getRemainingSeconds())
 
     return "$text . $hourStr $minuteStr $secondStr"
+}
+
+fun Context.appendTextToPace(text: String, distanceKm: Double, time: Duration): String {
+    val averagePace = DistanceAndSpeedCalculator.getAveragePacePerKilometer(distanceKm, time) ?: return ""
+
+    val formattedMinute = this.getPlurals(R.plurals.x_minute, averagePace.minutes)
+    val formattedSeconds = this.getPlurals(R.plurals.x_second, averagePace.seconds)
+
+    val formatted = this.getString(R.string.x_pace_acc, "$formattedMinute , $formattedSeconds")
+
+    return "$text . $formatted"
 }
 
 private fun Context.getPlurals(@PluralsRes id: Int, quantity: Int): String {

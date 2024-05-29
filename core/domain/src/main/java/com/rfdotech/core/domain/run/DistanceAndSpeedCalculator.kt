@@ -8,6 +8,7 @@ import kotlin.time.DurationUnit
 object DistanceAndSpeedCalculator  {
 
     private const val METERS_PER_KILOMETER = 1000.0
+    private const val SECONDS_PER_MINUTE = 60
 
     fun getMaxSpeedKmh(locations: List<List<LocationTimestamp>>): Double {
         return locations.maxOf { locationSet ->
@@ -52,11 +53,25 @@ object DistanceAndSpeedCalculator  {
         return (distanceMeters / METERS_PER_KILOMETER)
     }
 
-    fun getAvgSecondsPerKm(distanceKm: Double, duration: Duration): Int {
+    // We can also do seconds per miles in the future
+    fun getSecondsPerKm(distanceKm: Double, duration: Duration): Int {
         return if (distanceKm == 0.0) {
             0
         } else {
             (duration.inWholeSeconds / distanceKm).roundToInt()
+        }
+    }
+
+    // We can also do average pace per miles in the future
+    fun getAveragePacePerKilometer(distanceKm: Double, duration: Duration): AveragePace? {
+        return if (distanceKm == 0.0) {
+            null
+        } else {
+            val secondsPerKm = getSecondsPerKm(distanceKm, duration)
+            val minutes = secondsPerKm / SECONDS_PER_MINUTE
+            val seconds = secondsPerKm % SECONDS_PER_MINUTE
+
+            AveragePace(minutes, seconds)
         }
     }
 }

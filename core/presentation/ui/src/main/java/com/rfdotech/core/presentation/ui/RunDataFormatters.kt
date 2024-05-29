@@ -1,10 +1,10 @@
 package com.rfdotech.core.presentation.ui
 
 import android.content.Context
+import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import java.util.Locale
 import kotlin.math.pow
 import kotlin.math.round
-import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
@@ -41,11 +41,15 @@ fun Duration.toFormattedPace(distanceKm: Double, context: Context): String {
         return "-"
     }
 
-    val secondsPerKm = (this.inWholeSeconds / distanceKm).roundToInt()
-    val avgPaceMinutes = secondsPerKm / SECONDS_PER_MINUTE
-    val avgPaceSeconds = (secondsPerKm % SECONDS_PER_MINUTE).formatNumberWithLeadingZero()
+    val averagePace = DistanceAndSpeedCalculator.getAveragePacePerKilometer(
+        distanceKm,
+        this
+    ) ?: return ""
 
-    return context.getString(R.string.x_pace, "$avgPaceMinutes:$avgPaceSeconds")
+    return context.getString(
+        R.string.x_pace,
+        "${averagePace.minutes}:${averagePace.seconds.formatNumberWithLeadingZero()}"
+    )
 }
 
 fun Double.roundToDecimals(decimalCount: Int = ONE_DECIMAL): Double {
