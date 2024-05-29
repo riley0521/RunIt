@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.rfdotech.analytics.domain.AnalyticDetailType
-import com.rfdotech.analytics.domain.DateHelper
+import com.rfdotech.analytics.presentation.DateHelper
 import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
 import com.rfdotech.analytics.presentation.R
 import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCard
@@ -134,7 +134,7 @@ private fun AnalyticsDashboardScreen(
                     text = stringResource(id = R.string.avg_distance_overtime),
                     contentDesc = stringResource(id = R.string.acc_avg_distance_overtime)
                 ),
-                monthAndYear = DateHelper.getMontAndYearFormatted(),
+                monthAndYear = DateHelper.getMonthAndYearFormatted(),
                 analyticType = AnalyticType.Distance(state.runs),
                 onClick = {
                     onAction(AnalyticsDashboardAction.OnNavigateToDetail(AnalyticDetailType.DISTANCE))
@@ -148,7 +148,7 @@ private fun AnalyticsDashboardScreen(
                     text = stringResource(id = R.string.avg_pace_overtime),
                     contentDesc = stringResource(id = R.string.acc_avg_pace_overtime)
                 ),
-                monthAndYear = DateHelper.getMontAndYearFormatted(),
+                monthAndYear = DateHelper.getMonthAndYearFormatted(),
                 analyticType = AnalyticType.Pace(state.runs),
                 onClick = {
                     onAction(AnalyticsDashboardAction.OnNavigateToDetail(AnalyticDetailType.PACE))

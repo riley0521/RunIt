@@ -72,18 +72,34 @@ private fun Context.getPlurals(@PluralsRes id: Int, quantity: Int): String {
     return this.resources.getQuantityString(id, quantity, quantity)
 }
 
+// Full Date
 private const val EN_DEFAULT_FULL_DATE_PATTERN = "MMM dd, yyyy"
 private const val FR_DEFAULT_FULL_DATE_PATTERN = "dd MMM yyyy"
+
+// Date Time
 private const val EN_DATE_TIME_PATTERN = "MMM dd, yyyy - hh:mma"
 private const val FR_DATE_TIME_PATTERN = "dd MMM yyyy - HH:mm"
+
+// Month Day
 private const val EN_MONTH_DAY_DATE_PATTERN = "MMM d"
 private const val FR_MONTH_DAY_DATE_PATTERN = "d MMM"
+
+// Month Year
+private const val EN_MONTH_YEAR_DATE_PATTERN = "MMM yyyy"
 
 fun Locale.getMonthDayPattern(): String {
     return when (this) {
         Locale.ENGLISH -> EN_MONTH_DAY_DATE_PATTERN
         Locale.FRENCH -> FR_MONTH_DAY_DATE_PATTERN
         else -> EN_MONTH_DAY_DATE_PATTERN
+    }
+}
+
+@Suppress("SameReturnValue") // Will add more supported language in the future
+fun Locale.getMonthYearPattern(): String {
+    return when (this) {
+        Locale.ENGLISH -> EN_MONTH_YEAR_DATE_PATTERN
+        else -> EN_MONTH_YEAR_DATE_PATTERN
     }
 }
 
@@ -103,8 +119,8 @@ fun Locale.getDateTimePattern(): String {
     }
 }
 
-fun Context.getTextForDateRange(startDate: LocalDate, endDate: LocalDate): String {
-    val pattern = Locale.getDefault().getFullDatePattern()
+fun Context.getTextForDateRange(startDate: LocalDate, endDate: LocalDate, locale: Locale = Locale.getDefault()): String {
+    val pattern = locale.getFullDatePattern()
     val formatter = DateTimeFormatter.ofPattern(pattern)
 
     return this.getString(R.string.start_date_end_date, formatter.format(startDate), formatter.format(endDate))

@@ -40,7 +40,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.rfdotech.analytics.domain.AnalyticDetailType
-import com.rfdotech.analytics.domain.DateHelper
+import com.rfdotech.analytics.presentation.DateHelper
 import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
 import com.rfdotech.analytics.presentation.R
 import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCardWithChart

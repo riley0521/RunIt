@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.rfdotech.analytics.domain.DateHelper
+import com.rfdotech.analytics.presentation.DateHelper
 import com.rfdotech.analytics.domain.DateParam
 import com.rfdotech.analytics.domain.toZonedDateTime
 import com.rfdotech.analytics.presentation.R
@@ -119,7 +119,7 @@ private fun AnalyticsChartPreview() {
             Column {
                 AnalyticsCardWithChart(
                     title = TextWithContentDesc("Avg. Something"),
-                    monthAndYear = DateHelper.getMontAndYearFormatted(),
+                    monthAndYear = DateHelper.getMonthAndYearFormatted(),
                     analyticType = AnalyticType.Pace(getRunsWithPace()),
                     onClick = {},
                     modifier = Modifier

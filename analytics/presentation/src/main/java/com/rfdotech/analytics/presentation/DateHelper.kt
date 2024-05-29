@@ -1,20 +1,24 @@
-package com.rfdotech.analytics.domain
+package com.rfdotech.analytics.presentation
 
+import com.rfdotech.analytics.domain.DateParam
+import com.rfdotech.core.presentation.ui.getFullDatePattern
+import com.rfdotech.core.presentation.ui.getMonthYearPattern
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object DateHelper {
 
-    fun getMontAndYearFormatted(): String {
-        val formatter = DateTimeFormatter.ofPattern("MMM yyyy")
+    fun getMonthAndYearFormatted(locale: Locale = Locale.getDefault()): String {
+        val formatter = DateTimeFormatter.ofPattern(locale.getMonthYearPattern())
         val now = ZonedDateTime.now()
 
         return formatter.format(now)
     }
 
-    fun getFormattedDate(startDate: LocalDate, endDate: LocalDate): String {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+    fun getFormattedDate(startDate: LocalDate, endDate: LocalDate, locale: Locale = Locale.getDefault()): String {
+        val formatter = DateTimeFormatter.ofPattern(locale.getFullDatePattern())
 
         return "${formatter.format(startDate)} - ${formatter.format(endDate)}"
     }
