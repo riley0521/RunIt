@@ -25,8 +25,10 @@ import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.Space48
 import com.rfdotech.core.presentation.designsystem.colorPrimary
 import com.rfdotech.core.presentation.ui.formatted
+import com.rfdotech.core.presentation.ui.getMonthDayPattern
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -98,7 +100,9 @@ fun AnalyticChart(
             bottomAxis = rememberBottomAxis(
                 valueFormatter = { x, chartValues, _ ->
                     val pattern = if (scrollEnabled) {
-                        "MMM d"
+                        // TODO: We can further modify this if we want to change the language in the app only
+                        // and not the system settings itself. But for simplicity, we use this.
+                        Locale.getDefault().getMonthDayPattern()
                     } else {
                         "d"
                     }

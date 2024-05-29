@@ -13,12 +13,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
+import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import com.rfdotech.core.presentation.designsystem.FontSize12
 import com.rfdotech.core.presentation.designsystem.FontSize16
 import com.rfdotech.core.presentation.designsystem.FontSize32
@@ -41,7 +44,10 @@ fun RunDataCard(
     runData: RunData,
     modifier: Modifier = Modifier
 ) {
-    val distanceKm = (runData.distanceMeters / 1000.0)
+    val context = LocalContext.current
+    val distanceKm = remember(runData.distanceMeters) {
+        DistanceAndSpeedCalculator.getKmFromMeters(runData.distanceMeters)
+    }
 
     Column(
         modifier = modifier
@@ -63,12 +69,12 @@ fun RunDataCard(
         ) {
             RunDataItem(
                 title = stringResource(id = R.string.distance),
-                value = distanceKm.toFormattedKm(),
+                value = distanceKm.toFormattedKm(context),
                 modifier = Modifier.defaultMinSize(minWidth = Space70)
             )
             RunDataItem(
                 title = stringResource(id = R.string.pace),
-                value = elapsedTime.toFormattedPace(distanceKm),
+                value = elapsedTime.toFormattedPace(distanceKm, context),
                 modifier = Modifier.defaultMinSize(minWidth = Space70)
             )
         }

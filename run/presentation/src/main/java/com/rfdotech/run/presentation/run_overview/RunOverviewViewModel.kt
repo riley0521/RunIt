@@ -35,7 +35,7 @@ class RunOverviewViewModel(
         runRepository
             .getAllLocal()
             .onEach { runs ->
-                state = state.copy(runs = runs.map { it.toRunUi() })
+                state = state.copy(runs = runs)
             }
             .launchIn(viewModelScope)
 

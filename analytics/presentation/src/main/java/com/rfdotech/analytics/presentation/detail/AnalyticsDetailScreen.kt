@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -52,8 +53,7 @@ import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
-import com.rfdotech.core.presentation.ui.TDSAccessibilityManager
-import org.koin.compose.koinInject
+import com.rfdotech.core.presentation.ui.getTextForDateRange
 import java.time.LocalDate
 
 @Composable
@@ -83,7 +83,7 @@ private fun AnalyticsDetailScreen(
     state: AnalyticsDetailState,
     onAction: (AnalyticsDetailAction) -> Unit
 ) {
-    val tdsAccessibilityManager: TDSAccessibilityManager = koinInject()
+    val context = LocalContext.current
 
     val title = when (analyticDetailType) {
         AnalyticDetailType.DISTANCE -> TextWithContentDesc(
@@ -139,10 +139,9 @@ private fun AnalyticsDetailScreen(
                         onAction(AnalyticsDetailAction.OnToggleDatePickerDialog)
                     },
                     formatDates = {
-                        tdsAccessibilityManager.getTextForDateRange(
+                        context.getTextForDateRange(
                             startDate = state.startDate.toLocalDate(),
-                            endDate = state.endDate.toLocalDate(),
-                            datePattern = "MMM dd, yyyy"
+                            endDate = state.endDate.toLocalDate()
                         )
                     },
                     modifier = Modifier.fillMaxWidth()

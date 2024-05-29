@@ -14,7 +14,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.rfdotech.analytics.domain.AnalyticDetailType
@@ -23,7 +25,7 @@ import com.rfdotech.analytics.presentation.AnalyticsSharedViewModel
 import com.rfdotech.analytics.presentation.R
 import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCard
 import com.rfdotech.analytics.presentation.dashboard.components.AnalyticsCardWithChart
-import com.rfdotech.analytics.presentation.dashboard.mapper.toFormattedTotalTime
+import com.rfdotech.analytics.presentation.dashboard.mapper.toAnalyticsCardDataUiObject
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
 import com.rfdotech.core.domain.TextWithContentDesc
 import com.rfdotech.core.presentation.designsystem.RunItTheme
@@ -31,11 +33,6 @@ import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
-import com.rfdotech.core.presentation.ui.TDSAccessibilityManager
-import com.rfdotech.core.presentation.ui.formatted
-import com.rfdotech.core.presentation.ui.toFormattedKm
-import com.rfdotech.core.presentation.ui.toFormattedKmh
-import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -68,7 +65,10 @@ private fun AnalyticsDashboardScreen(
     state: AnalyticsDashboardState,
     onAction: (AnalyticsDashboardAction) -> Unit
 ) {
-    val tdsAccessibilityManager: TDSAccessibilityManager = koinInject()
+    val context = LocalContext.current
+    val analyticsCardDataUiObject = remember(state) {
+        state.toAnalyticsCardDataUiObject(context)
+    }
 
     PrimaryScaffold(
         topAppBar = {
@@ -94,30 +94,13 @@ private fun AnalyticsDashboardScreen(
                     .fillMaxWidth()
                     .padding(horizontal = Space16)
             ) {
-                val totalDistanceRunStr = state.totalDistanceRun.toFormattedKm()
-                val totalDistanceRunAcc = tdsAccessibilityManager.appendTextToKilometer(
-                    text = stringResource(id = R.string.total_distance_run),
-                    distanceKm = state.totalDistanceRun
-                )
-
                 AnalyticsCard(
-                    title = stringResource(id = R.string.total_distance_run),
-                    value = totalDistanceRunStr,
-                    contentDesc = totalDistanceRunAcc,
+                    data = analyticsCardDataUiObject.totalDistanceRun,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(Space16))
-
-                val totalTimeRunStr = state.totalTimeRun.toFormattedTotalTime()
-                val totalTimeRunAcc = tdsAccessibilityManager.appendTextToDayHourMinute(
-                    text = stringResource(id = R.string.total_time_run),
-                    time = state.totalTimeRun
-                )
-
                 AnalyticsCard(
-                    title = stringResource(id = R.string.total_time_run),
-                    value = totalTimeRunStr,
-                    contentDesc = totalTimeRunAcc,
+                    data = analyticsCardDataUiObject.totalTimeRun,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -126,30 +109,13 @@ private fun AnalyticsDashboardScreen(
                     .fillMaxWidth()
                     .padding(horizontal = Space16)
             ) {
-                val fastestEverRunStr = state.fastestEverRun.toFormattedKmh()
-                val fastestEverRunAcc = tdsAccessibilityManager.appendTextToKilometerPerHour(
-                    text = stringResource(id = R.string.fastest_ever_run),
-                    distanceKm = state.fastestEverRun
-                )
-
                 AnalyticsCard(
-                    title = stringResource(id = R.string.fastest_ever_run),
-                    value = fastestEverRunStr,
-                    contentDesc = fastestEverRunAcc,
+                    data = analyticsCardDataUiObject.fastestEverRun,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(Space16))
-
-                val avgDistanceStr = state.avgDistance.toFormattedKm()
-                val avgDistanceAcc = tdsAccessibilityManager.appendTextToKilometer(
-                    text = stringResource(id = R.string.acc_average_distance),
-                    distanceKm = state.avgDistance
-                )
-
                 AnalyticsCard(
-                    title = stringResource(id = R.string.average_distance),
-                    value = avgDistanceStr,
-                    contentDesc = avgDistanceAcc,
+                    data = analyticsCardDataUiObject.avgDistance,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -158,16 +124,8 @@ private fun AnalyticsDashboardScreen(
                     .fillMaxWidth()
                     .padding(horizontal = Space16)
             ) {
-                val avgPaceStr = state.avgPace.formatted()
-                val avgPaceAcc = tdsAccessibilityManager.appendTextToHourMinuteSecond(
-                    text = stringResource(id = R.string.acc_average_pace),
-                    time = state.avgPace
-                )
-
                 AnalyticsCard(
-                    title = stringResource(id = R.string.average_pace),
-                    value = avgPaceStr,
-                    contentDesc = avgPaceAcc,
+                    data = analyticsCardDataUiObject.avgPace,
                     modifier = Modifier.weight(1f)
                 )
             }

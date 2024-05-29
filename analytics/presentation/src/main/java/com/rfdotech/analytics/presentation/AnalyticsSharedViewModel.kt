@@ -65,7 +65,7 @@ class AnalyticsSharedViewModel(
             return@launch
         }
 
-        detailState = detailState.copy(showDatePickerDialog = false, startDate = startDateZoned, endDate = endDateZoned)
+        detailState = detailState.copy(startDate = startDateZoned, endDate = endDateZoned)
 
         detailState = detailState.copy(isGettingRuns = true)
 

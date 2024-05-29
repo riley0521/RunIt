@@ -9,6 +9,11 @@
     <string name="error_serialization_error">Could not parse data.</string>
     <string name="error_unknown">An unknown error occurred.</string>
 
+    <string name="x_km">%s km</string>
+    <string name="x_km_per_hour">%s km/h</string>
+    <string name="x_pace">%s / km</string>
+    <string name="x_meter">%d m</string>
+
     <!-- I do this because you cannot use double or float in plurals -->
     <string name="x_km_per_hour_singular">%s kilometer per hour</string>
     <string name="x_km_per_hour_plural">%s kilometers per hour</string>

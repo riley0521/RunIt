@@ -5,7 +5,6 @@ package com.rfdotech.run.presentation.run_overview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,8 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
@@ -72,6 +73,10 @@ private fun RunOverviewScreen(
         DropDownItem(icon = AnalyticsIcon, title = stringResource(id = R.string.analytics)),
         DropDownItem(icon = SignOutIcon, title = stringResource(id = R.string.sign_out))
     )
+    val context = LocalContext.current
+    val runUiList = remember(state.runs) {
+        state.getRunUiList(context)
+    }
 
     PrimaryScaffold(
         topAppBar = {
@@ -116,7 +121,7 @@ private fun RunOverviewScreen(
             contentPadding = padding,
             verticalArrangement = Arrangement.spacedBy(Space16)
         ) {
-            items(items = state.runs, key = { it.id }) { run ->
+            items(items = runUiList, key = { it.id }) { run ->
                 RunListItem(
                     run = run,
                     onDeleteClick = {

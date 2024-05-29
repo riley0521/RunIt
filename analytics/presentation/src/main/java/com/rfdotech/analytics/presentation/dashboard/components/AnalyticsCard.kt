@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import com.rfdotech.analytics.presentation.dashboard.model.AnalyticsDataUi
 import com.rfdotech.core.presentation.designsystem.FontSize12
 import com.rfdotech.core.presentation.designsystem.FontSize16
 import com.rfdotech.core.presentation.designsystem.Space16
@@ -19,10 +20,8 @@ import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
 
 @Composable
 fun AnalyticsCard(
-    title: String,
-    value: String,
-    modifier: Modifier = Modifier,
-    contentDesc: String? = null
+    data: AnalyticsDataUi,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -32,17 +31,17 @@ fun AnalyticsCard(
             .clearAndSetSemantics {
                 // Should be title + value in an understandable format
                 // E.g. 'Total time run . 1 day 2 hours 45 minutes'
-               contentDescription = contentDesc ?: "$title . $value"
+               contentDescription = data.contentDesc
             },
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = title,
+            text = data.title,
             color = colorOnSurfaceVariant,
             fontSize = FontSize12
         )
         Text(
-            text = value,
+            text = data.displayedValue,
             fontSize = FontSize16
         )
     }
