@@ -38,16 +38,16 @@ fun Context.appendTextToKilometerPerHour(text: String, distanceKm: Double): Stri
 
 fun Context.appendTextToDayHourMinute(text: String, time: Duration): String {
     val dayStr = this.getPlurals(R.plurals.x_day, time.getInt(DurationUnit.DAYS))
-    val hourStr = this.getPlurals(R.plurals.x_hour, time.getInt(DurationUnit.HOURS) % 24)
-    val minuteStr = this.getPlurals(R.plurals.x_minute, time.getInt(DurationUnit.MINUTES) % 60)
+    val hourStr = this.getPlurals(R.plurals.x_hour, time.getRemainingHours())
+    val minuteStr = this.getPlurals(R.plurals.x_minute, time.getRemainingMinutes())
 
     return "$text . $dayStr $hourStr $minuteStr"
 }
 
 fun Context.appendTextToHourMinuteSecond(text: String, time: Duration): String {
     val hourStr = this.getPlurals(R.plurals.x_hour, time.getInt(DurationUnit.HOURS))
-    val minuteStr = this.getPlurals(R.plurals.x_minute, time.getInt(DurationUnit.MINUTES) % 60)
-    val secondStr = this.getPlurals(R.plurals.x_second, time.getInt(DurationUnit.SECONDS) % 60)
+    val minuteStr = this.getPlurals(R.plurals.x_minute, time.getRemainingMinutes())
+    val secondStr = this.getPlurals(R.plurals.x_second, time.getRemainingSeconds())
 
     return "$text . $hourStr $minuteStr $secondStr"
 }
@@ -100,4 +100,16 @@ fun Context.getTextForDateRange(startDate: LocalDate, endDate: LocalDate): Strin
 
 fun Duration.getInt(unit: DurationUnit): Int {
     return this.toLong(unit).toInt()
+}
+
+fun Duration.getRemainingHours(): Int {
+    return this.getInt(DurationUnit.HOURS) % HOURS_PER_DAY
+}
+
+fun Duration.getRemainingMinutes(): Int {
+    return this.getInt(DurationUnit.MINUTES) % SECONDS_PER_MINUTE
+}
+
+fun Duration.getRemainingSeconds(): Int {
+    return this.getInt(DurationUnit.SECONDS) % SECONDS_PER_MINUTE
 }

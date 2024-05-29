@@ -9,12 +9,13 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 const val ONE_DECIMAL = 1
+const val HOURS_PER_DAY = 24
 const val SECONDS_PER_MINUTE = 60
 
 fun Duration.formatted(): String {
     val hours = this.getInt(DurationUnit.HOURS).formatNumberWithLeadingZero()
-    val minutes = (this.getInt(DurationUnit.MINUTES) % SECONDS_PER_MINUTE).formatNumberWithLeadingZero()
-    val seconds = (this.getInt(DurationUnit.SECONDS) % SECONDS_PER_MINUTE).formatNumberWithLeadingZero()
+    val minutes = this.getRemainingMinutes().formatNumberWithLeadingZero()
+    val seconds = this.getRemainingSeconds().formatNumberWithLeadingZero()
 
     return "$hours:$minutes:$seconds"
 }
