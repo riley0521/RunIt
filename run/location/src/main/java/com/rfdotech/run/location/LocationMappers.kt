@@ -1,5 +1,6 @@
 package com.rfdotech.run.location
 
+import android.location.Address
 import com.rfdotech.core.domain.location.Location
 import android.location.Location as AndroidLocation
 import com.rfdotech.core.domain.location.LocationWithAltitude
@@ -12,4 +13,8 @@ fun AndroidLocation.toLocationWithAltitude(): LocationWithAltitude {
         ),
         altitude = altitude
     )
+}
+
+fun Address.toAddressLine1(): String {
+    return getAddressLine(0)
 }

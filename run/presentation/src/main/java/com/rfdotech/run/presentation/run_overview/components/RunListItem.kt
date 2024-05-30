@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.SubcomposeAsyncImage
+import com.rfdotech.core.domain.Address
 import com.rfdotech.core.presentation.designsystem.ASPECT_RATIO_16_9
 import com.rfdotech.core.presentation.designsystem.CalendarIcon
 import com.rfdotech.core.presentation.designsystem.FontSize12
@@ -87,7 +88,11 @@ fun RunListItem(
             verticalArrangement = Arrangement.spacedBy(Space16)
         ) {
             MapImage(imageUrl = run.mapPictureUrl)
-            RunningTimeSection(duration = run.duration, modifier = Modifier.fillMaxWidth())
+            RunningTimeSection(
+                duration = run.duration,
+                address = run.address,
+                modifier = Modifier.fillMaxWidth()
+            )
             HorizontalDivider(
                 color = colorOnSurfaceVariant.copy(alpha = 0.4f)
             )
@@ -157,6 +162,7 @@ private fun MapImage(
 @Composable
 private fun RunningTimeSection(
     duration: String,
+    address: Address?,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -196,6 +202,13 @@ private fun RunningTimeSection(
                 text = duration,
                 color = MaterialTheme.colorScheme.onSurface
             )
+            if (address != null) {
+                Text(
+                    text = address,
+                    color = colorOnSurfaceVariant,
+                    fontSize = FontSize12
+                )
+            }
         }
     }
 }
@@ -293,7 +306,8 @@ private fun RunListItemPreview() {
                 maxSpeed = "16 km/h",
                 pace = "17:38 / km",
                 totalElevation = "1 m",
-                mapPictureUrl = null
+                mapPictureUrl = null,
+                address = "Something"
             ),
             onDeleteClick = {
 

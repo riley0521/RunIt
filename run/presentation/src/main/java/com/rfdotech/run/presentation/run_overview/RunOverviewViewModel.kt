@@ -5,19 +5,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rfdotech.core.domain.DispatcherProvider
+import com.rfdotech.core.domain.Geolocator
 import com.rfdotech.core.domain.auth.UserStorage
+import com.rfdotech.core.domain.printAndThrowCancellationException
+import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.domain.run.RunRepository
+import com.rfdotech.core.domain.run.RunWithAddress
 import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.core.presentation.ui.auth.GoogleAuthUiClient
-import com.rfdotech.run.presentation.run_overview.mapper.toRunUi
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RunOverviewViewModel(
     private val runRepository: RunRepository,
+    private val geolocator: Geolocator,
+    private val dispatcherProvider: DispatcherProvider,
     private val syncRunScheduler: SyncRunScheduler,
     private val userStorage: UserStorage,
     private val googleAuthUiClient: GoogleAuthUiClient,
@@ -35,7 +44,10 @@ class RunOverviewViewModel(
         runRepository
             .getAllLocal()
             .onEach { runs ->
-                state = state.copy(runs = runs)
+                state = state.copy(isGettingRuns = true)
+                val runsWithAddress = getAddressFromRuns(runs)
+
+                state = state.copy(runs = runsWithAddress, isGettingRuns = false)
             }
             .launchIn(viewModelScope)
 
@@ -54,8 +66,33 @@ class RunOverviewViewModel(
                     runRepository.deleteById(action.id)
                 }
             }
+
             else -> Unit
         }
+    }
+
+    private suspend fun getAddressFromRuns(
+        runs: List<Run>
+    ): List<RunWithAddress> = withContext(dispatcherProvider.io) {
+        val addressJob = runs.map { run ->
+            async {
+                return@async with(run.location) {
+                    val addresses = try {
+                        geolocator.getAddressesFromCoordinates(latitude, longitude)
+                    } catch (e: Exception) {
+                        e.printAndThrowCancellationException()
+                        emptyList()
+                    }
+
+                    RunWithAddress(
+                        run = run,
+                        address = addresses.firstOrNull()
+                    )
+                }
+            }
+        }
+
+        addressJob.awaitAll()
     }
 
     private fun signOut() = applicationScope.launch {

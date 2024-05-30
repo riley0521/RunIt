@@ -10,14 +10,17 @@ import assertk.assertions.isTrue
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.core.presentation.ui.auth.GoogleAuthUiClient
 import com.rfdotech.core.test_util.MainCoroutineRule
+import com.rfdotech.core.test_util.TestDispatcherProvider
 import com.rfdotech.core.test_util.run.FakeSyncRunScheduler
 import com.rfdotech.core.test_util.run.FakeUserStorage
 import com.rfdotech.run.presentation.active_run.FakeRunRepository
 import com.rfdotech.core.test_util.run.run
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -32,6 +35,8 @@ import kotlin.time.Duration.Companion.minutes
 class RunOverviewViewModelTest {
 
     private lateinit var runRepository: FakeRunRepository
+    private lateinit var geolocator: FakeGeolocator
+    private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var syncRunScheduler: FakeSyncRunScheduler
     private lateinit var userStorage: FakeUserStorage
     private lateinit var googleAuthUiClient: GoogleAuthUiClient
@@ -45,12 +50,16 @@ class RunOverviewViewModelTest {
     @Before
     fun setup() {
         runRepository = FakeRunRepository()
+        geolocator = FakeGeolocator()
+        dispatcherProvider = TestDispatcherProvider()
         syncRunScheduler = FakeSyncRunScheduler()
         userStorage = FakeUserStorage()
         googleAuthUiClient = mockk(relaxed = true)
 
         viewModel = RunOverviewViewModel(
             runRepository = runRepository,
+            geolocator = geolocator,
+            dispatcherProvider = dispatcherProvider,
             syncRunScheduler = syncRunScheduler,
             userStorage = userStorage,
             googleAuthUiClient = googleAuthUiClient,
@@ -61,8 +70,18 @@ class RunOverviewViewModelTest {
     @Test
     fun testInitialization() = testScope.runTest {
         runRepository = mockk(relaxed = true)
+
+        coEvery { runRepository.getAllLocal() } returns flowOf(
+            listOf(
+                run(id = "111"),
+                run(id = "112")
+            )
+        )
+
         viewModel = RunOverviewViewModel(
             runRepository = runRepository,
+            geolocator = geolocator,
+            dispatcherProvider = dispatcherProvider,
             syncRunScheduler = syncRunScheduler,
             userStorage = userStorage,
             googleAuthUiClient = googleAuthUiClient,
@@ -72,6 +91,7 @@ class RunOverviewViewModelTest {
         advanceUntilIdle()
 
         assertThat(syncRunScheduler.isFetchRunsWorkerScheduled).isTrue()
+        assertThat(viewModel.state.runs.all { it.address != null }).isTrue()
         coVerify {
             runRepository.getAllLocal()
             runRepository.syncPendingRuns()
