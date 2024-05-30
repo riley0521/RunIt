@@ -2,6 +2,11 @@ package com.rfdotech.core.presentation.ui
 
 import android.content.Context
 import androidx.annotation.PluralsRes
+import com.rfdotech.core.domain.getInt
+import com.rfdotech.core.domain.getRemainingHours
+import com.rfdotech.core.domain.getRemainingMinutes
+import com.rfdotech.core.domain.getRemainingSeconds
+import com.rfdotech.core.domain.roundToDecimals
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -10,6 +15,8 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 /**
+ * You can write everything here related to formatting date & time, distance or speed.
+ *
  * T - Time
  * D - Distance
  * S - Speed
@@ -126,18 +133,42 @@ fun Context.getTextForDateRange(startDate: LocalDate, endDate: LocalDate, locale
     return this.getString(R.string.start_date_end_date, formatter.format(startDate), formatter.format(endDate))
 }
 
-fun Duration.getInt(unit: DurationUnit): Int {
-    return this.toLong(unit).toInt()
+fun Duration.formatted(): String {
+    val hours = this.getInt(DurationUnit.HOURS).formatNumberWithLeadingZero()
+    val minutes = this.getRemainingMinutes().formatNumberWithLeadingZero()
+    val seconds = this.getRemainingSeconds().formatNumberWithLeadingZero()
+
+    return "$hours:$minutes:$seconds"
 }
 
-fun Duration.getRemainingHours(): Int {
-    return this.getInt(DurationUnit.HOURS) % HOURS_PER_DAY
+fun Int.formatNumberWithLeadingZero(): String {
+    return String.format(Locale.getDefault(), "%02d", this)
 }
 
-fun Duration.getRemainingMinutes(): Int {
-    return this.getInt(DurationUnit.MINUTES) % SECONDS_PER_MINUTE
+fun Double.toFormattedKm(context: Context): String {
+    return context.getString(R.string.x_km, this.roundToDecimals().toString())
 }
 
-fun Duration.getRemainingSeconds(): Int {
-    return this.getInt(DurationUnit.SECONDS) % SECONDS_PER_MINUTE
+fun Double.toFormattedKmh(context: Context): String {
+    return context.getString(R.string.x_km_per_hour, this.roundToDecimals().toString())
+}
+
+fun Int.toFormattedMeters(context: Context): String {
+    return context.getString(R.string.x_meter, this)
+}
+
+fun Duration.toFormattedPace(distanceKm: Double, context: Context): String {
+    if (this == Duration.ZERO || distanceKm <= 0.0) {
+        return "-"
+    }
+
+    val averagePace = DistanceAndSpeedCalculator.getAveragePacePerKilometer(
+        distanceKm,
+        this
+    ) ?: return ""
+
+    return context.getString(
+        R.string.x_pace,
+        "${averagePace.minutes}:${averagePace.seconds.formatNumberWithLeadingZero()}"
+    )
 }
