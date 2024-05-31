@@ -7,6 +7,11 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.presentation.designsystemWear)
+    implementation(projects.wear.run.data)
+    implementation(projects.wear.run.domain)
+    implementation(projects.wear.run.presentation)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)

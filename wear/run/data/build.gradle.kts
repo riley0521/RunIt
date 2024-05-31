@@ -11,6 +11,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.wear.run.domain)
+
     implementation(libs.google.health.services)
     implementation(libs.bundles.koin)
 }
