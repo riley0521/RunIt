@@ -12,7 +12,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.bundles.compose)
-    implementation(libs.bundles.koin)
     implementation(libs.bundles.koin.compose)
     debugImplementation(libs.bundles.compose.debug)
 }
