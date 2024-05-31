@@ -39,6 +39,11 @@ firebase-bom = "33.0.0"
 google-services-plugin = "4.4.1"
 vico-charts = "2.0.0-alpha.20"
 compose-dialogs = "1.3.0"
+wear-core = "1.3.0"
+play-services-wearable = "18.1.0"
+compose-wear-os = "1.3.1"
+compose-wear-material3 = "1.0.0-alpha20"
+google-health-services = "1.0.0-rc02"
 
 # Project versions
 projectApplicationId = "com.rfdotech.runtracker"
@@ -48,6 +53,7 @@ projectTargetSdkVersion = "34"
 projectCompileSdkVersion = "34"
 projectVersionCode = "1"
 composeCompiler = "1.5.10"
+wearMinSdkVersion = "30"
 
 [libraries]
 
@@ -149,6 +155,14 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 google-devtools-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 androidx-room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 
+# Wear
+androidx-wear = { module = "androidx.wear:wear", version.ref = "wear-core" }
+play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
+google-health-services = { module = "androidx.health:health-services-client", version.ref = "google-health-services" }
+androidx-wear-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "compose-wear-material3" }
+androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "compose-wear-os" }
+androidx-wear-compose-ui-tooling = { group = "androidx.wear.compose", name = "compose-ui-tooling", version.ref = "compose-wear-os" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -171,6 +185,7 @@ runtracker-android-room-plugin = { id = "runtracker.android.room", version = "un
 runtracker-android-dynamic-feature-plugin = { id = "runtracker.android.dynamic.feature", version = "unspecified" }
 runtracker-jvm-library-plugin = { id = "runtracker.jvm.library", version = "unspecified" }
 runtracker-jvm-ktor-plugin = { id = "runtracker.jvm.ktor", version = "unspecified" }
+runtracker-android-application-wear-compose = { id = "runtracker.android.application.wear.compose", version = "unspecified" }
 
 [bundles]
 compose = [
@@ -221,4 +236,9 @@ android-testing = [
     "androidx-test-runner",
     "androidx-test-rules",
     "androidx-work-testing"
+]
+compose-wear = [
+    "androidx-wear-compose-material3",
+    "androidx-wear-compose-foundation",
+    "androidx-wear-compose-ui-tooling"
 ]
