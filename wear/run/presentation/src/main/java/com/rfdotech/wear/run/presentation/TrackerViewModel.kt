@@ -6,7 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.wear.run.domain.ExerciseTracker
+import com.rfdotech.wear.run.domain.PhoneConnector
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -14,7 +16,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class TrackerViewModel(
-    private val exerciseTracker: ExerciseTracker
+    private val exerciseTracker: ExerciseTracker,
+    private val phoneConnector: PhoneConnector
 ) : ViewModel() {
 
     var state by mutableStateOf(TrackerState())
@@ -23,6 +26,15 @@ class TrackerViewModel(
     private val hasBodySensorPermission = MutableStateFlow(false)
 
     init {
+        phoneConnector
+            .connectedDevice
+            .filterNotNull()
+            .onEach { device ->
+                Timber.tag("CONNECTED_DEVICE").d(device.toString())
+                state = state.copy(isConnectedPhoneNearby = device.isNearby)
+            }
+            .launchIn(viewModelScope)
+
         exerciseTracker.heartRate.onEach { heartRate ->
             Timber.tag("HEART_RATE").d("$heartRate bpm")
             state = state.copy(heartRate = heartRate)

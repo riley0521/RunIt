@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 class HealthServicesExerciseTracker(
@@ -66,7 +65,7 @@ class HealthServicesExerciseTracker(
                 override fun onRegistered() = Unit
 
                 override fun onRegistrationFailed(throwable: Throwable) {
-                    Timber.d(throwable)
+                    throwable.printStackTrace()
                 }
             }
 
