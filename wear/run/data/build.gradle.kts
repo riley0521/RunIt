@@ -11,8 +11,10 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.domain)
     implementation(projects.wear.run.domain)
 
+    implementation(libs.com.jakewharton.timber)
     implementation(libs.google.health.services)
     implementation(libs.bundles.koin)
 }

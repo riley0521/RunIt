@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.data)
     implementation(projects.core.presentation.designsystemWear)
     implementation(projects.wear.run.data)
     implementation(projects.wear.run.domain)
@@ -15,6 +16,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.com.jakewharton.timber)
 
     implementation(libs.bundles.compose)
     implementation(libs.bundles.koin.compose)
