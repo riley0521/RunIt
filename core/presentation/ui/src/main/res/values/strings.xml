@@ -14,6 +14,7 @@
     <string name="x_pace">%s / km</string>
     <string name="x_pace_acc">%s per kilometer</string>
     <string name="x_meter">%d m</string>
+    <string name="x_heart_rate">%d bpm</string>
 
     <!-- I do this because you cannot use double or float in plurals -->
     <string name="x_km_per_hour_singular">%s kilometer per hour</string>
@@ -41,5 +42,10 @@
     <plurals name="x_second">
         <item quantity="one">%d second</item>
         <item quantity="other">%d seconds</item>
+    </plurals>
+
+    <plurals name="x_heart_rate_acc">
+        <item quantity="one">%d beat per minute</item>
+        <item quantity="other">%d beats per minute</item>
     </plurals>
 </resources>

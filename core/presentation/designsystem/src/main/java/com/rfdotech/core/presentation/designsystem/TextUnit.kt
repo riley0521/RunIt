@@ -3,6 +3,7 @@ package com.rfdotech.core.presentation.designsystem
 import androidx.compose.ui.unit.sp
 
 val FontSize8 = 8.sp
+val FontSize10 = 10.sp
 val FontSize12 = 12.sp
 val FontSize14 = 14.sp
 val FontSize16 = 16.sp

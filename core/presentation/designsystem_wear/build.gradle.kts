@@ -11,6 +11,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.presentation.designsystem)
+    api(projects.core.presentation.designsystem)
     implementation(libs.androidx.wear.compose.material3)
 }

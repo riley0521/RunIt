@@ -71,6 +71,10 @@ fun Context.appendTextToPace(text: String, distanceKm: Double, time: Duration): 
     return "$text . $formatted"
 }
 
+fun Context.appendTextToHeartRate(text: String, bpm: Int?): String {
+    return "$text . ${this.getPlurals(R.plurals.x_heart_rate_acc, bpm ?: 0)}"
+}
+
 private fun Context.getPlurals(@PluralsRes id: Int, quantity: Int): String {
     if (quantity == 0) {
         return ""
@@ -171,4 +175,12 @@ fun Duration.toFormattedPace(distanceKm: Double, context: Context): String {
         R.string.x_pace,
         "${averagePace.minutes}:${averagePace.seconds.formatNumberWithLeadingZero()}"
     )
+}
+
+fun Int?.toFormattedHeartRate(context: Context): String {
+    return if (this != null) {
+        context.getString(R.string.x_heart_rate, this)
+    } else {
+        "-"
+    }
 }
