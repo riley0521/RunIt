@@ -1,6 +1,7 @@
 package com.rfdotech.wear.app.presentation
 
 import android.app.Application
+import com.rfdotech.core.connectivity.data.di.coreConnectivityDataModule
 import com.rfdotech.core.data.di.coreDataModule
 import com.rfdotech.wear.app.BuildConfig
 import com.rfdotech.wear.run.data.di.wearRunDataModule
@@ -24,6 +25,7 @@ class RunItWearApp : Application() {
             modules(
                 wearRunDataModule,
                 wearRunPresentationModule,
+                coreConnectivityDataModule,
                 coreDataModule
             )
         }

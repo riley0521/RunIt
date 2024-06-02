@@ -5,6 +5,7 @@ import android.content.Context
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.rfdotech.auth.data.di.authDataModule
 import com.rfdotech.auth.presentation.di.authPresentationModule
+import com.rfdotech.core.connectivity.data.di.coreConnectivityDataModule
 import com.rfdotech.core.data.di.coreDataModule
 import com.rfdotech.core.database.di.coreDatabaseModule
 import com.rfdotech.core.presentation.ui.di.corePresentationUiModule
@@ -38,6 +39,7 @@ class RunItApp : Application() {
             modules(
                 authDataModule,
                 authPresentationModule,
+                coreConnectivityDataModule,
                 coreDataModule,
                 coreDatabaseModule,
                 corePresentationUiModule,

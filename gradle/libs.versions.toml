@@ -71,6 +71,7 @@ google-core = { group = "com.google.android.play", name = "core", version.ref = 
 google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "maps" }
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "gms-location" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-auth" }
+google-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }

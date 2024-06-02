@@ -22,6 +22,8 @@ dependencies {
     // Local modules
     implementation(projects.core.presentation.designsystem)
     implementation(projects.core.presentation.ui)
+    implementation(projects.core.connectivity.data)
+    implementation(projects.core.connectivity.domain)
     implementation(projects.core.domain)
     implementation(projects.core.data)
     implementation(projects.core.database)
