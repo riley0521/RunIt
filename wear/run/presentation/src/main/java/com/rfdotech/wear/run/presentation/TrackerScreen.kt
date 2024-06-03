@@ -40,7 +40,10 @@ import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.StartIcon
 import com.rfdotech.core.presentation.designsystem_wear.RunItWearTheme
+import com.rfdotech.core.presentation.ui.ObserveAsEvents
 import com.rfdotech.core.presentation.ui.formatted
+import com.rfdotech.core.presentation.ui.showToastRes
+import com.rfdotech.core.presentation.ui.showToastStr
 import com.rfdotech.core.presentation.ui.toFormattedHeartRate
 import com.rfdotech.wear.run.presentation.components.RunDataCard
 import org.koin.androidx.compose.koinViewModel
@@ -51,6 +54,19 @@ import kotlin.time.Duration.Companion.seconds
 fun TrackerScreenRoot(
     viewModel: TrackerViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is TrackerEvent.Error -> {
+                context.showToastStr(event.message.asString(context))
+            }
+            TrackerEvent.RunFinished -> {
+                context.showToastRes(R.string.run_finished)
+            }
+        }
+    }
+
     TrackerScreen(
         state = viewModel.state,
         onAction = viewModel::onAction
