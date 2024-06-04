@@ -16,6 +16,7 @@ fun RunDto.toRun(): Run {
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = totalElevationMeters,
         numberOfSteps = 0,
+        avgHeartRate = avgHeartRate ?: 0,
         mapPictureUrl = mapPictureUrl
     )
 }
@@ -30,6 +31,7 @@ fun FirestoreRunDto.toRun(): Run {
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = totalElevationMeters,
         numberOfSteps = numberOfSteps,
+        avgHeartRate = avgHeartRate,
         mapPictureUrl = mapPictureUrl
     )
 }
@@ -47,6 +49,7 @@ fun Run.toRunDtoV2(userId: String): FirestoreRunDto {
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = totalElevationMeters,
         numberOfSteps = numberOfSteps,
+        avgHeartRate = avgHeartRate,
         mapPictureUrl = mapPictureUrl
     )
 }
@@ -60,6 +63,8 @@ fun Run.toCreateRunRequest(): CreateRunRequest {
         long = location.longitude,
         avgSpeedKmh = avgSpeedKhm,
         maxSpeedKmh = maxSpeedKmh,
+        avgHeartRate = avgHeartRate,
+        maxHeartRate = 0, // We only need average heart rate
         totalElevationMeters = totalElevationMeters,
         id = id ?: throw IllegalArgumentException("Id not found.")
     )

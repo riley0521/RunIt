@@ -23,8 +23,11 @@
     <string name="error_load_image">Couldn\'t load image.</string>
     <string name="total_running_time">Total running time</string>
     <string name="avg_speed">Ø Speed</string>
+    <string name="avg_heart_rate">Ø Heart Rate</string>
+    <string name="step_count">Step Count</string>
     <string name="max_speed">Max Speed</string>
     <string name="total_elevation">Total Elevation</string>
     <string name="delete">Delete</string>
     <string name="invalid_run_not_saved">This is an invalid run, it will not be saved.</string>
+    <string name="heart_rate">Heart Rate</string>
 </resources>

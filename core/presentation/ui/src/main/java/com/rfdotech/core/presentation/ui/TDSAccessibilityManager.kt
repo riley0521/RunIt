@@ -177,8 +177,17 @@ fun Duration.toFormattedPace(distanceKm: Double, context: Context): String {
     )
 }
 
+fun Int.toFormattedSteps(context: Context): String {
+    return if (this > 0) {
+        context.getPlurals(R.plurals.x_num_of_steps, this)
+    } else {
+        "-"
+    }
+}
+
 fun Int?.toFormattedHeartRate(context: Context): String {
-    return if (this != null) {
+    val heartRate = this ?: 0
+    return if (heartRate > 0) {
         context.getString(R.string.x_heart_rate, this)
     } else {
         "-"

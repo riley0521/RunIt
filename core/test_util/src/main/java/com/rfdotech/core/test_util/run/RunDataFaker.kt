@@ -23,6 +23,7 @@ fun run(
         maxSpeedKmh = maxSpeedKmh,
         totalElevationMeters = 1,
         numberOfSteps = 8500,
+        avgHeartRate = 124,
         mapPictureUrl = null
     )
 }

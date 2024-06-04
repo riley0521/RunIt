@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rfdotech.core.connectivity.domain.messaging.MessagingAction
 import com.rfdotech.core.domain.ZonedDateTimeHelper
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
@@ -14,7 +15,9 @@ import com.rfdotech.core.domain.run.RunRepository
 import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.presentation.ui.asUiText
 import com.rfdotech.run.domain.RunningTracker
+import com.rfdotech.run.domain.WatchConnector
 import com.rfdotech.run.presentation.active_run.service.ActiveRunService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,12 +28,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.ZoneId
 import java.time.ZonedDateTime
+import kotlin.math.roundToInt
 
 class ActiveRunViewModel(
     private val runningTracker: RunningTracker,
-    private val runRepository: RunRepository
+    private val runRepository: RunRepository,
+    private val watchConnector: WatchConnector,
+    private val applicationScope: CoroutineScope
 ) : ViewModel() {
 
     var state by mutableStateOf(
@@ -85,13 +90,19 @@ class ActiveRunViewModel(
         runningTracker.stepCount.onEach {
             state = state.copy(stepCount = it)
         }.launchIn(viewModelScope)
+
+        listenToWatchActions()
     }
 
-    fun onAction(action: ActiveRunAction) {
+    fun onAction(action: ActiveRunAction, triggeredOnWatch: Boolean = false) {
+        if (!triggeredOnWatch) {
+            sendActionToWatch(action)
+        }
         when (action) {
             ActiveRunAction.OnFinishRunClick -> {
                 state = state.copy(isRunFinished = true, isSavingRun = true)
             }
+
             ActiveRunAction.OnResumeRunClick -> {
                 state = state.copy(shouldTrack = true)
             }
@@ -150,6 +161,7 @@ class ActiveRunViewModel(
             maxSpeedKmh = DistanceAndSpeedCalculator.getMaxSpeedKmh(locations),
             totalElevationMeters = DistanceAndSpeedCalculator.getTotalElevationMeters(locations),
             numberOfSteps = state.stepCount,
+            avgHeartRate = state.runData.heartRates.average().roundToInt(),
             mapPictureUrl = null
         )
         runningTracker.finishRun()
@@ -158,6 +170,7 @@ class ActiveRunViewModel(
             is Result.Error -> {
                 eventChannel.send(ActiveRunEvent.Error(result.error.asUiText()))
             }
+
             is Result.Success -> {
                 eventChannel.send(ActiveRunEvent.RunSaved)
             }
@@ -166,9 +179,70 @@ class ActiveRunViewModel(
         state = state.copy(isSavingRun = false)
     }
 
+    private fun sendActionToWatch(action: ActiveRunAction) = viewModelScope.launch {
+        val messagingAction = when (action) {
+            ActiveRunAction.OnFinishRunClick -> MessagingAction.Finish
+            ActiveRunAction.OnResumeRunClick -> MessagingAction.StartOrResumeRun
+            ActiveRunAction.OnToggleRunClick -> {
+                if (state.hasStartedRunning) {
+                    MessagingAction.Pause
+                } else {
+                    MessagingAction.StartOrResumeRun
+                }
+            }
+            else -> null
+        }
+
+        messagingAction?.let {
+            watchConnector.sendActionToWatch(it)
+        }
+    }
+
+    private fun listenToWatchActions() {
+        watchConnector
+            .messagingActions
+            .onEach { action ->
+                when (action) {
+                    MessagingAction.ConnectionRequest -> {
+                        if (isTracking.value) {
+                            watchConnector.sendActionToWatch(MessagingAction.StartOrResumeRun)
+                        }
+                    }
+
+                    MessagingAction.Finish -> {
+                        onAction(ActiveRunAction.OnFinishRunClick, true)
+                    }
+
+                    MessagingAction.Pause -> {
+                        if (isTracking.value) {
+                            onAction(ActiveRunAction.OnToggleRunClick, true)
+                        }
+                    }
+
+                    MessagingAction.StartOrResumeRun -> {
+                        if (!isTracking.value) {
+                            if (state.hasStartedRunning) {
+                                onAction(ActiveRunAction.OnResumeRunClick, true)
+                            } else {
+                                onAction(ActiveRunAction.OnToggleRunClick, true)
+                            }
+                        }
+                    }
+
+                    else -> Unit
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     override fun onCleared() {
         super.onCleared()
         if (!ActiveRunService.isServiceActive) {
+            applicationScope.launch {
+                // This is an edge case where the user closes the app while in the active run screen but decided not to start a new run.
+                // If we don't do this, the start and finish button will still be visible in the watch.
+                watchConnector.sendActionToWatch(MessagingAction.NotTrackable)
+            }
             runningTracker.stopObservingLocation()
         }
     }

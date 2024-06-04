@@ -245,7 +245,9 @@ private fun DataGrid(
         RunDataUi(name = stringResource(id = R.string.pace), value = run.pace),
         RunDataUi(name = stringResource(id = R.string.avg_speed), value = run.avgSpeed),
         RunDataUi(name = stringResource(id = R.string.max_speed), value = run.maxSpeed),
-        RunDataUi(name = stringResource(id = R.string.total_elevation), value = run.totalElevation)
+        RunDataUi(name = stringResource(id = R.string.total_elevation), value = run.totalElevation),
+        RunDataUi(name = stringResource(id = R.string.step_count), value = run.numberOfSteps),
+        RunDataUi(name = stringResource(id = R.string.avg_heart_rate), value = run.avgHeartRate)
     )
 
     var maxWidth by remember {
@@ -306,6 +308,8 @@ private fun RunListItemPreview() {
                 maxSpeed = "16 km/h",
                 pace = "17:38 / km",
                 totalElevation = "1 m",
+                numberOfSteps = "12540 steps",
+                avgHeartRate = "150 bpm",
                 mapPictureUrl = null,
                 address = "Something"
             ),

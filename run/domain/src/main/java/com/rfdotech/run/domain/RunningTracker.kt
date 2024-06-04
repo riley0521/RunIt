@@ -1,5 +1,6 @@
 package com.rfdotech.run.domain
 
+import com.rfdotech.core.connectivity.domain.messaging.MessagingAction
 import com.rfdotech.core.domain.Timer
 import com.rfdotech.core.domain.location.LocationTimestamp
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
@@ -7,13 +8,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
@@ -25,6 +32,7 @@ import kotlin.time.Duration.Companion.seconds
 class RunningTracker(
     private val locationObserver: LocationObserver,
     private val stepObserver: StepObserver,
+    private val watchConnector: WatchConnector,
     applicationScope: CoroutineScope,
     private val clock: Clock = Clock.systemDefaultZone()
 ) {
@@ -54,6 +62,19 @@ class RunningTracker(
 
     private val _stepCount = MutableStateFlow(0)
     val stepCount = _stepCount.asStateFlow()
+
+    private val heartRates: StateFlow<List<Int>> = isTracking
+        .flatMapLatest { isTracking ->
+            if (isTracking) {
+                watchConnector.messagingActions
+            } else flowOf()
+        }
+        .filterIsInstance<MessagingAction.HeartRateUpdate>()
+        .map { it.heartRate }
+        .runningFold(initial = emptyList<Int>()) { currentHeartRates, newHeartRate ->
+            currentHeartRates + newHeartRate
+        }
+        .stateIn(applicationScope, SharingStarted.Lazily, emptyList())
 
     init {
         _isTracking
@@ -94,8 +115,22 @@ class RunningTracker(
                     location = location,
                     durationTimestamp = elapsedTime
                 )
-            }.onEach { location ->
-                convertLocationWithTimestampToRunData(location)
+            }.combine(heartRates) { location, heartRates ->
+                convertLocationWithTimestampToRunData(location, heartRates)
+            }
+            .launchIn(applicationScope)
+
+        elapsedTime
+            .onEach {
+                watchConnector.sendActionToWatch(MessagingAction.TimeUpdate(it))
+            }
+            .launchIn(applicationScope)
+
+        runData
+            .map { it.distanceMeters }
+            .distinctUntilChanged()
+            .onEach { distanceMeters ->
+                watchConnector.sendActionToWatch(MessagingAction.DistanceUpdate(distanceMeters))
             }
             .launchIn(applicationScope)
     }
@@ -106,10 +141,12 @@ class RunningTracker(
 
     fun startObservingLocation() {
         isObservingLocation.update { true }
+        watchConnector.setIsTrackable(true)
     }
 
     fun stopObservingLocation() {
         isObservingLocation.update { false }
+        watchConnector.setIsTrackable(false)
     }
 
     fun finishRun() {
@@ -120,7 +157,7 @@ class RunningTracker(
         _stepCount.update { 0 }
     }
 
-    private fun convertLocationWithTimestampToRunData(location: LocationTimestamp) {
+    private fun convertLocationWithTimestampToRunData(location: LocationTimestamp, heartRates: List<Int>) {
         val currentLocations = runData.value.locations
         val lastLocationsList = if (currentLocations.isNotEmpty()) {
             currentLocations.last() + location
@@ -138,7 +175,8 @@ class RunningTracker(
             RunData(
                 distanceMeters = distanceMeters,
                 paceInSeconds = avgSecondsPerKm.seconds,
-                locations = newLocationsList
+                locations = newLocationsList,
+                heartRates = heartRates
             )
         }
     }

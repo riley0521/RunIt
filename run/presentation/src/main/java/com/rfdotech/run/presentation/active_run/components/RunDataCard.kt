@@ -30,6 +30,7 @@ import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space24
 import com.rfdotech.core.presentation.designsystem.Space70
 import com.rfdotech.core.presentation.ui.formatted
+import com.rfdotech.core.presentation.ui.toFormattedHeartRate
 import com.rfdotech.core.presentation.ui.toFormattedKm
 import com.rfdotech.core.presentation.ui.toFormattedPace
 import com.rfdotech.run.domain.RunData
@@ -77,6 +78,13 @@ fun RunDataCard(
                 value = elapsedTime.toFormattedPace(distanceKm, context),
                 modifier = Modifier.defaultMinSize(minWidth = Space70)
             )
+            if (runData.heartRates.isNotEmpty()) {
+                RunDataItem(
+                    title = stringResource(id = R.string.heart_rate),
+                    value = runData.heartRates.lastOrNull().toFormattedHeartRate(context),
+                    modifier = Modifier.defaultMinSize(minWidth = Space70)
+                )
+            }
         }
     }
 }
@@ -113,7 +121,8 @@ private fun RunDataCardPreview() {
             elapsedTime = 10.minutes,
             runData = RunData(
                 distanceMeters = 800,
-                paceInSeconds = 180.seconds
+                paceInSeconds = 180.seconds,
+                heartRates = listOf(80, 124, 143)
             ),
             modifier = Modifier.fillMaxWidth()
         )

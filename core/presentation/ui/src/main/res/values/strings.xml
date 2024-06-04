@@ -48,4 +48,9 @@
         <item quantity="one">%d beat per minute</item>
         <item quantity="other">%d beats per minute</item>
     </plurals>
+
+    <plurals name="x_num_of_steps">
+        <item quantity="one">%d step</item>
+        <item quantity="other">%d steps</item>
+    </plurals>
 </resources>

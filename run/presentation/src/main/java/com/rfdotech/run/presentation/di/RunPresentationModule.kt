@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 val runPresentationModule = module {
     single {
-        RunningTracker(get(), get(), get ())
+        RunningTracker(get(), get(), get(), get())
     }
 
     viewModelOf(::RunOverviewViewModel)

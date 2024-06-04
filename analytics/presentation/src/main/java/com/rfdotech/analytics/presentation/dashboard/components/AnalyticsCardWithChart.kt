@@ -258,6 +258,7 @@ private fun sampleRun(distanceMeters: Int, dateTimeUtc: ZonedDateTime, duration:
         maxSpeedKmh = 15.0,
         totalElevationMeters = 10,
         numberOfSteps = 9500,
+        avgHeartRate = 124,
         mapPictureUrl = null
     )
 }

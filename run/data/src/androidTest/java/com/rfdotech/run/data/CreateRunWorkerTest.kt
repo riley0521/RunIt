@@ -154,6 +154,7 @@ class CreateRunWorkerTest {
                 maxSpeedKmh = 15.0,
                 totalElevationMeters = 1,
                 numberOfSteps = 8500,
+                avgHeartRate = 124,
                 mapPictureUrl = null,
                 id = id
             ), runId = id, mapPictureBytes = mapPictureBytes, userId = userId

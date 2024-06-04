@@ -8,5 +8,6 @@ typealias ListOfLocations = List<List<LocationTimestamp>>
 data class RunData(
     val distanceMeters: Int = 0,
     val paceInSeconds: Duration = Duration.ZERO,
-    val locations: ListOfLocations = emptyList()
+    val locations: ListOfLocations = emptyList(),
+    val heartRates: List<Int> = emptyList()
 )

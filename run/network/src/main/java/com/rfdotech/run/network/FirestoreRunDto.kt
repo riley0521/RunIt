@@ -15,5 +15,6 @@ data class FirestoreRunDto(
     val maxSpeedKmh: Double = 0.0,
     val totalElevationMeters: Int = 0,
     val numberOfSteps: Int = 0,
+    val avgHeartRate: Int = 0,
     val mapPictureUrl: String? = null
 )

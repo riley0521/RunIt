@@ -13,6 +13,7 @@ data class Run(
     val maxSpeedKmh: Double,
     val totalElevationMeters: Int,
     val numberOfSteps: Int,
+    val avgHeartRate: Int,
     val mapPictureUrl: String?
 ) {
     val avgSpeedKhm: Double
