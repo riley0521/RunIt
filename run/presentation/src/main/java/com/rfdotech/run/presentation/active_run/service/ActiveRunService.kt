@@ -104,7 +104,7 @@ class ActiveRunService: Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.active_run),
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_LOW // Should be low so it will not make a sound every time it updates.
             )
             notificationManager.createNotificationChannel(channel)
         }

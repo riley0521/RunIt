@@ -3,11 +3,11 @@ package com.rfdotech.run.location
 import android.content.Context
 import android.location.Geocoder
 import android.os.Build
+import android.util.Log
 import com.rfdotech.core.domain.Address
 import com.rfdotech.core.domain.Geolocator
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 class AndroidGeolocator(
     private val context: Context
@@ -31,7 +31,8 @@ class AndroidGeolocator(
 
                 override fun onError(errorMessage: String?) {
                     super.onError(errorMessage)
-                    continuation.resumeWithException(Throwable(message = errorMessage))
+                    Log.d("AndroidGeolocator", errorMessage ?: "Unknown error.")
+                    continuation.resume(emptyList())
                 }
             }
             geocoder.getFromLocation(latitude, longitude, MAX_ITEMS, listener)

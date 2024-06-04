@@ -97,15 +97,23 @@ class TrackerViewModel(
 
         combine(
             runningTracker.distanceMeters,
-            runningTracker.elapsedTime,
-            runningTracker.heartRate
-        ) { distanceMeters, elapsedTime, heartRate ->
+            runningTracker.elapsedTime
+        ) { distanceMeters, elapsedTime ->
             state = state.copy(
                 distanceMeters = distanceMeters,
-                elapsedTime = elapsedTime,
-                heartRate = heartRate
+                elapsedTime = elapsedTime
             )
         }.launchIn(viewModelScope)
+
+        // We cannot combine this into the flow above because when we finish the run,
+        // It will still emit a heart rate that will mess up the state.
+        // The distance and time is already 0 but the heart rate will show something else.
+        runningTracker
+            .heartRate
+            .onEach {
+                state = state.copy(heartRate = it)
+            }
+            .launchIn(viewModelScope)
 
         listenToPhoneActions()
     }
