@@ -48,6 +48,8 @@ import com.rfdotech.core.presentation.ui.formatted
 import com.rfdotech.core.presentation.ui.showToastRes
 import com.rfdotech.core.presentation.ui.showToastStr
 import com.rfdotech.core.presentation.ui.toFormattedHeartRate
+import com.rfdotech.wear.run.presentation.ambient.AmbientObserver
+import com.rfdotech.wear.run.presentation.ambient.ambientMode
 import com.rfdotech.wear.run.presentation.components.RunDataCard
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.minutes
@@ -73,6 +75,7 @@ fun TrackerScreenRoot(
             is TrackerEvent.Error -> {
                 context.showToastStr(event.message.asString(context))
             }
+
             TrackerEvent.RunFinished -> {
                 context.showToastRes(R.string.run_finished)
                 onServiceToggle(false)
@@ -131,11 +134,24 @@ private fun TrackerScreen(
         permissionLauncher.launch(permissions.toTypedArray())
     }
 
+    AmbientObserver(
+        onEnterAmbient = {
+            onAction(TrackerAction.OnEnterAmbientMode(it.burnInProtectionRequired))
+        },
+        onExitAmbient = {
+            onAction(TrackerAction.OnExitAmbientMode)
+        }
+    )
+
     if (state.isConnectedPhoneNearby) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .ambientMode(
+                    isAmbientMode = state.isAmbientMode,
+                    burnInProtectionRequired = state.burnInProtectionRequired
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

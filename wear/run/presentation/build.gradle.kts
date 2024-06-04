@@ -19,6 +19,7 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.wear)
     implementation(libs.play.services.wearable)
     implementation(libs.com.jakewharton.timber)
 
