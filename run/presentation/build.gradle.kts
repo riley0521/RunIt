@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(projects.core.domain)
+    implementation(projects.core.notification)
     implementation(projects.core.testUtil)
     implementation(projects.run.domain)
 

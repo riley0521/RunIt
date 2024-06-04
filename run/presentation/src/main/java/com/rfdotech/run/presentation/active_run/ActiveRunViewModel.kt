@@ -16,7 +16,7 @@ import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.presentation.ui.asUiText
 import com.rfdotech.run.domain.RunningTracker
 import com.rfdotech.run.domain.WatchConnector
-import com.rfdotech.run.presentation.active_run.service.ActiveRunService
+import com.rfdotech.core.notification.ActiveRunService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +40,8 @@ class ActiveRunViewModel(
 
     var state by mutableStateOf(
         ActiveRunState(
-            shouldTrack = ActiveRunService.isServiceActive && runningTracker.isTracking.value,
-            hasStartedRunning = ActiveRunService.isServiceActive
+            shouldTrack = ActiveRunService.isServiceActive.value && runningTracker.isTracking.value,
+            hasStartedRunning = ActiveRunService.isServiceActive.value
         )
     )
         private set
@@ -237,7 +237,7 @@ class ActiveRunViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        if (!ActiveRunService.isServiceActive) {
+        if (!ActiveRunService.isServiceActive.value) {
             applicationScope.launch {
                 // This is an edge case where the user closes the app while in the active run screen but decided not to start a new run.
                 // If we don't do this, the start and finish button will still be visible in the watch.

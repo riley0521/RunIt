@@ -5,6 +5,8 @@
 
     <uses-feature android:name="android.hardware.type.watch" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name=".presentation.RunItWearApp"
         android:allowBackup="true"
@@ -35,6 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name="com.rfdotech.core.notification.ActiveRunService" />
     </application>
 
 </manifest>

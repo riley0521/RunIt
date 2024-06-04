@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.core.connectivity.data)
     implementation(projects.core.connectivity.domain)
     implementation(projects.core.data)
+    implementation(projects.core.notification)
     implementation(projects.core.presentation.designsystemWear)
     implementation(projects.wear.run.data)
     implementation(projects.wear.run.domain)

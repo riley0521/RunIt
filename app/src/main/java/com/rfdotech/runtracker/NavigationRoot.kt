@@ -12,7 +12,7 @@ import com.rfdotech.auth.presentation.intro.IntroScreenRoot
 import com.rfdotech.auth.presentation.sign_in.SignInScreenRoot
 import com.rfdotech.auth.presentation.sign_up.SignUpScreenRoot
 import com.rfdotech.run.presentation.active_run.ActiveRunScreenRoot
-import com.rfdotech.run.presentation.active_run.service.ActiveRunService
+import com.rfdotech.core.notification.ActiveRunService
 import com.rfdotech.run.presentation.run_overview.RunOverviewScreenRoot
 
 @Composable
@@ -129,7 +129,8 @@ private fun NavGraphBuilder.runGraph(
             ActiveRunScreenRoot(
                 onServiceToggle = { shouldServiceRun ->
                     if (shouldServiceRun) {
-                        context.startService(ActiveRunService
+                        context.startService(
+                            ActiveRunService
                             .createStartIntent(
                                 context = context,
                                 activityClass = MainActivity::class.java
