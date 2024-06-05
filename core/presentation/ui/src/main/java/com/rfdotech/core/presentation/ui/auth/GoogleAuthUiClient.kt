@@ -58,6 +58,17 @@ class GoogleAuthUiClient(
         }
     }
 
+    suspend fun deleteAccount(): EmptyResult<DataError.Network> {
+        return try {
+            oneTapClient.signOut().await()
+            auth.currentUser?.delete()?.await()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            e.printAndThrowCancellationException()
+            Result.Error(DataError.Network.SERVER_ERROR)
+        }
+    }
+
     private fun buildSignInRequest(): BeginSignInRequest {
         return BeginSignInRequest.Builder()
             .setGoogleIdTokenRequestOptions(

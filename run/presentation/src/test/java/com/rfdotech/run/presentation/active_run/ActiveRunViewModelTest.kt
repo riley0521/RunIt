@@ -6,12 +6,16 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isTrue
+import com.rfdotech.core.connectivity.domain.messaging.MessagingAction
 import com.rfdotech.core.test_util.MainCoroutineRule
 import com.rfdotech.core.test_util.MutableClock
 import com.rfdotech.core.test_util.advanceTimeBy
 import com.rfdotech.run.domain.RunData
 import com.rfdotech.run.domain.RunningTracker
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -30,6 +34,7 @@ class ActiveRunViewModelTest {
     private lateinit var stepObserver: FakeStepObserver
     private lateinit var mutableClock: MutableClock
     private lateinit var runningTracker: RunningTracker
+    private lateinit var watchConnector: FakePhoneToWatchConnector
     private lateinit var viewModel: ActiveRunViewModel
 
     @get:Rule
@@ -42,16 +47,20 @@ class ActiveRunViewModelTest {
         locationObserver = FakeLocationObserver()
         stepObserver = FakeStepObserver()
         mutableClock = MutableClock(Clock.systemDefaultZone())
+        watchConnector = FakePhoneToWatchConnector()
 
         runningTracker = RunningTracker(
             locationObserver = locationObserver,
             stepObserver = stepObserver,
+            watchConnector = watchConnector,
             applicationScope = testScope.backgroundScope,
             clock = mutableClock
         )
         viewModel = ActiveRunViewModel(
             runningTracker = runningTracker,
-            runRepository = runRepository
+            runRepository = runRepository,
+            watchConnector = watchConnector,
+            applicationScope = testScope.backgroundScope
         )
     }
 
@@ -135,6 +144,58 @@ class ActiveRunViewModelTest {
 
         viewModel.onAction(ActiveRunAction.OnResumeRunClick)
         assertThat(viewModel.state.shouldTrack).isTrue()
+    }
+
+    @Test
+    fun testUserHasStartedRunning_ListenToWatchActions_ConnectionRequest() = testScope.runTest {
+        watchConnector = FakePhoneToWatchConnector()
+        viewModel = ActiveRunViewModel(
+            runningTracker = runningTracker,
+            runRepository = runRepository,
+            watchConnector = watchConnector,
+            applicationScope = backgroundScope
+        )
+
+        viewModel.onAction(ActiveRunAction.SubmitLocationPermissionInfo(true, false))
+        viewModel.onAction(ActiveRunAction.OnToggleRunClick)
+        advanceUntilIdle()
+
+        watchConnector.sendActionToThis(MessagingAction.ConnectionRequest)
+        advanceUntilIdle()
+
+        assertThat(watchConnector.actionsSentToWatch[0] is MessagingAction.Pause).isTrue()
+        assertThat(watchConnector.actionsSentToWatch[1] is MessagingAction.StartOrResumeRun).isTrue()
+    }
+
+    @Test
+    fun testSendActionToWatch() = testScope.runTest {
+        watchConnector = mockk(relaxed = true)
+        viewModel = ActiveRunViewModel(
+            runningTracker = runningTracker,
+            runRepository = runRepository,
+            watchConnector = watchConnector,
+            applicationScope = backgroundScope
+        )
+
+        viewModel.onAction(ActiveRunAction.OnFinishRunClick)
+        advanceUntilIdle()
+
+        coVerify { watchConnector.sendActionToWatch(MessagingAction.Finish) }
+
+        viewModel.onAction(ActiveRunAction.OnResumeRunClick)
+        advanceUntilIdle()
+
+        coVerify { watchConnector.sendActionToWatch(MessagingAction.StartOrResumeRun) }
+
+        viewModel.onAction(ActiveRunAction.OnToggleRunClick)
+        advanceUntilIdle()
+
+        coVerify { watchConnector.sendActionToWatch(MessagingAction.StartOrResumeRun) }
+
+        viewModel.onAction(ActiveRunAction.OnToggleRunClick)
+        advanceUntilIdle()
+
+        coVerify { watchConnector.sendActionToWatch(MessagingAction.Pause) }
     }
 
     @Test

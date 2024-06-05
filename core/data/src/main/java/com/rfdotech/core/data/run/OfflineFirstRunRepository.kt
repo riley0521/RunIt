@@ -16,13 +16,14 @@ import com.rfdotech.core.domain.util.DataError
 import com.rfdotech.core.domain.util.EmptyResult
 import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.domain.util.asEmptyDataResult
+import com.rfdotech.core.domain.util.getOrNull
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -155,6 +156,27 @@ class OfflineFirstRunRepository(
 
             createJobs.forEach { it.join() }
             deleteJobs.forEach { it.join() }
+        }
+    }
+
+    override suspend fun deleteAllFromRemote(): EmptyResult<DataError> {
+        val userId = getUserId() ?: return Result.Error(DataError.Network.UNAUTHORIZED)
+        val result = remoteRunDataSource.getAll(userId)
+
+        if (result is Result.Error) {
+            return result.asEmptyDataResult()
+        }
+
+        val allRuns = result.getOrNull().orEmpty()
+        return withContext(dispatcherProvider.io) {
+            val deleteRunsJob = allRuns.map { run ->
+                async {
+                    remoteRunDataSource.deleteById(run.id.orEmpty())
+                }
+            }
+            deleteRunsJob.awaitAll()
+
+            Result.Success(Unit)
         }
     }
 

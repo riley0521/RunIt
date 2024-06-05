@@ -5,6 +5,10 @@ sealed interface Result<out D, out E: Error> {
     data class Error<out E: com.rfdotech.core.domain.util.Error>(val error: E): Result<Nothing, E>
 }
 
+fun <T, E: Error> Result<T, E>.getOrNull(): T? {
+    return (this as? Result.Success)?.data
+}
+
 inline fun <T, E: Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
     return when (this) {
         is Result.Error -> Result.Error(error)

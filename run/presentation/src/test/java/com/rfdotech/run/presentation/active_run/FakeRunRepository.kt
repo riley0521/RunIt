@@ -18,6 +18,7 @@ val FAKE_RUNS = listOf(
 class FakeRunRepository : RunRepository {
 
     private val runsMap = mutableMapOf<RunId, Run>()
+    private val runsMapRemote = mutableMapOf<RunId, Run>()
     var error: Boolean = false
 
     fun isNotEmpty(): Boolean {
@@ -36,6 +37,7 @@ class FakeRunRepository : RunRepository {
         } else {
             FAKE_RUNS.map {
                 runsMap[it.id.orEmpty()] = it
+                runsMapRemote[it.id.orEmpty()] = it
             }
             Result.Success(Unit)
         }
@@ -46,12 +48,14 @@ class FakeRunRepository : RunRepository {
             Result.Error(DataError.Network.SERVER_ERROR)
         } else {
             runsMap[run.id.orEmpty()] = run
+            runsMapRemote[run.id.orEmpty()] = run
             Result.Success(Unit)
         }
     }
 
     override suspend fun deleteById(id: RunId) {
         runsMap.remove(id)
+        runsMapRemote.remove(id)
     }
 
     override suspend fun deleteAllFromLocal() {
@@ -60,6 +64,15 @@ class FakeRunRepository : RunRepository {
 
     override suspend fun syncPendingRuns() {
         // no-op
+    }
+
+    override suspend fun deleteAllFromRemote(): EmptyResult<DataError> {
+        return if (error) {
+            Result.Error(DataError.Network.SERVER_ERROR)
+        } else {
+            runsMapRemote.clear()
+            Result.Success(Unit)
+        }
     }
 
     @Deprecated("We do not use this on our current set up with Firebase Authentication.")

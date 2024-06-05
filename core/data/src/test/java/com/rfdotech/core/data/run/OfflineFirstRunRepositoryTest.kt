@@ -9,8 +9,11 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.rfdotech.core.database.dao.RunPendingSyncDao
 import com.rfdotech.core.database.mapper.toRun
+import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.util.Result
+import com.rfdotech.core.domain.util.getOrNull
 import com.rfdotech.core.test_util.MainCoroutineRule
+import com.rfdotech.core.test_util.TestDispatcherProvider
 import com.rfdotech.core.test_util.run.FakeRemoteRunDataSource
 import com.rfdotech.core.test_util.run.FakeSyncRunScheduler
 import com.rfdotech.core.test_util.run.FakeUserStorage
@@ -34,6 +37,7 @@ class OfflineFirstRunRepositoryTest {
     private lateinit var userStorage: FakeUserStorage
     private lateinit var runPendingSyncDao: RunPendingSyncDao
     private lateinit var syncRunScheduler: FakeSyncRunScheduler
+    private lateinit var dispatcherProvider: DispatcherProvider
     private lateinit var httpClient: HttpClient
 
     private lateinit var repository: OfflineFirstRunRepository
@@ -49,6 +53,7 @@ class OfflineFirstRunRepositoryTest {
         userStorage = FakeUserStorage()
         runPendingSyncDao = mockk(relaxed = true)
         syncRunScheduler = FakeSyncRunScheduler()
+        dispatcherProvider = TestDispatcherProvider()
         httpClient = mockk(relaxed = true)
 
         runTest {
@@ -62,6 +67,7 @@ class OfflineFirstRunRepositoryTest {
             runPendingSyncDao = runPendingSyncDao,
             syncRunScheduler = syncRunScheduler,
             httpClient = httpClient,
+            dispatcherProvider = dispatcherProvider,
             applicationScope = testScope.backgroundScope
         )
     }
@@ -87,6 +93,7 @@ class OfflineFirstRunRepositoryTest {
             runPendingSyncDao = runPendingSyncDao,
             syncRunScheduler = syncRunScheduler,
             httpClient = httpClient,
+            dispatcherProvider = dispatcherProvider,
             applicationScope = backgroundScope
         )
 
@@ -110,6 +117,7 @@ class OfflineFirstRunRepositoryTest {
             runPendingSyncDao = runPendingSyncDao,
             syncRunScheduler = syncRunScheduler,
             httpClient = httpClient,
+            dispatcherProvider = dispatcherProvider,
             applicationScope = backgroundScope
         )
         userStorage.set(null)
@@ -133,6 +141,7 @@ class OfflineFirstRunRepositoryTest {
             runPendingSyncDao = runPendingSyncDao,
             syncRunScheduler = syncRunScheduler,
             httpClient = httpClient,
+            dispatcherProvider = dispatcherProvider,
             applicationScope = backgroundScope
         )
         remoteRunDataSource.error = true
@@ -265,6 +274,39 @@ class OfflineFirstRunRepositoryTest {
             remoteRunDataSource.deleteById("113")
             runPendingSyncDao.deleteDeletedRunSyncEntity("113")
         }
+    }
+
+    @Test
+    fun testDeleteAllFromRemote_HappyPath() = testScope.runTest {
+        remoteRunDataSource.upsert(userId = FakeRemoteRunDataSource.FAKE_USER_ID, run = run(id = "111"), mapPicture = getRandomBytes())
+        remoteRunDataSource.upsert(userId = FakeRemoteRunDataSource.FAKE_USER_ID, run = run(id = "112"), mapPicture = getRandomBytes())
+        remoteRunDataSource.upsert(userId = FakeRemoteRunDataSource.FAKE_USER_ID, run = run(id = "113"), mapPicture = getRandomBytes())
+
+        repository.fetchFromRemote()
+
+        val runs = repository.getAllLocal().first()
+        assertThat(runs.size).isEqualTo(3)
+
+        repository.deleteAllFromRemote()
+
+        val runsFromRemote = remoteRunDataSource.getAll(FakeRemoteRunDataSource.FAKE_USER_ID).getOrNull().orEmpty()
+        assertThat(runsFromRemote).isEmpty()
+    }
+
+    @Test
+    fun testDeleteAllFromRemote_UnhappyPath_ServerError() = testScope.runTest {
+        remoteRunDataSource.upsert(userId = FakeRemoteRunDataSource.FAKE_USER_ID, run = run(id = "111"), mapPicture = getRandomBytes())
+        remoteRunDataSource.upsert(userId = FakeRemoteRunDataSource.FAKE_USER_ID, run = run(id = "112"), mapPicture = getRandomBytes())
+        remoteRunDataSource.upsert(userId = FakeRemoteRunDataSource.FAKE_USER_ID, run = run(id = "113"), mapPicture = getRandomBytes())
+
+        repository.fetchFromRemote()
+
+        val runs = repository.getAllLocal().first()
+        assertThat(runs.size).isEqualTo(3)
+
+        remoteRunDataSource.error = true
+        val result = repository.deleteAllFromRemote()
+        assertThat(result is Result.Error).isTrue()
     }
 
     private fun getRandomBytes(): ByteArray = Random.nextBytes(128)
