@@ -8,6 +8,12 @@ android {
     defaultConfig {
         minSdk = libs.versions.wearMinSdkVersion.get().toString().toInt()
     }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
+    }
 }
 
 dependencies {

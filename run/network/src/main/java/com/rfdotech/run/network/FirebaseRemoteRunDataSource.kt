@@ -1,5 +1,6 @@
 package com.rfdotech.run.network
 
+import androidx.annotation.Keep
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
@@ -17,6 +18,7 @@ import com.rfdotech.core.domain.util.Result
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
+@Keep
 class FirebaseRemoteRunDataSource : RemoteRunDataSource {
 
     private val runCollection = Firebase.firestore.collection("runs")

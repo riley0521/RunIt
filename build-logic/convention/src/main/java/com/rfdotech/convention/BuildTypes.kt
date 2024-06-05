@@ -5,7 +5,6 @@ import com.android.build.api.dsl.BuildType
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.DynamicFeatureExtension
 import com.android.build.api.dsl.LibraryExtension
-import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -21,6 +20,16 @@ internal fun Project.configureBuildTypes(
 
         val apiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("API_KEY")
         val authApiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("AUTH_API_KEY")
+        val password = gradleLocalProperties(rootDir, rootProject.providers).getProperty("KEYSTORE_PASS")
+
+        signingConfigs {
+            create("release") {
+                keyAlias = "runit"
+                storeFile = file("C:\\Users\\riley\\Documents\\runit_keystore.jks")
+                keyPassword = password
+                storePassword = password
+            }
+        }
 
         when (extensionType) {
             ExtensionType.APPLICATION -> {
@@ -30,6 +39,7 @@ internal fun Project.configureBuildTypes(
                             configureDebugBuildType(apiKey, authApiKey)
                         }
                         release {
+                            signingConfig = signingConfigs.getByName("release")
                             configureReleaseBuildType(commonExtension, apiKey, authApiKey)
                         }
                     }

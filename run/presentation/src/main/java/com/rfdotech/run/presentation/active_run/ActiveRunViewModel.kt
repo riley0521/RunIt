@@ -161,7 +161,11 @@ class ActiveRunViewModel(
             maxSpeedKmh = DistanceAndSpeedCalculator.getMaxSpeedKmh(locations),
             totalElevationMeters = DistanceAndSpeedCalculator.getTotalElevationMeters(locations),
             numberOfSteps = state.stepCount,
-            avgHeartRate = state.runData.heartRates.average().roundToInt(),
+            avgHeartRate = if (state.runData.heartRates.isNotEmpty()) {
+                state.runData.heartRates.average().roundToInt()
+            } else {
+                0
+            },
             mapPictureUrl = null
         )
         runningTracker.finishRun()
@@ -190,6 +194,7 @@ class ActiveRunViewModel(
                     MessagingAction.StartOrResumeRun
                 }
             }
+
             else -> null
         }
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.health.services.client.ExerciseUpdateCallback
 import androidx.health.services.client.HealthServices
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
+@Keep
 class HealthServicesExerciseTracker(
     private val context: Context,
     private val dispatcherProvider: DispatcherProvider

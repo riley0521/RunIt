@@ -4,6 +4,12 @@ plugins {
 
 android {
     namespace = "com.rfdotech.wear.app"
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
+    }
 }
 
 dependencies {

@@ -1,8 +1,8 @@
 package com.rfdotech.run.network
 
-import kotlinx.serialization.Serializable
+import androidx.annotation.Keep
 
-@Serializable
+@Keep
 data class FirestoreRunDto(
     val id: String = "",
     val userId: String = "",
