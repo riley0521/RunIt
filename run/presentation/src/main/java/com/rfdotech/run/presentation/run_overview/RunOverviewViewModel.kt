@@ -16,10 +16,13 @@ import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.core.presentation.ui.auth.GoogleAuthUiClient
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,6 +38,11 @@ class RunOverviewViewModel(
 
     var state by mutableStateOf(RunOverviewState())
         private set
+
+    private val eventChannel = Channel<RunOverviewEvent>()
+    val events = eventChannel.receiveAsFlow()
+
+    var listenToWorkInfoJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -64,6 +72,37 @@ class RunOverviewViewModel(
             is RunOverviewAction.DeleteRunById -> {
                 viewModelScope.launch {
                     runRepository.deleteById(action.id)
+                }
+            }
+            RunOverviewAction.OnDeleteAccountClick -> {
+                state = state.copy(showDeleteAccountDialog = true)
+            }
+            is RunOverviewAction.DeleteAccount -> {
+                state = state.copy(showDeleteAccountDialog = false)
+                if (action.agreed) {
+                    viewModelScope.launch {
+                        // Cancel current workers because we are now focusing on deleting all runs.
+                        syncRunScheduler.cancelAllSyncs()
+                        syncRunScheduler.scheduleSync(SyncType.DeleteRunsFromRemoteDb)
+
+                        listenToWorkInfoJob = syncRunScheduler
+                            .getWorkInformationForDeleteAllRuns()
+                            .onEach {
+                                state = state.copy(workInformation = it)
+                            }
+                            .launchIn(viewModelScope)
+                    }
+                }
+            }
+            RunOverviewAction.ConfirmDeleteAccount -> {
+                listenToWorkInfoJob?.cancel()
+                listenToWorkInfoJob = null
+
+                viewModelScope.launch {
+                    googleAuthUiClient.deleteAccount()
+                    userStorage.set(null)
+
+                    eventChannel.send(RunOverviewEvent.DeleteAccountSuccessful)
                 }
             }
 

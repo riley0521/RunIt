@@ -25,11 +25,16 @@ class FirebaseRemoteRunDataSource : RemoteRunDataSource {
     private val storage = Firebase.storage
 
     override suspend fun getAll(userId: UserId): Result<List<Run>, DataError.Network> {
-        val result = runCollection
-            .whereEqualTo("userId", userId)
-            .get()
-            .await()
-            .toObjects<FirestoreRunDto>()
+        val result = try {
+            runCollection
+                .whereEqualTo("userId", userId)
+                .get()
+                .await()
+                .toObjects<FirestoreRunDto>()
+        } catch (e: Exception) {
+            e.printAndThrowCancellationException()
+            return Result.Error(DataError.Network.SERVER_ERROR)
+        }
 
         val runs = result.map { run -> run.toRun() }
 
@@ -55,9 +60,13 @@ class FirebaseRemoteRunDataSource : RemoteRunDataSource {
             }
         }
 
-        runCollection.document(existingRun.id).set(existingRun).await()
-
-        return Result.Success(existingRun.toRun())
+        return try {
+            runCollection.document(existingRun.id).set(existingRun).await()
+            Result.Success(existingRun.toRun())
+        } catch (e: Exception) {
+            e.printAndThrowCancellationException()
+            Result.Error(DataError.Network.SERVER_ERROR)
+        }
     }
 
     private suspend fun getRunDtoById(id: String): FirestoreRunDto? {
@@ -86,10 +95,17 @@ class FirebaseRemoteRunDataSource : RemoteRunDataSource {
     override suspend fun deleteById(id: RunId): EmptyResult<DataError.Network> {
         val existingRun = getRunDtoById(id) ?: return Result.Error(DataError.Network.SERVER_ERROR)
 
-        runCollection.document(existingRun.id).delete().await()
-        existingRun.mapPictureUrl?.let { deleteRunImage(it) }
+        return try {
+            // Remove the document
+            runCollection.document(existingRun.id).delete().await()
 
-        return Result.Success(Unit)
+            // Remove the image from the bucket.
+            existingRun.mapPictureUrl?.let { deleteRunImage(it) }
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            e.printAndThrowCancellationException()
+            Result.Error(DataError.Network.SERVER_ERROR)
+        }
     }
 
     companion object {

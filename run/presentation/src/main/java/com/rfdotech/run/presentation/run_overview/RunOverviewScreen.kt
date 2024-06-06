@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +27,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import com.rfdotech.core.domain.run.WorkState
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
 import com.rfdotech.core.presentation.designsystem.LogoIcon
 import com.rfdotech.core.presentation.designsystem.RunIcon
@@ -32,10 +37,15 @@ import com.rfdotech.core.presentation.designsystem.SignOutIcon
 import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space24
 import com.rfdotech.core.presentation.designsystem.Space32
+import com.rfdotech.core.presentation.designsystem.components.MyDialog
 import com.rfdotech.core.presentation.designsystem.components.MyFloatingActionButton
+import com.rfdotech.core.presentation.designsystem.components.PrimaryButton
 import com.rfdotech.core.presentation.designsystem.components.PrimaryScaffold
 import com.rfdotech.core.presentation.designsystem.components.PrimaryToolbar
+import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
 import com.rfdotech.core.presentation.designsystem.components.util.DropDownItem
+import com.rfdotech.core.presentation.ui.ObserveAsEvents
+import com.rfdotech.core.presentation.ui.showToastRes
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.run_overview.components.RunListItem
 import org.koin.androidx.compose.koinViewModel
@@ -47,6 +57,17 @@ fun RunOverviewScreenRoot(
     onSignOutClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
+
+    val context = LocalContext.current
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            RunOverviewEvent.DeleteAccountSuccessful -> {
+                context.showToastRes(R.string.account_deleted_successfully)
+                onSignOutClick()
+            }
+        }
+    }
+
     RunOverviewScreen(
         state = viewModel.state,
         onAction = { action ->
@@ -74,11 +95,62 @@ private fun RunOverviewScreen(
     )
     val menuItems = listOf(
         DropDownItem(icon = AnalyticsIcon, title = stringResource(id = R.string.analytics)),
+        DropDownItem(
+            icon = Icons.Outlined.DeleteForever,
+            title = stringResource(id = R.string.delete_account)
+        ),
         DropDownItem(icon = SignOutIcon, title = stringResource(id = R.string.sign_out))
     )
     val context = LocalContext.current
     val runUiList = remember(state.runs) {
         state.getRunUiList(context)
+    }
+
+    if (state.workInformation?.state == WorkState.RUNNING) {
+        Dialog(onDismissRequest = {}) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+
+    LaunchedEffect(state.workInformation) {
+        if (state.workInformation?.state == WorkState.SUCCEEDED) {
+            onAction(RunOverviewAction.ConfirmDeleteAccount)
+        }
+    }
+
+    if (state.showDeleteAccountDialog) {
+        MyDialog(
+            title = stringResource(id = R.string.delete_account),
+            description = stringResource(id = R.string.delete_account_description),
+            positiveButton = {
+                PrimaryButton(
+                    text = stringResource(id = R.string.delete_account_confirmation),
+                    isLoading = false,
+                    onClick = {
+                        onAction(RunOverviewAction.DeleteAccount(true))
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            },
+            negativeButton = {
+                SecondaryButton(
+                    text = stringResource(id = R.string.delete_account_cancel),
+                    isLoading = false,
+                    onClick = {
+                        onAction(RunOverviewAction.DeleteAccount(false))
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            },
+            onDismiss = {
+                onAction(RunOverviewAction.DeleteAccount(false))
+            }
+        )
     }
 
     PrimaryScaffold(
@@ -89,7 +161,8 @@ private fun RunOverviewScreen(
                 onMenuItemClick = { index ->
                     when (index) {
                         0 -> onAction(RunOverviewAction.OnAnalyticsClick)
-                        1 -> onAction(RunOverviewAction.OnSignOutClick)
+                        1 -> onAction(RunOverviewAction.OnDeleteAccountClick)
+                        2 -> onAction(RunOverviewAction.OnSignOutClick)
                         else -> Unit
                     }
                 },

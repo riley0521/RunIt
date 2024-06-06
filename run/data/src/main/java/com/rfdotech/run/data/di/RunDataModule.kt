@@ -6,6 +6,7 @@ import com.rfdotech.run.data.FetchRunsWorker
 import com.rfdotech.run.data.SyncRunWorkerScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.run.data.AndroidStepObserver
+import com.rfdotech.run.data.DeleteRunsFromRemoteDbWorker
 import com.rfdotech.run.data.connectivity.PhoneToWatchConnector
 import com.rfdotech.run.domain.StepObserver
 import com.rfdotech.run.domain.WatchConnector
@@ -18,6 +19,7 @@ val runDataModule = module {
     workerOf(::CreateRunWorker)
     workerOf(::DeleteRunWorker)
     workerOf(::FetchRunsWorker)
+    workerOf(::DeleteRunsFromRemoteDbWorker)
 
     singleOf(::SyncRunWorkerScheduler).bind<SyncRunScheduler>()
     singleOf(::AndroidStepObserver).bind<StepObserver>()

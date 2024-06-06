@@ -170,11 +170,11 @@ class OfflineFirstRunRepository(
         val allRuns = result.getOrNull().orEmpty()
         return withContext(dispatcherProvider.io) {
             val deleteRunsJob = allRuns.map { run ->
-                async {
+                applicationScope.launch {
                     remoteRunDataSource.deleteById(run.id.orEmpty())
                 }
             }
-            deleteRunsJob.awaitAll()
+            deleteRunsJob.forEach { it.join() }
 
             Result.Success(Unit)
         }

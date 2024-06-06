@@ -5,4 +5,7 @@ sealed interface RunOverviewAction {
     data object OnSignOutClick: RunOverviewAction
     data object OnAnalyticsClick: RunOverviewAction
     data class DeleteRunById(val id: String): RunOverviewAction
+    data object OnDeleteAccountClick: RunOverviewAction
+    data class DeleteAccount(val agreed: Boolean): RunOverviewAction
+    data object ConfirmDeleteAccount: RunOverviewAction
 }

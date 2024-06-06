@@ -58,11 +58,11 @@ class GoogleAuthUiClient(
         }
     }
 
-    suspend fun deleteAccount(): EmptyResult<DataError.Network> {
+    suspend fun deleteAccount(): Result<Boolean, DataError.Network> {
         return try {
             oneTapClient.signOut().await()
             auth.currentUser?.delete()?.await()
-            Result.Success(Unit)
+            Result.Success(true)
         } catch (e: Exception) {
             e.printAndThrowCancellationException()
             Result.Error(DataError.Network.SERVER_ERROR)

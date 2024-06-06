@@ -30,4 +30,9 @@
     <string name="delete">Delete</string>
     <string name="invalid_run_not_saved">This is an invalid run, it will not be saved.</string>
     <string name="heart_rate">Heart Rate</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_description">Deleting your account will also delete all your runs, it cannot be recovered. Are you sure you want to delete your account?</string>
+    <string name="delete_account_cancel">Cancel</string>
+    <string name="delete_account_confirmation">Confirm</string>
+    <string name="account_deleted_successfully">Account deleted successfully!</string>
 </resources>
