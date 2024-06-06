@@ -35,4 +35,5 @@
     <string name="delete_account_cancel">Cancel</string>
     <string name="delete_account_confirmation">Confirm</string>
     <string name="account_deleted_successfully">Account deleted successfully!</string>
+    <string name="internet_not_available">You must be connected to internet before doing this action.</string>
 </resources>

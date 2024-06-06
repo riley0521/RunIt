@@ -65,6 +65,10 @@ fun RunOverviewScreenRoot(
                 context.showToastRes(R.string.account_deleted_successfully)
                 onSignOutClick()
             }
+
+            RunOverviewEvent.NoInternet -> {
+                context.showToastRes(R.string.internet_not_available)
+            }
         }
     }
 

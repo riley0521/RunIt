@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rfdotech.core.connectivity.domain.ConnectivityObserver
+import com.rfdotech.core.connectivity.domain.ConnectivityObserver.Status
 import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.Geolocator
 import com.rfdotech.core.domain.auth.UserStorage
@@ -33,6 +35,7 @@ class RunOverviewViewModel(
     private val syncRunScheduler: SyncRunScheduler,
     private val userStorage: UserStorage,
     private val googleAuthUiClient: GoogleAuthUiClient,
+    private val connectivityObserver: ConnectivityObserver,
     private val applicationScope: CoroutineScope
 ) : ViewModel() {
 
@@ -64,6 +67,13 @@ class RunOverviewViewModel(
             runRepository.syncPendingRuns()
             runRepository.fetchFromRemote()
         }
+
+        connectivityObserver
+            .observe()
+            .onEach { status ->
+                state = state.copy(hasInternet = status == Status.AVAILABLE)
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onAction(action: RunOverviewAction) {
@@ -75,6 +85,13 @@ class RunOverviewViewModel(
                 }
             }
             RunOverviewAction.OnDeleteAccountClick -> {
+                if (!state.hasInternet) {
+                    viewModelScope.launch {
+                        eventChannel.send(RunOverviewEvent.NoInternet)
+                    }
+                    return
+                }
+
                 state = state.copy(showDeleteAccountDialog = true)
             }
             is RunOverviewAction.DeleteAccount -> {

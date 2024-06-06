@@ -115,6 +115,7 @@ fun PrimaryToolbar(
                                 modifier = Modifier
                                     .clickable {
                                         onMenuItemClick(index)
+                                        isDropDownOpen = false
                                     }
                                     .fillMaxWidth()
                                     .padding(Space16)
