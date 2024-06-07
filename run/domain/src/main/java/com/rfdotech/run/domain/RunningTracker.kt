@@ -80,11 +80,7 @@ class RunningTracker(
         _isTracking
             .onEach { isTracking ->
                 if (!isTracking) {
-                    val newList = buildList {
-                        addAll(runData.value.locations)
-                        add(emptyList<LocationTimestamp>())
-                    }.toList()
-                    _runData.update { it.copy(locations = newList) }
+                    addBreakToListOfLocations()
                 }
             }
             .flatMapLatest {
@@ -135,6 +131,14 @@ class RunningTracker(
             .launchIn(applicationScope)
     }
 
+    private fun addBreakToListOfLocations() {
+        val newList: ListOfLocations = buildList {
+            addAll(runData.value.locations)
+            add(emptyList<LocationTimestamp>())
+        }.toList()
+        _runData.update { it.copy(locations = newList) }
+    }
+
     fun setIsTracking(isTracking: Boolean) {
         this._isTracking.update { isTracking }
     }
@@ -160,6 +164,15 @@ class RunningTracker(
     private fun convertLocationWithTimestampToRunData(location: LocationTimestamp, heartRates: List<Int>) {
         val currentLocations = runData.value.locations
         val lastLocationsList = if (currentLocations.isNotEmpty()) {
+
+            // If true we will assume that the user takes a pause, moved a far distance and runs again.
+            // This is just an edge case that happens in emulator where the user teleports somewhere.
+            // Small chance it might happen in real scenario.
+            if (isNotValidDistance(currentLocations, location)) {
+                addBreakToListOfLocations()
+                return
+            }
+
             currentLocations.last() + location
         } else {
             listOf(location)
@@ -179,6 +192,16 @@ class RunningTracker(
                 heartRates = heartRates
             )
         }
+    }
+
+    /**
+     * Check if the app glitches and registers a location with huge gap that is more than 10 meters
+     */
+    private fun isNotValidDistance(locations: ListOfLocations, locationTimestamp: LocationTimestamp): Boolean {
+        val location1 = locations.last().lastOrNull()?.location?.location ?: return false
+        val location2 = locationTimestamp.location.location
+
+        return location1.distanceTo(location2) > 10
     }
 
     private fun ListOfLocations.replaceLast(replacement: List<LocationTimestamp>): ListOfLocations {

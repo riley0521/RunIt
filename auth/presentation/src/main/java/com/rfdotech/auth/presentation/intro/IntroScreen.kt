@@ -2,6 +2,8 @@ package com.rfdotech.auth.presentation.intro
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import com.rfdotech.auth.presentation.R
@@ -37,7 +43,6 @@ import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.Space48
 import com.rfdotech.core.presentation.designsystem.Space8
 import com.rfdotech.core.presentation.designsystem.colorOnBackGround
-import com.rfdotech.core.presentation.designsystem.colorOnSurfaceVariant
 import com.rfdotech.core.presentation.designsystem.components.GradientBackground
 import com.rfdotech.core.presentation.designsystem.components.SecondaryButton
 import com.rfdotech.core.presentation.ui.ObserveAsEvents
@@ -144,17 +149,63 @@ private fun IntroScreen(
                 .padding(Space16)
                 .padding(bottom = Space48)
         ) {
+            val annotatedString = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    append(stringResource(id = R.string.welcome_description))
+                    append(" ")
+                }
+
+                pushStringAnnotation(
+                    tag = "clickable_link",
+                    annotation = stringResource(id = R.string.terms_and_privacy_policy)
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    append(stringResource(id = R.string.terms_and_privacy_policy))
+                }
+                pop()
+            }
+
             Text(
                 text = stringResource(id = R.string.welcome_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = colorOnBackGround
             )
             Spacer(modifier = Modifier.height(Space8))
-            Text(
-                text = stringResource(id = R.string.welcome_description),
-                style = MaterialTheme.typography.bodySmall,
-                color = colorOnSurfaceVariant
+
+            val context = LocalContext.current
+            val link = stringResource(id = R.string.tos_link)
+            ClickableText(
+                text = annotatedString,
+                onClick = { offset ->
+                    val tag = annotatedString.getStringAnnotations(
+                        tag = "clickable_link",
+                        start = offset,
+                        end = offset
+                    )
+
+                    tag.firstOrNull()?.let {
+                        Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse(link)
+                            context.startActivity(this)
+                        }
+                    }
+                },
+                style = MaterialTheme.typography.bodySmall
             )
+
+//            Text(
+//                text = stringResource(id = R.string.welcome_description),
+//                style = MaterialTheme.typography.bodySmall,
+//                color = colorOnSurfaceVariant
+//            )
             Spacer(modifier = Modifier.height(Space32))
             SecondaryButton(
                 text = stringResource(id = R.string.sign_in_with_google),

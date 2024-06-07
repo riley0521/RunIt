@@ -1,17 +1,21 @@
 package com.rfdotech.analytics.presentation.dashboard.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisGuidelineComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.fullWidth
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.shader.color
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
 import com.patrykandpatrick.vico.core.cartesian.axis.AxisItemPlacer
@@ -21,6 +25,7 @@ import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shader.TopBottomShader
 import com.rfdotech.analytics.presentation.dashboard.model.AnalyticType
+import com.rfdotech.core.domain.roundToDecimals
 import com.rfdotech.core.presentation.designsystem.Space32
 import com.rfdotech.core.presentation.designsystem.Space48
 import com.rfdotech.core.presentation.designsystem.colorPrimary
@@ -73,7 +78,7 @@ fun AnalyticChart(
         textWidth = markerTextWidth,
         getFormattedValue = { value ->
             return@rememberDefaultLineChartMarker when (analyticType) {
-                is AnalyticType.Distance -> "$value km"
+                is AnalyticType.Distance -> "${value.toDouble().roundToDecimals()} km"
                 is AnalyticType.Pace -> {
                     val pace = value.toInt().seconds.formatted()
                     pace
@@ -96,8 +101,16 @@ fun AnalyticChart(
                 ),
                 spacing = if (scrollEnabled) horizontalSpace else Space32
             ),
-            startAxis = null,
             bottomAxis = rememberBottomAxis(
+                label = rememberTextComponent(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                guideline = rememberAxisGuidelineComponent(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                axis = rememberLineComponent(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
                 valueFormatter = { x, chartValues, _ ->
                     val pattern = if (scrollEnabled) {
                         // TODO: We can further modify this if we want to change the language in the app only

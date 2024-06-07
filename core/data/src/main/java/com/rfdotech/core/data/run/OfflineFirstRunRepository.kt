@@ -63,7 +63,7 @@ class OfflineFirstRunRepository(
         val userId = getUserId() ?: return Result.Error(DataError.Network.UNAUTHORIZED)
         val runWithId = run.copy(id = localResult.data)
         val remoteResult = remoteRunDataSource.upsert(
-            userId,
+            userId = userId,
             run = runWithId,
             mapPicture = mapPicture
         )
@@ -163,11 +163,11 @@ class OfflineFirstRunRepository(
         val userId = getUserId() ?: return Result.Error(DataError.Network.UNAUTHORIZED)
         val result = remoteRunDataSource.getAll(userId)
 
-        if (result is Result.Error) {
+        if (result !is Result.Success) {
             return result.asEmptyDataResult()
         }
 
-        val allRuns = result.getOrNull().orEmpty()
+        val allRuns = result.data
         return withContext(dispatcherProvider.io) {
             val deleteRunsJob = allRuns.map { run ->
                 applicationScope.launch {

@@ -184,8 +184,8 @@ private fun ActiveRunScreen(
                     val stream = ByteArrayOutputStream()
                     stream.use {
                         bmp.compress(
-                            Bitmap.CompressFormat.JPEG,
-                            80,
+                            Bitmap.CompressFormat.PNG,
+                            100,
                             it
                         )
                     }
