@@ -8,4 +8,8 @@ sealed interface RunOverviewAction {
     data object OnDeleteAccountClick: RunOverviewAction
     data class DeleteAccount(val agreed: Boolean): RunOverviewAction
     data object ConfirmDeleteAccount: RunOverviewAction
+    data class SubmitPostNotificationPermissionInfo(
+        val shouldShowRationale: Boolean
+    ): RunOverviewAction
+    data object DismissRationaleDialog: RunOverviewAction
 }

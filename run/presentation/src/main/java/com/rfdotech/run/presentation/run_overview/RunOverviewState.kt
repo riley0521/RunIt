@@ -11,7 +11,8 @@ data class RunOverviewState(
     val isGettingRuns: Boolean = false,
     val showDeleteAccountDialog: Boolean = false,
     val workInformation: WorkInformation? = null,
-    val hasInternet: Boolean = false
+    val hasInternet: Boolean = false,
+    val showRationale: Boolean = false
 ) {
     fun getRunUiList(context: Context): List<RunUi> {
         return runs.map { it.toRunUi(context) }

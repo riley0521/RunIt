@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="special_use_explanation">This application can delete an account and their data,
+        we like to use a foreground notification from WorkManager to let the user know the status of their account deletion.
+        This does not fall to dataSync foreground service type so we use this.</string>
+    <string name="channel_description">Delete Account</string>
+    <string name="deleting_account">Deleting account…</string>
+    <string name="account_deleted_successfully">Account deleted successfully!</string>
+</resources>

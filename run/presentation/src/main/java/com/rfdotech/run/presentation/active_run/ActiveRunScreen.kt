@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -135,6 +136,10 @@ private fun ActiveRunScreen(
         if (context.hasLocationPermission() && state.shouldTrack && !isServiceActive) {
             onServiceToggle(true)
         }
+    }
+
+    BackHandler {
+        onAction(ActiveRunAction.OnBackClick)
     }
 
     PrimaryScaffold(

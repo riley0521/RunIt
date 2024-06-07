@@ -2,6 +2,11 @@
 
 package com.rfdotech.run.presentation.run_overview
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +56,8 @@ import com.rfdotech.core.presentation.ui.ObserveAsEvents
 import com.rfdotech.core.presentation.ui.showToastRes
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.run_overview.components.RunListItem
+import com.rfdotech.run.presentation.util.hasPostNotificationPermission
+import com.rfdotech.run.presentation.util.shouldShowPostNotificationPermissionRationale
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -109,9 +116,42 @@ private fun RunOverviewScreen(
         ),
         DropDownItem(icon = SignOutIcon, title = stringResource(id = R.string.sign_out))
     )
-    val context = LocalContext.current
+    val context = LocalContext.current as ComponentActivity
     val runUiList = remember(state.runs) {
         state.getRunUiList(context)
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            val shouldShowRationale = context.shouldShowPostNotificationPermissionRationale()
+            onAction(RunOverviewAction.SubmitPostNotificationPermissionInfo(shouldShowRationale))
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        val hasPermission = context.hasPostNotificationPermission()
+
+        if (!hasPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    if (state.showRationale) {
+        MyDialog(
+            title = stringResource(id = R.string.permission_required),
+            description = stringResource(id = R.string.notification_rationale),
+            positiveButton = {
+                SecondaryButton(
+                    text = stringResource(id = R.string.okay),
+                    isLoading = false,
+                    onClick = {
+                        onAction(RunOverviewAction.DismissRationaleDialog)
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                )
+            },
+            onDismiss = {} // no-op
+        )
     }
 
     if (state.workInformation?.state == WorkState.RUNNING) {
@@ -211,7 +251,9 @@ private fun RunOverviewScreen(
             ) {
                 Text(
                     text = stringResource(id = R.string.click_run_icon_to_start_first_run),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = Space16),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Space16),
                     textAlign = TextAlign.Center
                 )
             }

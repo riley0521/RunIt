@@ -79,6 +79,12 @@ class RunOverviewViewModel(
     fun onAction(action: RunOverviewAction) {
         when (action) {
             RunOverviewAction.OnSignOutClick -> signOut()
+            is RunOverviewAction.SubmitPostNotificationPermissionInfo -> {
+                state = state.copy(showRationale = action.shouldShowRationale)
+            }
+            RunOverviewAction.DismissRationaleDialog -> {
+                state = state.copy(showRationale = false)
+            }
             is RunOverviewAction.DeleteRunById -> {
                 viewModelScope.launch {
                     runRepository.deleteById(action.id)
