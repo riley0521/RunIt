@@ -25,6 +25,14 @@ class MainViewModel(
         }
     }
 
+    fun onAction(action: MainAction) {
+        when (action) {
+            MainAction.OnAuthenticationExpired -> {
+                state = state.copy(isSignedIn = false)
+            }
+        }
+    }
+
     fun setAnalyticsDialogVisibility(isVisible: Boolean) {
         state = state.copy(showAnalyticsInstallDialog = isVisible)
     }

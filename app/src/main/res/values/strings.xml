@@ -5,4 +5,5 @@
     <string name="error_installation_failed">Unfortunately, the installation failed. Please try again later.</string>
     <string name="analytics_installed">The analytics feature was installed. You can use it now.</string>
     <string name="analytics_installing">Installing analytics module...</string>
+    <string name="session_expired_sign_in_again">Session expired. Please sign in again.</string>
 </resources>

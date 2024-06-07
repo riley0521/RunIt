@@ -16,18 +16,26 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.compose.rememberNavController
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space8
@@ -37,6 +45,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModel<MainViewModel>()
+    private val auth by lazy {
+        Firebase.auth
+    }
 
     private lateinit var splitInstallManager: SplitInstallManager
     private val splitInstallListener = SplitInstallStateUpdatedListener { state ->
@@ -76,6 +87,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    ObserveAuthenticationState()
+
                     with(viewModel.state) {
                         if (!isCheckingAuth) {
                             val navController = rememberNavController()
@@ -87,7 +100,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
 
-                            if (viewModel.state.showAnalyticsInstallDialog) {
+                            if (showAnalyticsInstallDialog) {
                                 Dialog(onDismissRequest = {}) {
                                     Column(
                                         modifier = Modifier
@@ -109,6 +122,31 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun ObserveAuthenticationState() {
+        val lifecycle = LocalLifecycleOwner.current.lifecycle
+        DisposableEffect(lifecycle) {
+            val authStateListener = AuthStateListener { state ->
+                if (state.currentUser == null && viewModel.state.isSignedIn) {
+                    this@MainActivity.showToastRes(R.string.session_expired_sign_in_again)
+                    viewModel.onAction(MainAction.OnAuthenticationExpired)
+                }
+            }
+            val lifecycleListener = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_START) {
+                    auth.addAuthStateListener(authStateListener)
+                } else if (event == Lifecycle.Event.ON_STOP) {
+                    auth.removeAuthStateListener(authStateListener)
+                }
+            }
+            lifecycle.addObserver(lifecycleListener)
+
+            onDispose {
+                lifecycle.removeObserver(lifecycleListener)
             }
         }
     }

@@ -50,6 +50,7 @@ dependencies {
     // Google
     api(libs.google.core)
     implementation(libs.google.play.services.location)
+    implementation(libs.bundles.google.auth)
 
     // Timber Logger
     implementation(libs.com.jakewharton.timber)
