@@ -164,15 +164,6 @@ class RunningTracker(
     private fun convertLocationWithTimestampToRunData(location: LocationTimestamp, heartRates: List<Int>) {
         val currentLocations = runData.value.locations
         val lastLocationsList = if (currentLocations.isNotEmpty()) {
-
-            // If true we will assume that the user takes a pause, moved a far distance and runs again.
-            // This is just an edge case that happens in emulator where the user teleports somewhere.
-            // Small chance it might happen in real scenario.
-            if (isNotValidDistance(currentLocations, location)) {
-                addBreakToListOfLocations()
-                return
-            }
-
             currentLocations.last() + location
         } else {
             listOf(location)
