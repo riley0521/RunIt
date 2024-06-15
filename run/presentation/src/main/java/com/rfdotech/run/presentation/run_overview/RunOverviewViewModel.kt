@@ -16,6 +16,8 @@ import com.rfdotech.core.domain.run.RunRepository
 import com.rfdotech.core.domain.run.RunWithAddress
 import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
+import com.rfdotech.core.domain.util.DataError
+import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.presentation.ui.auth.GoogleAuthUiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -82,14 +84,17 @@ class RunOverviewViewModel(
             is RunOverviewAction.SubmitPostNotificationPermissionInfo -> {
                 state = state.copy(showRationale = action.shouldShowRationale)
             }
+
             RunOverviewAction.DismissRationaleDialog -> {
                 state = state.copy(showRationale = false)
             }
+
             is RunOverviewAction.DeleteRunById -> {
                 viewModelScope.launch {
                     runRepository.deleteById(action.id)
                 }
             }
+
             RunOverviewAction.OnDeleteAccountClick -> {
                 if (!state.hasInternet) {
                     viewModelScope.launch {
@@ -100,6 +105,7 @@ class RunOverviewViewModel(
 
                 state = state.copy(showDeleteAccountDialog = true)
             }
+
             is RunOverviewAction.DeleteAccount -> {
                 state = state.copy(showDeleteAccountDialog = false)
                 if (action.agreed) {
@@ -117,14 +123,21 @@ class RunOverviewViewModel(
                     }
                 }
             }
+
             RunOverviewAction.ConfirmDeleteAccount -> {
                 listenToWorkInfoJob?.cancel()
                 listenToWorkInfoJob = null
 
                 viewModelScope.launch {
-                    googleAuthUiClient.deleteAccount()
-                    userStorage.set(null)
+                    userStorage.set(null) // Remove the session from sharedPrefs
+                    val result = googleAuthUiClient.deleteAccount()
+                    if (result is Result.Error && result.error == DataError.Network.RE_AUTHENTICATE) {
+                        eventChannel.send(RunOverviewEvent.SignInAgain)
+                        return@launch
+                    }
 
+                    // We need to sign out the oneTapClient.
+                    googleAuthUiClient.signOut()
                     eventChannel.send(RunOverviewEvent.DeleteAccountSuccessful)
                 }
             }

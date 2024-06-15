@@ -10,6 +10,7 @@ sealed interface DataError: Error {
         PAYLOAD_TOO_LARGE,
         SERVER_ERROR,
         SERIALIZATION_ERROR,
+        RE_AUTHENTICATE,
         UNKNOWN
     }
 

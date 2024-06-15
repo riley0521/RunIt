@@ -37,4 +37,5 @@
     <string name="account_deleted_successfully">Account deleted successfully!</string>
     <string name="internet_not_available">You must be connected to internet before doing this action.</string>
     <string name="click_run_icon_to_start_first_run">No runs yet? Click the button below to start your first run.</string>
+    <string name="please_sign_in_again_and_retry">Please sign in again and retry deleting your account.</string>
 </resources>

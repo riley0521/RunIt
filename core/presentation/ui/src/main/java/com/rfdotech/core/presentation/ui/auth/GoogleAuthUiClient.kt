@@ -5,6 +5,7 @@ import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -60,9 +61,13 @@ class GoogleAuthUiClient(
 
     suspend fun deleteAccount(): Result<Boolean, DataError.Network> {
         return try {
-            oneTapClient.signOut().await()
             auth.currentUser?.delete()?.await()
             Result.Success(true)
+        } catch (e: FirebaseAuthRecentLoginRequiredException) {
+            e.printAndThrowCancellationException()
+
+            signOut()
+            Result.Error(DataError.Network.RE_AUTHENTICATE)
         } catch (e: Exception) {
             e.printAndThrowCancellationException()
             Result.Error(DataError.Network.SERVER_ERROR)

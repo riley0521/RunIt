@@ -14,6 +14,7 @@ fun DataError.toWorkerResult(): Result {
         DataError.Network.PAYLOAD_TOO_LARGE -> Result.failure()
         DataError.Network.SERVER_ERROR -> Result.retry()
         DataError.Network.SERIALIZATION_ERROR -> Result.failure()
+        DataError.Network.RE_AUTHENTICATE -> Result.failure()
         DataError.Network.UNKNOWN -> Result.failure()
     }
 }

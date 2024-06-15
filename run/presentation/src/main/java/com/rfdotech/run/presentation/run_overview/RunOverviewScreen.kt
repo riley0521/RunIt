@@ -79,6 +79,11 @@ fun RunOverviewScreenRoot(
             RunOverviewEvent.NoInternet -> {
                 context.showToastRes(R.string.internet_not_available)
             }
+
+            RunOverviewEvent.SignInAgain -> {
+                context.showToastRes(R.string.please_sign_in_again_and_retry)
+                onSignOutClick()
+            }
         }
     }
 
