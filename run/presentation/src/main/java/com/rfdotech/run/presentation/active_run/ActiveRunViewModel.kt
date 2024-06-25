@@ -7,17 +7,19 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.core.connectivity.domain.messaging.MessagingAction
+import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.ZonedDateTimeHelper
 import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
 import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.domain.run.RunRepository
 import com.rfdotech.core.domain.util.Result
+import com.rfdotech.core.notification.ActiveRunService
 import com.rfdotech.core.presentation.ui.asUiText
 import com.rfdotech.run.domain.RunningTracker
 import com.rfdotech.run.domain.WatchConnector
-import com.rfdotech.core.notification.ActiveRunService
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import kotlin.math.roundToInt
 
@@ -35,7 +38,8 @@ class ActiveRunViewModel(
     private val runningTracker: RunningTracker,
     private val runRepository: RunRepository,
     private val watchConnector: WatchConnector,
-    private val applicationScope: CoroutineScope
+    private val applicationScope: CoroutineScope,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     var state by mutableStateOf(
@@ -151,6 +155,17 @@ class ActiveRunViewModel(
             eventChannel.send(ActiveRunEvent.InvalidRunDiscarded)
             return@launch
         }
+        val maxSpeedKmh = async(dispatcherProvider.io) {
+            DistanceAndSpeedCalculator.getMaxSpeedKmh(locations)
+        }
+        val totalElevationMeters = async(dispatcherProvider.io) {
+            DistanceAndSpeedCalculator.getTotalElevationMeters(locations)
+        }
+        val avgHeartRate = if (state.runData.heartRates.isNotEmpty()) {
+            state.runData.heartRates.average().roundToInt()
+        } else {
+            0
+        }
 
         val run = Run(
             id = null,
@@ -158,19 +173,19 @@ class ActiveRunViewModel(
             dateTimeUtc = ZonedDateTimeHelper.addZoneIdToZonedDateTime(ZonedDateTime.now()),
             distanceMeters = state.runData.distanceMeters,
             location = state.currentLocation ?: Location(0.0, 0.0),
-            maxSpeedKmh = DistanceAndSpeedCalculator.getMaxSpeedKmh(locations),
-            totalElevationMeters = DistanceAndSpeedCalculator.getTotalElevationMeters(locations),
+            maxSpeedKmh = maxSpeedKmh.await(),
+            totalElevationMeters = totalElevationMeters.await(),
             numberOfSteps = state.stepCount,
-            avgHeartRate = if (state.runData.heartRates.isNotEmpty()) {
-                state.runData.heartRates.average().roundToInt()
-            } else {
-                0
-            },
+            avgHeartRate = avgHeartRate,
             mapPictureUrl = null
         )
         runningTracker.finishRun()
 
-        when (val result = runRepository.upsert(run, mapPictureBytes)) {
+        when (
+            val result = withContext(dispatcherProvider.io) {
+                runRepository.upsert(run, mapPictureBytes)
+            }
+        ) {
             is Result.Error -> {
                 eventChannel.send(ActiveRunEvent.Error(result.error.asUiText()))
             }

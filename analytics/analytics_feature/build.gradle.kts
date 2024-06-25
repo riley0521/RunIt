@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.runtracker.android.dynamic.feature.plugin)
+    alias(libs.plugins.android.dynamic.feature)
 }
 android {
     namespace = "com.rfdotech.analytics.analytics_feature"

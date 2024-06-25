@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.core.connectivity.domain.ConnectivityObserver
 import com.rfdotech.core.connectivity.domain.ConnectivityObserver.Status
+import com.rfdotech.core.domain.Address
 import com.rfdotech.core.domain.DispatcherProvider
 import com.rfdotech.core.domain.Geolocator
 import com.rfdotech.core.domain.auth.UserStorage
+import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.printAndThrowCancellationException
-import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.domain.run.RunRepository
-import com.rfdotech.core.domain.run.RunWithAddress
 import com.rfdotech.core.domain.run.SyncRunScheduler
 import com.rfdotech.core.domain.run.SyncRunScheduler.SyncType
 import com.rfdotech.core.domain.util.DataError
@@ -21,14 +21,15 @@ import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.presentation.ui.auth.GoogleAuthUiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
 class RunOverviewViewModel(
     private val runRepository: RunRepository,
@@ -37,8 +38,8 @@ class RunOverviewViewModel(
     private val syncRunScheduler: SyncRunScheduler,
     private val userStorage: UserStorage,
     private val googleAuthUiClient: GoogleAuthUiClient,
-    private val connectivityObserver: ConnectivityObserver,
-    private val applicationScope: CoroutineScope
+    private val applicationScope: CoroutineScope,
+    connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
     var state by mutableStateOf(RunOverviewState())
@@ -47,7 +48,7 @@ class RunOverviewViewModel(
     private val eventChannel = Channel<RunOverviewEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    var listenToWorkInfoJob: Job? = null
+    private var listenToWorkInfoJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -57,10 +58,7 @@ class RunOverviewViewModel(
         runRepository
             .getAllLocal()
             .onEach { runs ->
-                state = state.copy(isGettingRuns = true)
-                val runsWithAddress = getAddressFromRuns(runs)
-
-                state = state.copy(runs = runsWithAddress, isGettingRuns = false)
+                state = state.copy(runs = runs)
             }
             .launchIn(viewModelScope)
 
@@ -146,28 +144,34 @@ class RunOverviewViewModel(
         }
     }
 
-    private suspend fun getAddressFromRuns(
-        runs: List<Run>
-    ): List<RunWithAddress> = withContext(dispatcherProvider.io) {
-        val addressJob = runs.map { run ->
-            async {
-                return@async with(run.location) {
+    /**
+     * Since the app is offline-first, we might wait too long (if the user is not connected to internet)
+     * before fetching an address based on latitude and longitude,
+     * so we will only wait the response for 3 seconds.
+     */
+    suspend fun getAddressFromLocation(
+        location: Location
+    ): Address? {
+        return try {
+            withTimeout(3.seconds) {
+                withContext(dispatcherProvider.io) {
                     val addresses = try {
-                        geolocator.getAddressesFromCoordinates(latitude, longitude)
+                        geolocator.getAddressesFromCoordinates(
+                            latitude = location.latitude,
+                            longitude = location.longitude
+                        )
                     } catch (e: Exception) {
                         e.printAndThrowCancellationException()
                         emptyList()
                     }
 
-                    RunWithAddress(
-                        run = run,
-                        address = addresses.firstOrNull()
-                    )
+                    addresses.firstOrNull()
                 }
             }
+        } catch (e: TimeoutCancellationException) {
+            e.printAndThrowCancellationException()
+            null
         }
-
-        addressJob.awaitAll()
     }
 
     private fun signOut() = applicationScope.launch {

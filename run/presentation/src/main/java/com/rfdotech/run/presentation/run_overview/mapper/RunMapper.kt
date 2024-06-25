@@ -2,7 +2,7 @@ package com.rfdotech.run.presentation.run_overview.mapper
 
 import android.content.Context
 import com.rfdotech.core.domain.run.DistanceAndSpeedCalculator
-import com.rfdotech.core.domain.run.RunWithAddress
+import com.rfdotech.core.domain.run.Run
 import com.rfdotech.core.presentation.ui.formatted
 import com.rfdotech.core.presentation.ui.getDateTimePattern
 import com.rfdotech.core.presentation.ui.toFormattedHeartRate
@@ -16,7 +16,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-fun RunWithAddress.toRunUi(context: Context): RunUi = with(run) {
+fun Run.toRunUi(context: Context): RunUi {
     val dateTimeInLocalTime = dateTimeUtc.withZoneSameInstant(ZoneId.systemDefault())
     val formattedDateTime = DateTimeFormatter
         .ofPattern(Locale.getDefault().getDateTimePattern())
@@ -36,6 +36,6 @@ fun RunWithAddress.toRunUi(context: Context): RunUi = with(run) {
         numberOfSteps = numberOfSteps.toFormattedSteps(context),
         avgHeartRate = avgHeartRate.toFormattedHeartRate(context),
         mapPictureUrl = mapPictureUrl,
-        address = address
+        location = location
     )
 }

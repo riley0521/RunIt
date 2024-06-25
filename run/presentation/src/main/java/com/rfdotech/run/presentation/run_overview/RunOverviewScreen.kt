@@ -36,6 +36,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
+import com.rfdotech.core.domain.Address
+import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.domain.run.WorkState
 import com.rfdotech.core.presentation.designsystem.AnalyticsIcon
 import com.rfdotech.core.presentation.designsystem.LogoIcon
@@ -56,6 +58,7 @@ import com.rfdotech.core.presentation.ui.ObserveAsEvents
 import com.rfdotech.core.presentation.ui.showToastRes
 import com.rfdotech.run.presentation.R
 import com.rfdotech.run.presentation.run_overview.components.RunListItem
+import com.rfdotech.run.presentation.run_overview.mapper.toRunUi
 import com.rfdotech.run.presentation.util.hasPostNotificationPermission
 import com.rfdotech.run.presentation.util.shouldShowPostNotificationPermissionRationale
 import org.koin.androidx.compose.koinViewModel
@@ -100,6 +103,9 @@ fun RunOverviewScreenRoot(
 
                 else -> viewModel.onAction(action)
             }
+        },
+        onGetAddressFromLocation = {
+            viewModel.getAddressFromLocation(it)
         }
     )
 }
@@ -107,7 +113,8 @@ fun RunOverviewScreenRoot(
 @Composable
 private fun RunOverviewScreen(
     state: RunOverviewState,
-    onAction: (RunOverviewAction) -> Unit
+    onAction: (RunOverviewAction) -> Unit,
+    onGetAddressFromLocation: (suspend (Location) -> Address?)? = null
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
@@ -123,7 +130,7 @@ private fun RunOverviewScreen(
     )
     val context = LocalContext.current as ComponentActivity
     val runUiList = remember(state.runs) {
-        state.getRunUiList(context)
+        state.runs.map { it.toRunUi(context) }
     }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -278,7 +285,8 @@ private fun RunOverviewScreen(
                         onDeleteClick = {
                             onAction(RunOverviewAction.DeleteRunById(run.id))
                         },
-                        modifier = Modifier.animateItemPlacement()
+                        modifier = Modifier.animateItemPlacement(),
+                        onGetAddressFromLocation = onGetAddressFromLocation
                     )
                 }
             }

@@ -48,9 +48,13 @@ dependencies {
     implementation(libs.io.coil.compose)
 
     // Google
-    api(libs.google.core)
+    api(libs.google.play.feature.delivery)
     implementation(libs.google.play.services.location)
     implementation(libs.bundles.google.auth)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     // Timber Logger
     implementation(libs.com.jakewharton.timber)

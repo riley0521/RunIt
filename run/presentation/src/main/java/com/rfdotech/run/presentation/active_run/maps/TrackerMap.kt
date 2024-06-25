@@ -148,13 +148,17 @@ fun TrackerMap(
                     )
                 )
 
+                // Make sure that the camera is done moving, animating, or not waiting any gestures.
                 map.setOnCameraIdleListener {
-                    createSnapshotJob?.cancel()
-                    createSnapshotJob = GlobalScope.launch {
-                        // Make sure that the map really stops moving, and the image is sharp and focused
-                        // before taking a screenshot
-                        delay(DELAY_500_MILLIS)
-                        map.awaitSnapshot()?.let(onSnapshot)
+                    // Make sure that the camera is rendered first to avoid blank map view.
+                    map.setOnMapLoadedCallback {
+                        createSnapshotJob?.cancel()
+                        createSnapshotJob = GlobalScope.launch {
+                            // Make sure that the map really stops moving, and the image is sharp and focused
+                            // before taking a screenshot
+                            delay(DELAY_500_MILLIS)
+                            map.awaitSnapshot()?.let(onSnapshot)
+                        }
                     }
                 }
             }

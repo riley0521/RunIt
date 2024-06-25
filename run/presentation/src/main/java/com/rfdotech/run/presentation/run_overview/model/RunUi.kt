@@ -1,6 +1,6 @@
 package com.rfdotech.run.presentation.run_overview.model
 
-import com.rfdotech.core.domain.Address
+import com.rfdotech.core.domain.location.Location
 
 data class RunUi(
     val id: String,
@@ -14,5 +14,5 @@ data class RunUi(
     val numberOfSteps: String,
     val avgHeartRate: String,
     val mapPictureUrl: String?,
-    val address: Address?
+    val location: Location
 )

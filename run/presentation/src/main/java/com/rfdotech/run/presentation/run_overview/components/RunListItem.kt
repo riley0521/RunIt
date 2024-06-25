@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,11 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.SubcomposeAsyncImage
 import com.rfdotech.core.domain.Address
+import com.rfdotech.core.domain.location.Location
 import com.rfdotech.core.presentation.designsystem.ASPECT_RATIO_16_9
 import com.rfdotech.core.presentation.designsystem.CalendarIcon
 import com.rfdotech.core.presentation.designsystem.FontSize12
@@ -67,10 +70,20 @@ import kotlin.math.max
 fun RunListItem(
     run: RunUi,
     onDeleteClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onGetAddressFromLocation: (suspend (Location) -> Address?)? = null
 ) {
     var showDropDown by remember {
         mutableStateOf(false)
+    }
+
+    val context = LocalContext.current
+    var address by remember {
+        mutableStateOf<String?>(context.getString(R.string.get_address_based_on_last_location))
+    }
+
+    LaunchedEffect(Unit) {
+        address = onGetAddressFromLocation?.invoke(run.location)
     }
 
     Box {
@@ -90,7 +103,7 @@ fun RunListItem(
             MapImage(imageUrl = run.mapPictureUrl)
             RunningTimeSection(
                 duration = run.duration,
-                address = run.address,
+                address = address,
                 modifier = Modifier.fillMaxWidth()
             )
             HorizontalDivider(
@@ -311,7 +324,10 @@ private fun RunListItemPreview() {
                 numberOfSteps = "12540 steps",
                 avgHeartRate = "150 bpm",
                 mapPictureUrl = null,
-                address = "Something"
+                location = Location(
+                    latitude = 1.0,
+                    longitude = 1.0
+                )
             ),
             onDeleteClick = {
 
