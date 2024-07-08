@@ -1,26 +1,25 @@
 [versions]
 agp = "8.3.2"
-play-core = "1.10.3"
 play-auth = "21.2.0"
 core-splash-screen = "1.0.1"
 coil-compose = "2.6.0"
 desugar-jdk-libs = "2.0.4"
-kotlin = "1.9.22"
+kotlin = "1.9.24"
 core-ktx = "1.13.1"
 junit = "4.13.2"
-android-test-ext-junit = "1.2.0"
-espresso = "3.6.0"
+android-test-ext-junit = "1.2.1"
+espresso = "3.6.1"
 activity-compose = "1.9.0"
 ktor = "2.3.11"
 ktor-client-logging = "2.3.8"
 koin = "3.5.3"
-lifecycle-runtime-ktx = "2.7.0" # Version above this is not compatible with compose-bom 2024.05.00
-compose-bom = "2024.05.00"
+lifecycle-runtime-ktx = "2.8.3"
+compose-bom = "2024.06.00"
 material-icons-extended = "1.6.8"
 navigation-compose = "2.7.7"
 security-crypto-ktx = "1.1.0-alpha06"
 timber = "5.0.1"
-ksp = "1.9.22-1.0.17"
+ksp = "1.9.24-1.0.20"
 room = "2.6.1"
 maps = "4.3.3"
 coroutines = "1.8.1"
@@ -30,11 +29,11 @@ work = "2.9.0"
 kotlinx-serialization = "1.6.3"
 secrets-plugin = "2.0.1"
 assertk = "0.28.1"
-androidx-test-runner = "1.6.0"
-androidx-test-rules = "1.6.0"
+androidx-test-runner = "1.6.1"
+androidx-test-rules = "1.6.1"
 io-mockk = "1.13.11"
 app-cash-turbine = "1.1.0"
-android-tools = "31.4.1"
+android-tools = "31.5.0"
 firebase-bom = "33.1.1"
 google-services-plugin = "4.4.2"
 google-play-feature-delivery = "2.1.0"
@@ -53,7 +52,7 @@ projectMinSdkVersion = "24"
 projectTargetSdkVersion = "34"
 projectCompileSdkVersion = "34"
 projectVersionCode = "3"
-composeCompiler = "1.5.10"
+composeCompiler = "1.5.14"
 wearMinSdkVersion = "30"
 
 [libraries]
@@ -68,7 +67,6 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 io-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 
 # Google
-google-core = { group = "com.google.android.play", name = "core", version.ref = "play-core" }
 google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "maps" }
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "gms-location" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-auth" }
