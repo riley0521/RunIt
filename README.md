@@ -31,7 +31,13 @@ A running tracker app that track your runs to achieve fitness milestones.
     - [Turbine](https://github.com/cashapp/turbine) - Used to test Flow.
 ## Modularization
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+This is the simple overview of the modularization of the features. I did not connect the arrow from run module to core module to make it readable. But, of course, analytics/auth/run depends on core module / sub-modules.
+
+Wear Module (Highlighted in blue) is a different set of modules for our wear app that depends on core -> presentation -> designsystem_wear and other core sub-modules.
+
+By doing that, we can see the value of multi-module setup by increasing code reusability across different platforms.
+
+![App Screenshot](https://github.com/riley0521/RunIt/tree/master/images/modularization.png)
 ## License
 
 Copyright 2024 - Riley Farro
