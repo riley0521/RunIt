@@ -37,7 +37,7 @@ Wear Module (Highlighted in blue) is a different set of modules for our wear app
 
 By doing that, we can see the value of multi-module setup by increasing code reusability across different platforms.
 
-![App Screenshot](https://github.com/riley0521/RunIt/tree/master/images/modularization.png)
+![App Screenshot](https://github.com/riley0521/RunIt/tree/master/images/modularization.png?raw=true)
 ## License
 
 Copyright 2024 - Riley Farro
