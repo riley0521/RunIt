@@ -6,11 +6,12 @@ A running tracker app that track your runs to achieve fitness milestones.
 
 ## Download
 
-- [Mobile APK](resources/runit_mobile.apk)
+- [Mobile APK]()
 
 ## Screenshots
 
 ![Screenshot in Mobile](resources/mobile_screenshots.png)
+![Screenshot in Wear OS](resources/wear_screenshots.png)
 
 ## Tech Stack
 
