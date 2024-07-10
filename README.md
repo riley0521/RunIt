@@ -6,7 +6,9 @@ A running tracker app that track your runs to achieve fitness milestones.
 
 ## Download
 
-- [Mobile APK]()
+- SHA256 -> 398E7C617F54E3B3D9F66506E62FED4A2A8320F03B0C089E9BB6592F179BBA21
+- [Mobile APK](https://github.com/riley0521/RunIt/releases/download/v1.0/runit_mobile.apk)
+- [Wear OS APK](https://github.com/riley0521/RunIt/releases/download/v1.0/runit_wear.apk)
 
 ## Screenshots
 
