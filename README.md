@@ -29,6 +29,9 @@ A running tracker app that track your runs to achieve fitness milestones.
 - [Compose Dialogs](https://github.com/maxkeppeler/sheets-compose-dialogs) - Used to display date range picker in compose.
 - [Timber](https://github.com/JakeWharton/timber) - Logger library.
 - [Splash Screen API](https://developer.android.com/develop/ui/views/launch/splash-screen/migrate) - Used to support better splash screen in Android 12 and above.
+- Wear OS Libs
+  - [Health Services API](https://developer.android.com/health-and-fitness/guides/health-services/active-data) - To use ExerciseClient.
+  - [Message Client](https://developer.android.com/training/wearables/data/messages) - To send and receive message to mobile.
 - Testing
     - [AssertK](https://github.com/willowtreeapps/assertk) - Assertion in Kotlin.
     - [MockK](https://github.com/mockk/mockk) - Mocking in Kotlin.
