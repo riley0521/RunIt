@@ -1,11 +1,9 @@
-import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.DynamicFeatureExtension
 import com.rfdotech.convention.ExtensionType
 import com.rfdotech.convention.addUiLayerDependencies
 import com.rfdotech.convention.configureAndroidCompose
 import com.rfdotech.convention.configureBuildTypes
 import com.rfdotech.convention.configureKotlinAndroid
-import com.rfdotech.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -18,7 +16,7 @@ class AndroidDynamicFeatureConventionPlugin: Plugin<Project> {
         target.run {
             pluginManager.run {
                 apply("com.android.dynamic-feature")
-                apply("org.jetbrains.kotlin.android")
+                apply("org.jetbrains.kotlin.plugin.compose")
             }
             extensions.configure<DynamicFeatureExtension> {
                 configureKotlinAndroid(this)

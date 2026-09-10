@@ -1,12 +1,12 @@
 package com.rfdotech.run.network
 
 import androidx.annotation.Keep
-import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.storage
 import com.rfdotech.core.domain.auth.UserId
 import com.rfdotech.core.domain.printAndThrowCancellationException
 import com.rfdotech.core.domain.run.RemoteRunDataSource

@@ -8,64 +8,74 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import java.io.File
 
 internal fun Project.configureBuildTypes(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    commonExtension: CommonExtension,
     extensionType: ExtensionType
 ) {
-    commonExtension.run {
-        buildFeatures {
-            buildConfig = true
+    commonExtension.buildFeatures.apply { buildConfig = true }
+
+    val apiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("API_KEY")
+    val authApiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("AUTH_API_KEY")
+    val password = gradleLocalProperties(rootDir, rootProject.providers).getProperty("KEYSTORE_PASS")
+
+    commonExtension.signingConfigs.apply {
+        create("release") {
+            keyAlias = "runit"
+            storeFile = file("runit_keystore.jks")
+            keyPassword = password
+            storePassword = password
         }
+    }
 
-        val apiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("API_KEY")
-        val authApiKey = gradleLocalProperties(rootDir, rootProject.providers).getProperty("AUTH_API_KEY")
-        val password = gradleLocalProperties(rootDir, rootProject.providers).getProperty("KEYSTORE_PASS")
-
-        signingConfigs {
-            create("release") {
-                keyAlias = "runit"
-                storeFile = file("C:\\Users\\riley\\Documents\\runit_keystore.jks")
-                keyPassword = password
-                storePassword = password
-            }
-        }
-
-        when (extensionType) {
-            ExtensionType.APPLICATION -> {
-                extensions.configure<ApplicationExtension> {
-                    buildTypes {
-                        debug {
-                            configureDebugBuildType(apiKey, authApiKey)
-                        }
-                        release {
-                            signingConfig = signingConfigs.getByName("release")
-                            configureReleaseBuildType(commonExtension, apiKey, authApiKey)
-                        }
+    when (extensionType) {
+        ExtensionType.APPLICATION -> {
+            this@configureBuildTypes.extensions.configure<ApplicationExtension> {
+                buildTypes {
+                    debug {
+                        configureDebugBuildType(apiKey, authApiKey)
+                    }
+                    release {
+                        signingConfig = signingConfigs.getByName("release")
+                        configureReleaseBuildType(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            apiKey,
+                            authApiKey
+                        )
                     }
                 }
             }
-            ExtensionType.LIBRARY -> {
-                extensions.configure<LibraryExtension> {
-                    buildTypes {
-                        debug {
-                            configureDebugBuildType(apiKey, authApiKey)
-                        }
-                        release {
-                            configureReleaseBuildType(commonExtension, apiKey, authApiKey)
-                        }
+        }
+        ExtensionType.LIBRARY -> {
+            this@configureBuildTypes.extensions.configure<LibraryExtension> {
+                buildTypes {
+                    debug {
+                        configureDebugBuildType(apiKey, authApiKey)
+                    }
+                    release {
+                        configureReleaseBuildType(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            apiKey,
+                            authApiKey
+                        )
                     }
                 }
             }
-            ExtensionType.DYNAMIC_FEATURE -> {
-                extensions.configure<DynamicFeatureExtension> {
-                    buildTypes {
-                        debug {
-                            configureDebugBuildType(apiKey, authApiKey)
-                        }
-                        release {
-                            configureReleaseBuildType(commonExtension, apiKey, authApiKey, isDynamicFeature = true)
-                        }
+        }
+        ExtensionType.DYNAMIC_FEATURE -> {
+            this@configureBuildTypes.extensions.configure<DynamicFeatureExtension> {
+                buildTypes {
+                    debug {
+                        configureDebugBuildType(apiKey, authApiKey)
+                    }
+                    release {
+                        configureReleaseBuildType(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            apiKey,
+                            authApiKey,
+                            isDynamicFeature = true
+                        )
                     }
                 }
             }
@@ -80,7 +90,7 @@ private fun BuildType.configureDebugBuildType(apiKey: String, authApiKey: String
 }
 
 private fun BuildType.configureReleaseBuildType(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    defaultProguardFile: File,
     apiKey: String,
     authApiKey: String,
     isDynamicFeature: Boolean = false
@@ -92,7 +102,7 @@ private fun BuildType.configureReleaseBuildType(
     isMinifyEnabled = !isDynamicFeature
     if (!isDynamicFeature) {
         proguardFiles(
-            commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),
+            defaultProguardFile,
             "proguard-rules.pro"
         )
     }

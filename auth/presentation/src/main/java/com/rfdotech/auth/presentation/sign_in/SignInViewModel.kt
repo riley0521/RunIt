@@ -3,10 +3,10 @@
 package com.rfdotech.auth.presentation.sign_in
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.textAsFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rfdotech.auth.domain.AuthRepository
@@ -34,8 +34,8 @@ class SignInViewModel(
     val events = eventChannel.receiveAsFlow()
 
     init {
-        val emailFlow = state.email.textAsFlow()
-        val passwordFlow = state.password.textAsFlow()
+        val emailFlow = snapshotFlow { state.email.text }
+        val passwordFlow = snapshotFlow { state.password.text }
 
         combine(emailFlow, passwordFlow) { email, password ->
             val isValidEmail = userDataValidator.isValidEmail(email.toString())

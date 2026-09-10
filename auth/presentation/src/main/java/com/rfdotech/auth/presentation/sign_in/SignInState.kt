@@ -3,7 +3,7 @@
 package com.rfdotech.auth.presentation.sign_in
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text.input.TextFieldState
 
 data class SignInState(
     val email: TextFieldState = TextFieldState(),

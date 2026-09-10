@@ -33,9 +33,9 @@ import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.auth
 import com.rfdotech.core.presentation.designsystem.RunItTheme
 import com.rfdotech.core.presentation.designsystem.Space16
 import com.rfdotech.core.presentation.designsystem.Space8

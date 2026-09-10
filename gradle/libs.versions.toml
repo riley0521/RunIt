@@ -1,58 +1,59 @@
 [versions]
-agp = "8.3.2"
-play-auth = "21.2.0"
-core-splash-screen = "1.0.1"
-coil-compose = "2.6.0"
-desugar-jdk-libs = "2.0.4"
-kotlin = "1.9.24"
-core-ktx = "1.13.1"
+agp = "9.4.0"
+play-auth = "22.0.0"
+core-splash-screen = "1.2.0"
+coil-compose = "2.7.0"
+kotlin = "2.4.0"
+core-ktx = "1.19.0"
 junit = "4.13.2"
-android-test-ext-junit = "1.2.1"
-espresso = "3.6.1"
-activity-compose = "1.9.0"
-ktor = "2.3.11"
-ktor-client-logging = "2.3.8"
-koin = "3.5.3"
-lifecycle-runtime-ktx = "2.8.3"
-compose-bom = "2024.06.00"
-material-icons-extended = "1.6.8"
-navigation-compose = "2.7.7"
-security-crypto-ktx = "1.1.0-alpha06"
+android-test-ext-junit = "1.3.0"
+espresso = "3.7.0"
+activity-compose = "1.13.0"
+ktor = "3.5.2"
+ktor-client-logging = "3.5.2"
+koin = "4.2.2"
+lifecycle-runtime-ktx = "2.11.0"
+compose-bom = "2026.09.00"
+material-icons-extended = "1.7.8"
+navigation-compose = "2.10.1"
+security-crypto-ktx = "1.1.0"
 timber = "5.0.1"
-ksp = "1.9.24-1.0.20"
-room = "2.6.1"
-maps = "4.3.3"
-coroutines = "1.8.1"
-gms-location = "21.3.0"
-bson = "5.1.0"
-work = "2.9.0"
-kotlinx-serialization = "1.6.3"
+ksp = "2.3.11"
+room = "2.8.5"
+maps = "8.6.0"
+coroutines = "1.11.0"
+gms-location = "21.4.0"
+bson = "5.11.0"
+work = "2.11.2"
+kotlinx-serialization = "1.11.0"
 secrets-plugin = "2.0.1"
 assertk = "0.28.1"
-androidx-test-runner = "1.6.1"
-androidx-test-rules = "1.6.1"
-io-mockk = "1.13.11"
-app-cash-turbine = "1.1.0"
-android-tools = "31.5.0"
-firebase-bom = "33.1.1"
-google-services-plugin = "4.4.2"
+androidx-test-runner = "1.7.0"
+androidx-test-rules = "1.7.0"
+io-mockk = "1.14.11"
+app-cash-turbine = "1.2.1"
+android-tools = "32.4.0"
+firebase-bom = "34.18.0"
+google-services-plugin = "4.5.0"
 google-play-feature-delivery = "2.1.0"
 vico-charts = "2.0.0-alpha.20"
 compose-dialogs = "1.3.0"
-wear-core = "1.3.0"
-play-services-wearable = "18.2.0"
-compose-wear-os = "1.3.1"
-compose-wear-material3 = "1.0.0-alpha23"
-google-health-services = "1.0.0-rc02"
+wear-core = "1.4.0"
+play-services-wearable = "20.0.1"
+compose-wear-os = "1.6.2"
+compose-wear-material3 = "1.6.2"
+google-health-services = "1.0.0"
+auth-ktx = "23.2.1"
+firestore-ktx = "25.1.4"
+storage-ktx = "21.0.2"
 
 # Project versions
 projectApplicationId = "com.rfdotech.runtracker"
 projectVersionName = "1.0"
-projectMinSdkVersion = "24"
-projectTargetSdkVersion = "34"
-projectCompileSdkVersion = "34"
+projectMinSdkVersion = "28"
+projectTargetSdkVersion = "37"
+projectCompileSdkVersion = "37"
 projectVersionCode = "3"
-composeCompiler = "1.5.14"
 wearMinSdkVersion = "30"
 
 [libraries]
@@ -75,12 +76,9 @@ google-play-feature-delivery = { module = "com.google.android.play:feature-deliv
 
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
-
-# Desugar
-desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "auth-ktx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firestore-ktx" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "storage-ktx" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -167,7 +165,7 @@ androidx-wear-compose-ui-tooling = { group = "androidx.wear.compose", name = "co
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 androidx-room = { id = "androidx.room", version.ref = "room" }

@@ -16,14 +16,11 @@ import com.rfdotech.core.domain.util.DataError
 import com.rfdotech.core.domain.util.EmptyResult
 import com.rfdotech.core.domain.util.Result
 import com.rfdotech.core.domain.util.asEmptyDataResult
-import com.rfdotech.core.domain.util.getOrNull
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.authProviders
 import io.ktor.client.plugins.auth.providers.BearerAuthProvider
-import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -186,7 +183,7 @@ class OfflineFirstRunRepository(
             route = "/logout"
         ).asEmptyDataResult()
 
-        httpClient.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
+        httpClient.authProviders.filterIsInstance<BearerAuthProvider>()
             .firstOrNull()
             ?.clearToken()
 

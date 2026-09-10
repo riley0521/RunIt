@@ -285,7 +285,7 @@ private fun RunOverviewScreen(
                         onDeleteClick = {
                             onAction(RunOverviewAction.DeleteRunById(run.id))
                         },
-                        modifier = Modifier.animateItemPlacement(),
+                        //modifier = Modifier.animateItemPlacement(),
                         onGetAddressFromLocation = onGetAddressFromLocation
                     )
                 }
